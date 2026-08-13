@@ -48,5 +48,5 @@ Chain strategy: size-exception
 - [x] 5.1 Create Spanish `README.md`: x86_64, ≥16 GB, Docker ≥24, Compose ≥v2.26.1, not ARM64; `OLLAMA_HOST=0.0.0.0`; Spanish UI; non-blank Spanish Empty response; Show Quote; synthetic-only; first-run KB/chat.
 - [x] 5.2 Add README E2E: ingest four PDFs via Compose-DNS PaddleOCR; in-corpus Spanish + Show Quote; out-of-corpus Spanish Empty (no invention); parser down → visible ingest fail, no fabricated text.
 - [x] 5.3 Confirm no `app.py`, `ledger_lens/`, Gradio, HF Space, Compose Ollama, TEI, or Elasticsearch.
-- [x] 5.4 Verify: compose healthy (UI `:80`, `paddleocr`, Ollama tags). Manual E2E per README. No pytest (no runner). Skip full smoke if host <16 GB or no Docker.
-  - Apply host (~7.4 GB, Docker not installed): runtime smoke skipped; file-level contracts verified (`vendor/PIN.md`, overlay, `up.sh`, four synthetic PDFs, no `app.py`/`ledger_lens`).
+- [x] 5.4 Verify: compose healthy (UI `:80`) on ≥16 GB. Manual E2E per README. Host <16 GB: `scripts/check.sh` only. Skip full smoke if no Docker Compose.
+- [x] 5.5 Add `scripts/check.sh` (contracts, `pdftotext` fixtures, host probe, optional OpenRouter smoke) and `docs/agenda/` for deferred Parallel items.

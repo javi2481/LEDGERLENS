@@ -1,0 +1,23 @@
+{
+  "extract_id": "extract_3717a36dc7e5b23987a0b1b8f2683bed",
+  "session_id": "session_3717a36dc7e5b23987a0b1b8f2683bed",
+  "status": "ok",
+  "results": [
+    {
+      "url": "https://ragflow.io/docs/supported_models",
+      "title": "Model Providers | RAGFlow",
+      "publish_date": null,
+      "excerpts": [
+        "# Model Providers\n| Provider | URL |\n| aimlapi.com | `https://aimlapi.com` |\n| Anthropic | `https://www.anthropic.com` |\n| Astraflow | `https://astraflow.ucloud-global.com/en-us` |\n| Astraflow-CN | `https://astraflow.ucloud.cn/` |\n| Avian | `https://www.avian.io` |\n| Azure-OpenAI | `https://azure.microsoft.com/en-us/products/ai-services/openai-service` |\n| BaiChuan | `https://www.baichuan-ai.com` |\n| BaiduYiyan | `https://yiyan.baidu.com` |\n| Bedrock | `https://aws.amazon.com/bedrock/` |\n| Cohere | `https://cohere.com` |\n| DeepSeek | `https://www.deepseek.com` |\n| Fish Audio | `https://fish.audio` |\n| FunASR | `https://github.com/modelscope/FunASR` |\n| FuturMix | `https://futurmix.ai` |\n| Gemini | `https://gemini.google.com` |\n| Google Cloud | `https://cloud.google.com` |\n| GPUStack | `https://gpustack.ai` |\n| Groq | `https://groq.com` |\n| GreenPT | `https://greenpt.ai` |\n\n...\n\n| Provider | URL |\n| aimlapi.com | `https://aimlapi.com` |\n| Anthropic | `https://www.anthropic.com` |\n| Astraflow | `https://astraflow.ucloud-global.com/en-us` |\n| Astraflow-CN | `https://astraflow.ucloud.cn/` |\n| NVIDIA | `https://www.nvidia.com` |\n| Ollama | `https://ollama.com` |\n| OpenAI | `https://openai.com` |\n| OpenAI-API-Compatible | N/A |\n| OpenRouter | `https://openrouter.ai` |\n\n...\n\n| Provider | URL |\n| aimlapi.com | `https://aimlapi.com` |\n| Anthropic | `https://www.anthropic.com` |\n| Astraflow | `https://astraflow.ucloud-global.com/en-us` |\n| Astraflow-CN | `https://astraflow.ucloud.cn/` |\n| Tencent Hunyuan | `https://hunyuan.tencent.com` |\n| Tencent Cloud | `https://cloud.tencent.com` |\n\n...\n\n| Provider | URL |\n| aimlapi.com | `https://aimlapi.com` |\n| Anthropic | `https://www.anthropic.com` |\n| Astraflow | `https://astraflow.ucloud-global.com/en-us` |\n| Astraflow-CN | `https://astraflow.ucloud.cn/` |\n| VLLM | `https://vllm.ai` |\n| VolcEngine | `https://www.volcengine.com` |"
+      ]
+    }
+  ],
+  "errors": [],
+  "usage": [
+    {
+      "name": "sku_extract_excerpts",
+      "count": 1
+    }
+  ],
+  "warnings": []
+}

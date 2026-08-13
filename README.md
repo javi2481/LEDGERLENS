@@ -1,69 +1,61 @@
 # LedgerLens
 
-Preguntas en español sobre PDFs financieros sintéticos, con citas a la fuente. Si no hay evidencia, el asistente responde vacío (no inventa). El frontend y el RAG son **RAGFlow** self-host; el parser es **PaddleOCR** self-host; el LLM corre en **Ollama** en el host.
+Demo de portfolio: preguntas en **español** sobre PDFs financieros **sintéticos**, con citas. Si no hay evidencia, responde vacío (no inventa).
 
-Esto es un demo de portfolio. Los PDFs de `examples/synthetic/` son ficticios. **No** son filings de BYMA ni de emisores reales.
+Stack: **RAGFlow** v0.26.4 self-host (UI + RAG) + Infinity. Parser **Naive**. Chat y embeddings **OpenRouter**. **Ollama** es fallback. **PaddleOCR** no arranca por defecto.
+
+Los PDFs de `examples/synthetic/` son ficticios. **No** son filings de BYMA.
+
+## Quick path (PC ≥16 GB, x86_64)
+
+1. Instalar Docker ≥24 y **Compose v2** (`docker compose version`). Tu usuario en el grupo `docker`. `vm.max_map_count` ≥ 262144.
+2. Clonar `https://github.com/javi2481/LEDGERLENS`. Copiar `.env.example` → `.env`. Pegar `OPENROUTER_API_KEY` (**.env no está en git**).
+3. `./scripts/check.sh` y después `./scripts/up.sh`. UI: <http://localhost>
+4. En la UI: OpenRouter chat+embed, dataset `LedgerLens`, parser **Naive**, Empty response + Show Quote (abajo).
+
+En una PC de ~7 GB: solo `./scripts/check.sh`. Compose E2E: [docs/agenda/e2e-16gb.md](docs/agenda/e2e-16gb.md).
+
+## Stack (fuente de verdad del demo)
+
+| Pieza | Default | Fallback / opcional |
+|-------|---------|---------------------|
+| UI + RAG | RAGFlow **v0.26.4** puerto 80 | — |
+| Motor docs | **Infinity** | no Elasticsearch |
+| Parser PDF | **Naive** (texto seleccionable) | DeepDoc (escaneos); PaddleOCR (profile) |
+| Chat | OpenRouter `nvidia/nemotron-3-nano-30b-a3b:free` | Ollama `qwen2.5:1.5b` en `http://host.docker.internal:11434` |
+| Embeddings | OpenRouter `nvidia/nemotron-3-embed-1b:free` | TEI en [docs/agenda/](docs/agenda/) |
+| Empty response | `No hay evidencia suficiente en los documentos indexados para responder. No invento datos.` | no dejar en blanco |
+
+RAGFlow **no** lee `OPENROUTER_API_KEY` solo: hay que pegarla en Model providers. Nunca `127.0.0.1` para Ollama desde el contenedor.
 
 ## Requisitos
 
 | Requisito | Valor |
 |-----------|--------|
-| Arquitectura | **x86_64** (las imágenes oficiales de RAGFlow no cubren ARM64) |
-| RAM | **≥ 16 GB** (RAGFlow + PaddleOCR CPU + Ollama) |
+| Arquitectura | **x86_64** (imágenes oficiales, no ARM64) |
+| RAM | **≥ 16 GB** |
 | Disco | ≥ 50 GB |
-| Docker | ≥ 24.0.0 |
-| Compose | ≥ v2.26.1 |
+| Docker | ≥ 24.0.0, usuario en grupo `docker` |
+| Compose | ≥ v2.26.1 (`docker compose`, no el binario mailcap `compose`) |
 | Kernel | `vm.max_map_count` ≥ 262144 |
-| Ollama | en el host, escuchando en `0.0.0.0:11434` |
-
-Esta máquina de desarrollo puede no cumplir RAM/Docker: en ese caso el stack no se levanta aquí; el arranque real es en un host ≥16 GB x86 con Docker.
-
-### `vm.max_map_count`
-
-Comprobar (solo lectura):
 
 ```bash
 cat /proc/sys/vm/max_map_count
-```
-
-Si es menor que 262144, como root (no lo hace `scripts/up.sh`):
-
-```bash
+# si es bajo, como root (no lo hace up.sh):
 sudo sysctl -w vm.max_map_count=262144
 ```
-
-Para persistir, agregar `vm.max_map_count=262144` en `/etc/sysctl.conf`.
-
-### Ollama en el host
-
-```bash
-export OLLAMA_HOST=0.0.0.0
-# reiniciar el servicio Ollama para que el bind aplique
-ollama pull qwen2.5:1.5b
-ollama pull bge-m3
-```
-
-Desde el contenedor RAGFlow la URL es `http://host.docker.internal:11434`. **Nunca** uses `http://127.0.0.1:11434` dentro de RAGFlow: eso apunta al propio contenedor.
 
 ## Arranque
 
 ```bash
-cp .env.example .env
+cp .env.example .env   # luego OPENROUTER_API_KEY=
+./scripts/check.sh
 ./scripts/up.sh
 ```
 
-El script:
+`up.sh` falla si `vm.max_map_count` es bajo; copia `.env` a `vendor/ragflow-docker/.env`; levanta Infinity+CPU; PaddleOCR queda apagado; pull de Ollama solo si está instalado.
 
-1. Falla si `vm.max_map_count` < 262144 y **no** declara el demo listo.
-2. Copia `.env` a `vendor/ragflow-docker/.env` (el compose oficial lee `env_file: .env` al lado de sus YAML).
-3. Levanta RAGFlow **v0.26.4** (Infinity + CPU) más el overlay de PaddleOCR.
-4. Intenta `ollama pull qwen2.5:1.5b` y `bge-m3`.
-
-UI: [http://localhost](http://localhost) (puerto 80).
-
-PaddleOCR no se publica en el host. RAGFlow lo llama por DNS de Compose: `http://paddleocr:8080/layout-parsing` con algoritmo `PP-StructureV3`. No hace falta token de AI Studio.
-
-Parar y borrar volúmenes:
+Parar:
 
 ```bash
 docker compose --env-file .env \
@@ -71,53 +63,55 @@ docker compose --env-file .env \
   -f docker-compose.overlay.yml down -v
 ```
 
-## Primera vez en la UI (español)
+## Primera vez en la UI
 
-1. Crear cuenta (registro local de RAGFlow).
+1. Registro local.
 2. **Model providers**
-   - Añadir **Ollama**:
-     - Chat: `qwen2.5:1.5b` — base URL `http://host.docker.internal:11434`
-     - Embedding: `bge-m3` — misma base URL
-   - Añadir **PaddleOCR** (factory OCR):
-     - API URL: `http://paddleocr:8080/layout-parsing`
-     - Algorithm: `PP-StructureV3`
-     - Access token: vacío
-3. **Knowledge base** llamado `LedgerLens`
-   - Parser PDF: **PaddleOCR**
-   - Subir los cuatro PDFs de `examples/synthetic/`
-   - Esperar a que el parseo termine (si el parser está caído, el ingest debe fallar a la vista; no debe aparecer texto inventado)
-4. **Chat assistant** en español
-   - Knowledge base: `LedgerLens`
-   - **Show Quote**: activado
-   - Umbral de similitud: alto (p. ej. 0.4 o el máximo que aún recupere los hechos sintéticos)
-   - **Empty response** (obligatorio, no dejar en blanco):
+   - OpenRouter: misma key que `.env`. Chat `nvidia/nemotron-3-nano-30b-a3b:free`. Embed `nvidia/nemotron-3-embed-1b:free`. Defaults en System Model Settings.
+   - Ollama (fallback): `qwen2.5:1.5b`, URL `http://host.docker.internal:11434`.
+3. Knowledge base **LedgerLens**, parser **Naive**, subir `examples/synthetic/*.pdf`. Si el parseo falla, debe verse el error (no texto inventado).
+4. Chat en español: KB LedgerLens, **Show Quote** on, umbral alto (p. ej. 0.4), Empty response no vacío (copy de la tabla de stack). Prompt: *Responde solo en español. Cita los fragmentos. Si no hay evidencia, usa la respuesta vacía. No inventes cifras.*
 
-     `No hay evidencia suficiente en los documentos indexados para responder. No invento datos.`
+Ollama en el host, si lo usás:
 
-   - Prompt de sistema (ejemplo):
+```bash
+export OLLAMA_HOST=0.0.0.0
+ollama pull qwen2.5:1.5b
+```
 
-     `Responde solo en español. Cita los fragmentos recuperados. Si no hay evidencia, usa la respuesta vacía configurada. No inventes cifras ni hechos.`
+## Checklist E2E
 
-## Checklist E2E manual
+Con `ragflow-cpu` en :80 y OpenRouter configurado:
 
-Con el stack healthy (`ragflow-cpu` en :80, servicio `paddleocr` up, `ollama list` muestra `qwen2.5:1.5b` y `bge-m3`):
+1. Ingest Naive de los cuatro PDFs (hechos, estados, memoria, operativo).
+2. *¿Por cuánto vendió Acme Norte la planta Rosario?* → español + Show Quote (ARS 1.250 millones, 12 de marzo de 2025).
+3. *¿Cuál fue el precio de cierre de YPF en BYMA el 3 de enero?* → Empty response, sin inventar.
+4. *¿Cuántos pallets despachó Acme Norte en el Q1 2025?* → 18.400 (informe operativo).
 
-1. **Ingest** — subir los cuatro PDFs sintéticos (hechos, estados, memoria, operativo) con parser PaddleOCR. El parseo debe usar `http://paddleocr:8080/layout-parsing`, no `localhost`.
-2. **Pregunta con evidencia** — p. ej. *¿Por cuánto vendió Acme Norte la planta Rosario?* Debe responder en español y mostrar **Show Quote** (ARS 1.250 millones, 12 de marzo de 2025).
-3. **Pregunta sin evidencia** — p. ej. *¿Cuál fue el precio de cierre de YPF en BYMA el 3 de enero?* Debe devolver exactamente el Empty response en español, **sin** inventar cifras ni citas.
-4. **Segundo documento** — p. ej. *¿Cuántos pallets despachó Acme Norte en el Q1 2025?* Debe citar el informe operativo (18.400).
-5. **Parser caído** — `docker compose ... stop paddleocr` y reintentar un ingest: debe fallar de forma visible, sin fabricar texto.
+## Opcional: DeepDoc / PaddleOCR
 
-## Qué incluye el repo
+Naive alcanza el sintético. DeepDoc si no hay capa de texto. PaddleOCR: `COMPOSE_PROFILES=infinity,cpu,paddleocr`, descomentar vars en `.env`, factory `http://paddleocr:8080/layout-parsing`, `PP-StructureV3`, token vacío.
 
-- `vendor/ragflow-docker/` — pin oficial `docker/` de RAGFlow **v0.26.4** (Apache-2.0). No editar. Ver `vendor/PIN.md`.
-- `docker-compose.overlay.yml` — servicio `paddleocr` en la red `ragflow`, sin publicar `:8080`.
-- `docker/paddleocr/Dockerfile` — PaddleX `PP-StructureV3` CPU, `POST /layout-parsing`.
-- `.env.example` — `DOC_ENGINE=infinity`, imagen `infiniflow/ragflow:v0.26.4`, URL Compose-DNS de PaddleOCR.
-- `scripts/up.sh` — sysctl de solo lectura, compose, pulls de Ollama.
-- `examples/synthetic/` — cuatro PDFs en español, ficticios.
+## Repo
 
-No hay `app.py`, paquete `ledger_lens/`, Gradio, ni Space de Hugging Face.
+| Path | Rol |
+|------|-----|
+| `vendor/ragflow-docker/` | Pin oficial v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) |
+| `docker-compose.overlay.yml` | PaddleOCR opcional, sin `:8080` |
+| `.env.example` | Infinity + pin; PaddleOCR comentado |
+| `scripts/up.sh` / `scripts/check.sh` | Arranque / contratos+PDFs+OpenRouter |
+| `examples/synthetic/` | 4 PDFs ficticios |
+| `docs/agenda/` | Diferidos (TEI, MinerU, vLLM, E2E 16 GB) |
+| `research/` | Dumps Parallel |
+| `openspec/changes/ledger-lens-ragflow/` | SDD activo (Gentle AI hybrid) |
+
+No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF. Ignorar `openspec/changes/ledger-lens-mvp/` (residuo Gradio).
+
+## Documentación coherente
+
+Si un cambio modifica el stack, defaults, first-run, scripts o fixtures, **en el mismo trabajo** hay que actualizar `README.md`, `docs/agenda/`, `research/README.md`, comentarios de `.env.example` y el change OpenSpec activo (`proposal` / `design` / `specs`). No dejar docs del default anterior.
+
+Ítems diferidos: [docs/agenda/](docs/agenda/).
 
 ## Licencia del vendor
 

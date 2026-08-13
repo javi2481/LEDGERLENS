@@ -1,0 +1,23 @@
+{
+  "extract_id": "extract_f2b265a8599834f1dda5b1ebcb81ed91",
+  "session_id": "session_f2b265a8599834f1dda5b1ebcb81ed91",
+  "status": "ok",
+  "results": [
+    {
+      "url": "https://openrouter.ai/nvidia/nemotron-3-embed-1b:free",
+      "title": "Nemotron 3 Embed 1B (free) - API Pricing & Providers | OpenRouter",
+      "publish_date": "2026-07-16",
+      "excerpts": [
+        "NVIDIA Nemotron 3 Embed 1B is an open text embedding model from NVIDIA, optimized for high-throughput, low-latency retrieval. This model is free to use. 32,768 token context window.\nNemotron 3 Embed 1B (free) - API Pricing & Providers | OpenRouter\nSkip to content\n![OpenRouter!OpenRouter](/)\nSearch\u2318K\nHomeModelsBenchmarksChatRankingsAppsDocs\n\n...\n\n# Product\n* Chat\n* Rankings\n* Benchmarks\n* Apps\n* Discover\n* Models\n* Providers\n* Pricing\n* Enterprise\n* Labs\n\n...\n\n## Company\n### Connect\nDismiss\n![Favicon for nvidia](https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://nvidia.com/&size=256)\n\n# NVIDIA: Nemotron 3 Embed 1B (free)\n## nvidia/nemotron-3-embed-1b:free\nTry this model\nNVIDIA Nemotron 3 Embed 1B is an open text embedding model from NVIDIA, optimized for high-throughput, low-latency retrieval. It is suited for enterprise search, RAG, code retrieval, and agentic retrieval workflows, retaining more than 95% of the 8B model\u2019s accuracy in a smaller deployment footprint.\nModalities\nPrice\nFree\nContext\n33K\nReleased\nJul 16, 2026\n![Favicon for nvidia](https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://nvidia.com/&size=256)\nNVIDIA: Nemotron 3 Embed 1B (free)\nTry this model\nProvidersPerformanceUptimeAppsActivityFAQ\nProviders\n\n## Providers\nThis model is hosted by one provider. OpenRouter forwards every request to it directly \u2014 no routing decisions to make."
+      ]
+    }
+  ],
+  "errors": [],
+  "usage": [
+    {
+      "name": "sku_extract_excerpts",
+      "count": 1
+    }
+  ],
+  "warnings": []
+}

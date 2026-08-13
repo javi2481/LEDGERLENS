@@ -2,11 +2,11 @@
 
 ## Intent
 
-Local portfolio demo: Spanish Q&A over synthetic financial PDFs with citations. Official RAGFlow is UI+RAG; PaddleOCR parses; host Ollama serves LLM/embeddings. No evidence → Spanish empty reply, not invention.
+Local portfolio demo: Spanish Q&A over synthetic financial PDFs with citations. Official RAGFlow is UI+RAG; Naive parses text PDFs; OpenRouter is default chat+embed; host Ollama is fallback chat. No evidence → Spanish empty reply, not invention.
 
 ## Locked assumptions
 
-User-approved reboot; no question round. Spanish UI; citations; synthetic PDFs only (not BYMA). Official `infiniflow/ragflow` **v0.26.4** + Compose overlay (not submodule/from-scratch). Infinity (`DOC_ENGINE=infinity`), not Elasticsearch. PaddleOCR CPU: `PADDLEOCR_API_URL=http://paddleocr:8080/layout-parsing`; **PP-StructureV3** default (VL optional); no AI Studio token. Host Ollama `http://host.docker.internal:11434` (never `127.0.0.1`); e.g. `qwen2.5:1.5b` + `bge-m3`. Forbidden: `app.py`, `ledger_lens/`, Gradio, HF Space, `cloud.ragflow.io`. Host: x86_64, ≥16 GB RAM, Docker ≥24, Compose ≥v2.26.1, `vm.max_map_count` ≥ 262144.
+User-approved reboot; no question round. Spanish UI; citations; synthetic PDFs only (not BYMA). Official `infiniflow/ragflow` **v0.26.4** + Compose overlay (not submodule/from-scratch). Infinity (`DOC_ENGINE=infinity`), not Elasticsearch. Default PDF parser **Naive** (synthetic text PDFs; DeepDoc fallback for scans). PaddleOCR optional (Compose profile `paddleocr`; `PADDLEOCR_API_URL` commented unless enabled). Default chat+embed: OpenRouter (`nvidia/nemotron-3-nano-30b-a3b:free`, `nvidia/nemotron-3-embed-1b:free`). Fallback chat: host Ollama `http://host.docker.internal:11434` (never `127.0.0.1`), `qwen2.5:1.5b`. Forbidden: `app.py`, `ledger_lens/`, Gradio, HF Space, `cloud.ragflow.io`. Host: x86_64, ≥16 GB RAM, Docker ≥24, Compose ≥v2.26.1, `vm.max_map_count` ≥ 262144. Deferred work: `docs/agenda/`.
 
 ## Scope
 
@@ -28,9 +28,9 @@ PP-ChatOCRv4 as product; Excel/CSV; English UI; Gradio/HF/ZeroGPU/custom Python 
 
 ### New Capabilities
 
-- `document-parse`: Ingest synthetic PDFs via RAGFlow PaddleOCR client (PP-StructureV3 CPU; `/layout-parsing`).
+- `document-parse`: Ingest synthetic PDFs via RAGFlow **Naive** by default; DeepDoc fallback for scans; PaddleOCR optional (PP-StructureV3 CPU; `/layout-parsing`).
 - `knowledge-qa`: Spanish answers with citations; Empty response required; no-evidence reply instead of inventing.
-- `local-stack`: Official pin + overlay; Infinity; host Ollama via `host.docker.internal`; PaddleOCR Compose DNS.
+- `local-stack`: Official pin; Infinity; host Ollama chat via `host.docker.internal`; optional PaddleOCR Compose profile.
 - `portfolio-local`: Synthetic-only; Spanish UI; README for ≥16 GB x86.
 
 ### Modified Capabilities

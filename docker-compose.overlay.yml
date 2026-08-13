@@ -1,7 +1,12 @@
-# LedgerLens overlay: self-hosted PaddleOCR on the official RAGFlow network.
-# Do not publish host :8080 — RAGFlow reaches the parser via Compose DNS.
+# Optional PaddleOCR on the official RAGFlow network (profile: paddleocr).
+# Default demo parser in the UI is Naive (synthetic PDFs are text). DeepDoc stays in-image for scans.
+# Do not publish host :8080.
+#
+# Enable: COMPOSE_PROFILES=infinity,cpu,paddleocr
 services:
   paddleocr:
+    profiles:
+      - paddleocr
     build:
       context: ./docker/paddleocr
       dockerfile: Dockerfile
@@ -12,11 +17,6 @@ services:
     shm_size: "2gb"
     environment:
       PADDLE_PDX_MODEL_SOURCE: huggingface
-
-  ragflow-cpu:
-    depends_on:
-      paddleocr:
-        condition: service_started
 
 networks:
   ragflow:

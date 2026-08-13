@@ -2,18 +2,28 @@
 
 ## ADDED Requirements
 
-### Requirement: PaddleOCR remote layout parser
+### Requirement: Naive default PDF parser for synthetic fixtures
 
-Ingested PDFs MUST be parsed by self-hosted PaddleOCR `/layout-parsing` as RAGFlow's remote client. Default MUST be PP-StructureV3 CPU (VL MAY override). From RAGFlow, `PADDLEOCR_API_URL` MUST be `http://paddleocr:8080/layout-parsing`. No AI Studio token. Failed parse MUST be visible; MUST NOT invent text.
+Ingested demo PDFs MUST use RAGFlow **Naive** by default (skip OCR/TSR/DLR). Fixtures in `examples/synthetic/` MUST have an extractable text layer. Failed parse MUST be visible; MUST NOT invent text. DeepDoc MAY be selected if a PDF has no text layer. PaddleOCR MUST NOT be required for the default demo.
 
-#### Scenario: Successful parse via Compose DNS
+#### Scenario: Default ingest uses Naive
 
-- GIVEN PaddleOCR on the `ragflow` network and `.env.example` defaults
-- WHEN a synthetic PDF is ingested
-- THEN RAGFlow MUST call `http://paddleocr:8080/layout-parsing` with PP-StructureV3; URL MUST NOT be localhost or 127.0.0.1
+- GIVEN `.env.example` defaults (`COMPOSE_PROFILES=infinity,cpu`, PaddleOCR vars commented)
+- WHEN a synthetic PDF is ingested with the dataset PDF parser set to Naive
+- THEN RAGFlow MUST parse via Naive and MUST NOT require `paddleocr` or DeepDoc OCR
+
+### Requirement: Optional PaddleOCR remote layout parser
+
+PaddleOCR MAY be enabled as an alternate PDF parser: Compose profile `paddleocr`, `PADDLEOCR_API_URL=http://paddleocr:8080/layout-parsing`, algorithm PP-StructureV3 CPU (VL MAY override). No AI Studio token. From RAGFlow the URL MUST NOT be localhost or 127.0.0.1. Failed parse MUST be visible; MUST NOT invent text.
+
+#### Scenario: Optional parse via Compose DNS
+
+- GIVEN profile `paddleocr` is enabled and PaddleOCR env vars are uncommented
+- WHEN a synthetic PDF is ingested with dataset PDF parser = PaddleOCR
+- THEN RAGFlow MUST call `http://paddleocr:8080/layout-parsing` with PP-StructureV3
 
 #### Scenario: Parser unavailable
 
-- GIVEN PaddleOCR is down or `/layout-parsing` errors
+- GIVEN the selected parser (Naive, DeepDoc, or PaddleOCR) is down or errors
 - WHEN ingest is attempted
 - THEN ingest MUST fail visibly and MUST NOT fabricate text

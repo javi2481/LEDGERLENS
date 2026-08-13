@@ -10,4 +10,5 @@ vendor/ragflow-docker/.env
 vendor/ragflow-docker/ragflow-logs/
 ragflow-logs/
 *.log
+.verify-tmp/
 .DS_Store

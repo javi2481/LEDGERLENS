@@ -5,20 +5,20 @@ persistence: hybrid
 strict_tdd: false
 
 context: |
-  Product: LedgerLens — Spanish Q&A over financial PDFs with citations; empty/no-evidence reply instead of inventing.
-  Intended stack: RAGFlow (self-host frontend + RAG) + PaddleOCR (self-host parser API) + Ollama (local LLM).
-  Runtime: Docker Compose local. No Gradio, no Hugging Face Space, no custom Python RAG package, no app.py.
-  Repo state: empty except .gitignore; no package.json, go.mod, pyproject.toml, or test runner.
+  Product: LedgerLens — Spanish Q&A over synthetic financial PDFs with citations; empty/no-evidence reply instead of inventing.
+  Intended stack: RAGFlow v0.26.4 self-host (UI + RAG) + Infinity. Default PDF parser Naive (synthetic text PDFs); DeepDoc fallback for scans; optional PaddleOCR overlay. Default chat+embed: OpenRouter (Nemotron Nano / Nemotron Embed :free). Host Ollama qwen2.5:1.5b is fallback chat only (http://host.docker.internal:11434, never 127.0.0.1).
+  Runtime: Docker Compose local, x86_64, ≥16 GB. Host-level checks: ./scripts/check.sh. No Gradio, no Hugging Face Space, no custom Python RAG package, no app.py.
   Demo constraint: synthetic demos only (NOT real BYMA PDFs). Portfolio demo.
-  Persistence: hybrid (openspec files + Engram observations).
-  Testing: no runner detected; strict_tdd unavailable until a runner exists.
+  Persistence: hybrid (openspec files + Engram observations, project ledgerlens).
+  Docs: when a change modifies the product, README.md, docs/agenda/, research/README.md, .env.example comments, and the active OpenSpec change must be updated in the same work unit.
+  Testing: scripts/check.sh exists; E2E is manual on ≥16 GB. strict_tdd stays false.
 
 testing:
   strict_tdd: false
-  strict_tdd_reason: "No test runner exists in the empty repo (no package.json, pyproject.toml, go.mod, Makefile, or pytest.ini). Strict TDD stays disabled until a runner is added."
+  strict_tdd_reason: "Host-level scripts/check.sh is not a Strict TDD runner. E2E is manual RAGFlow UI on ≥16 GB. Strict TDD stays disabled."
   runner:
-    command: ""
-    framework: none
+    command: "./scripts/check.sh"
+    framework: bash
   layers:
     unit: false
     integration: false
@@ -44,7 +44,7 @@ rules:
   design:
     - Include sequence diagrams for complex flows
     - Document architecture decisions with rationale
-    - Compose RAGFlow + PaddleOCR + Ollama via Docker Compose; do not introduce app.py
+    - Compose RAGFlow + Infinity + OpenRouter chat/embed; Naive default parser; Ollama fallback; PaddleOCR optional; do not introduce app.py
   tasks:
     - Group by phase, use hierarchical numbering
     - Keep tasks completable in one session
@@ -53,9 +53,9 @@ rules:
       - Follow existing code patterns
       - Use synthetic demo PDFs only; do not ingest real BYMA documents
     tdd: false
-    test_command: ""
+    test_command: "./scripts/check.sh"
   verify:
-    test_command: ""
+    test_command: "./scripts/check.sh"
     build_command: ""
     coverage_threshold: 0
   archive:

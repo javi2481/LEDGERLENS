@@ -14,11 +14,11 @@ The demo MUST include 3–4 synthetic Spanish financial PDFs covering hechos rel
 
 ### Requirement: README startup and E2E checklist
 
-README MUST cover x86_64, ≥16 GB, Docker ≥24 (not ARM64), Spanish UI, Empty response, Show Quote, synthetic-only, `OLLAMA_HOST=0.0.0.0`, and E2E: ingest, in-corpus cited Q, out-of-corpus Empty response.
+README MUST cover x86_64, ≥16 GB, Docker ≥24 (not ARM64), Spanish UI, Empty response, Show Quote, synthetic-only, OpenRouter default chat+embed, Ollama fallback (`OLLAMA_HOST=0.0.0.0`), Naive default parser, and E2E: ingest, in-corpus cited Q, out-of-corpus Empty response.
 
 #### Scenario: Operator starts from README
 
-- GIVEN Docker and host Ollama meet prerequisites
+- GIVEN Docker and OpenRouter (Ollama optional fallback) meet prerequisites
 - WHEN the operator follows README
 - THEN they SHALL open RAGFlow UI on port 80
 

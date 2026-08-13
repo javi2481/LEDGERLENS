@@ -1,22 +1,23 @@
 # Design: LedgerLens RAGFlow local stack
 
-Vendor official RAGFlow `docker/` **v0.26.4** + overlay: CPU PaddleOCR on network `ragflow`, host Ollama for chat/embed. No `app.py`, `ledger_lens/`, Gradio, HF Space. Ignore leftover `openspec/changes/ledger-lens-mvp/`. Specs may land in parallel (`document-parse`, `knowledge-qa`, `local-stack`, `portfolio-local`).
+Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **Naive** (synthetic PDFs are text). DeepDoc in-image fallback for scans. Optional PaddleOCR overlay (Compose profile `paddleocr`). Default chat+embed: **OpenRouter** (Nemotron Nano / Nemotron Embed `:free`). Host Ollama is **fallback** chat only. Infinity for lower RAM. No `app.py`, `ledger_lens/`, Gradio, HF Space.
 
 ## Technical Approach
 
-`scripts/up.sh` starts official compose + overlay. RAGFlow UI **:80** is the product. Parser is remote PaddleOCR; LLM stays on the host. First-run KB/chat (Spanish, Empty response, Show Quote) lives in README, not code.
+`scripts/up.sh` starts official compose (overlay file loaded; `paddleocr` service idle unless profile enabled). RAGFlow UI **:80** is the product. First-run KB/chat (Spanish, Empty response, Show Quote, OpenRouter) lives in README, not code. Deferred items live in `docs/agenda/`. Host-level checks: `scripts/check.sh`.
 
 ## Architecture Decisions
 
 | Decision | Choice | Rejected | Why |
 |----------|--------|----------|-----|
-| Stack shape | Vendor `docker/` v0.26.4 + overlay | Submodule; from-scratch compose | Keeps MySQL/MinIO/Redis/Infinity, `extra_hosts`, CPU profile |
+| Stack shape | Vendor `docker/` v0.26.4 + optional overlay | Submodule; from-scratch compose | Keeps MySQL/MinIO/Redis/Infinity, `extra_hosts`, CPU profile |
 | Doc engine | `DOC_ENGINE=infinity` (`COMPOSE_PROFILES=infinity,cpu`) | Elasticsearch / OpenSearch | Lower RAM; official switch. Not Linux/arm64 |
-| OCR | CPU `PP-StructureV3` → `POST /layout-parsing` | VL default; AI Studio token | Fits 16 GB with RAGFlow + Ollama; VL optional via env |
-| OCR URL | `http://paddleocr:8080/layout-parsing` | FAQ `localhost:8080`; host-only OCR | `localhost` inside RAGFlow is the container |
-| LLM | Host Ollama `http://host.docker.internal:11434` | Compose `ollama` | Official local-LLM path; `OLLAMA_HOST=0.0.0.0` |
-| Embed | Ollama `bge-m3` | `tei-cpu` / Qwen3-Embedding | TEI RAM too high; RAGFlow image has no embeddings |
-| Chat model | `qwen2.5:1.5b` | 7B+ in-compose | RAM budget |
+| PDF parser | **Naive** default | DeepDoc as default; PaddleOCR as default | Synthetic PDFs have a text layer; Naive skips OCR ([Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser)). DeepDoc remains fallback for scans |
+| Optional OCR | Profile `paddleocr` + commented env | Always-on PaddleOCR | Keep PaddleOCR as an alternate parser without paying RAM at boot |
+| OCR URL (when enabled) | `http://paddleocr:8080/layout-parsing` | FAQ `localhost:8080` | `localhost` inside RAGFlow is the container |
+| LLM | OpenRouter chat default; Ollama fallback `http://host.docker.internal:11434` | Compose `ollama`; vLLM now | Cloud `:free` for demo quality; Ollama if OpenRouter is down |
+| Embed | OpenRouter `nvidia/nemotron-3-embed-1b:free` | Built-in BAAI/Youdao; TEI; Ollama `bge-m3` | v0.22+ image has no built-in embeddings; TEI is agenda |
+| Chat model | `nvidia/nemotron-3-nano-30b-a3b:free` | 7B+ in-compose; Ultra 550B | Nano is the `:free` default; larger Nemotron in `docs/agenda/` |
 
 ## Data Flow
 
@@ -25,15 +26,13 @@ sequenceDiagram
   actor User
   participant UI as RAGFlow :80
   participant RF as ragflow-cpu
-  participant PO as paddleocr:8080
   participant Inf as infinity
   participant Min as minio
   User->>UI: upload synthetic PDF
-  UI->>RF: parse (PaddleOCR)
-  RF->>PO: POST /layout-parsing
-  PO-->>RF: layout+text
+  UI->>RF: parse (Naive default)
+  RF->>RF: extract text layer (no OCR)
   RF->>Min: store
-  RF->>Inf: chunks+embed (Ollama bge-m3)
+  RF->>Inf: chunks+embed (OpenRouter)
   Inf-->>RF: indexed
   RF-->>UI: done
 ```
@@ -44,14 +43,20 @@ sequenceDiagram
   participant UI as RAGFlow :80
   participant RF as ragflow-cpu
   participant Inf as infinity
+  participant OR as OpenRouter
   participant Ol as host Ollama :11434
   User->>UI: Spanish question
   UI->>RF: chat
   RF->>Inf: retrieve
   alt hits
     Inf-->>RF: chunks
-    RF->>Ol: qwen2.5:1.5b
-    Ol-->>RF: answer
+    alt OpenRouter default
+      RF->>OR: nemotron-3-nano-30b-a3b:free
+      OR-->>RF: answer
+    else Ollama fallback
+      RF->>Ol: qwen2.5:1.5b
+      Ol-->>RF: answer
+    end
     RF-->>UI: Spanish + quotes
   else no hits
     RF-->>UI: Spanish Empty response
@@ -64,15 +69,17 @@ sequenceDiagram
 |------|--------|-------------|
 | `vendor/ragflow-docker/` | Create | Pin `infiniflow/ragflow` `docker/` v0.26.4 (Apache-2.0) |
 | `vendor/PIN.md` | Create | Tag, source URL, do-not-edit-upstream |
-| `docker-compose.overlay.yml` | Create | `paddleocr` on `ragflow`; do not publish 8080 |
+| `docker-compose.overlay.yml` | Create | Optional `paddleocr` (profile); do not publish 8080 |
 | `docker/paddleocr/Dockerfile` | Create | `paddlex --serve --pipeline PP-StructureV3 --device cpu --host 0.0.0.0 --port 8080` |
-| `.env.example` | Create | Infinity, `RAGFLOW_IMAGE=infiniflow/ragflow:v0.26.4`, Compose-DNS PaddleOCR URL/algorithm; no token |
-| `scripts/up.sh` | Create | Read-only `vm.max_map_count` ≥ 262144; sync `.env` → vendor; compose both files; `ollama pull qwen2.5:1.5b` + `bge-m3` |
+| `.env.example` | Create | Infinity, `RAGFLOW_IMAGE=infiniflow/ragflow:v0.26.4`; PaddleOCR vars commented |
+| `scripts/up.sh` | Create | Read-only `vm.max_map_count` ≥ 262144; sync `.env` → vendor; compose both files; optional `ollama pull qwen2.5:1.5b` fallback |
+| `scripts/check.sh` | Create | File contracts, PDF fixtures, host probe; optional OpenRouter smoke |
+| `docs/agenda/` | Create | Deferred: TEI, MinerU/Docling, vLLM, larger Nemotron, E2E 16 GB |
 | `README.md` | Create | x86_64, ≥16 GB, Docker ≥24, Compose ≥v2.26.1; `OLLAMA_HOST=0.0.0.0`; Empty response + Show Quote; synthetic-only |
 | `examples/synthetic/*.pdf` | Create | 3–4 Spanish fake financial PDFs |
 | `.gitignore` | Modify | Keep `.env`; ignore vendor `.env` and `ragflow-logs/` |
 
-Do **not** create: `app.py`, `ledger_lens/`, Gradio, HF Space, Compose Ollama, TEI, Elasticsearch.
+Do **not** create: `app.py`, `ledger_lens/`, Gradio, HF Space, Compose Ollama, TEI as default, Elasticsearch.
 
 ## Interfaces / Contracts
 
@@ -87,18 +94,18 @@ Vendor relative paths stay valid. Overlay `build: ./docker/paddleocr` is repo-ro
 | Contract | Value |
 |----------|--------|
 | UI | `http://localhost` (`SVR_WEB_HTTP_PORT=80`) |
-| OCR | DNS `paddleocr`; `POST /layout-parsing`; no access token |
-| LLM | `http://host.docker.internal:11434` (never container `127.0.0.1`) |
+| OCR | Naive default (text PDFs); DeepDoc fallback; optional DNS `paddleocr` + `POST /layout-parsing` |
+| LLM | OpenRouter default; Ollama fallback `http://host.docker.internal:11434` (never container `127.0.0.1`) |
 | Empty response | Non-blank Spanish no-evidence line (copy owned by spec) |
 
 ## Testing Strategy
 
-No runner (`strict_tdd: false`). Smoke only on ≥16 GB x86 + Docker 24+ (this host ~7.4 GB, no Docker).
+No runner (`strict_tdd: false`). Smoke only on ≥16 GB x86 + Docker 24+ Compose v2 (this host ~7.4 GB; Docker CLI installed, no `docker` group, no Compose plugin).
 
 | Layer | What | Approach |
 |-------|------|----------|
 | Unit | N/A | No app package |
-| Integration | UI :80, PaddleOCR, Ollama tags | `curl` / `compose ps` / `ollama list` |
+| Integration | UI :80; OpenRouter in UI; Ollama fallback tag | `scripts/check.sh`; `curl` / `compose ps` on ≥16 GB |
 | E2E | Parse PDFs; cite; no-evidence | Manual per README |
 
 ## Threat Matrix

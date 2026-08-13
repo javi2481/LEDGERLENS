@@ -2,25 +2,31 @@
 
 ## ADDED Requirements
 
-### Requirement: Official pin overlay Infinity
+### Requirement: Official pin Infinity Naive default
 
-Runtime MUST be Docker Compose with official `infiniflow/ragflow` **v0.26.4** plus a PaddleOCR overlay on `ragflow`. Engine MUST be Infinity (`DOC_ENGINE=infinity`). MUST NOT include `app.py`, `ledger_lens/`, Gradio, HF Space, or `cloud.ragflow.io`.
+Runtime MUST be Docker Compose with official `infiniflow/ragflow` **v0.26.4**. Engine MUST be Infinity (`DOC_ENGINE=infinity`). Default PDF parser MUST be Naive for synthetic text PDFs. The PaddleOCR overlay MUST be optional (Compose profile `paddleocr`). MUST NOT include `app.py`, `ledger_lens/`, Gradio, HF Space, or `cloud.ragflow.io`.
 
 #### Scenario: Pinned stack starts without forbidden apps
 
 - GIVEN Docker ≥24, Compose ≥v2.26.1, x86_64, ≥16 GB RAM
-- WHEN `scripts/up.sh` runs
-- THEN UI SHALL be on port 80 with tag v0.26.4; `app.py`/Gradio/`ledger_lens/` MUST NOT exist
+- WHEN `scripts/up.sh` runs with default `.env`
+- THEN UI SHALL be on port 80 with tag v0.26.4; `paddleocr` SHALL NOT be required; `app.py`/Gradio/`ledger_lens/` MUST NOT exist
 
-### Requirement: Host Ollama env and up script
+### Requirement: OpenRouter chat default, Ollama fallback, cloud embeddings
 
-RAGFlow MUST use host Ollama at `http://host.docker.internal:11434` (not `127.0.0.1`) for chat/embeddings (`qwen2.5:1.5b`, `bge-m3`). `.env.example` MUST set Infinity, pin, PaddleOCR URL/algorithm, no token. `scripts/up.sh` MUST check `vm.max_map_count` ≥ 262144, start compose+overlay, and pull Ollama models.
+RAGFlow MUST use **OpenRouter** as the default chat (`nvidia/nemotron-3-nano-30b-a3b:free`) and embedding (`nvidia/nemotron-3-embed-1b:free`) via Model providers (the v0.22+ image has no built-in BAAI/Youdao). Host Ollama at `http://host.docker.internal:11434` (not `127.0.0.1`) MUST remain the **fallback** chat (`qwen2.5:1.5b`). `.env.example` MUST set Infinity and the image pin; PaddleOCR URL/algorithm MUST be commented unless the optional profile is used. `scripts/up.sh` MUST check `vm.max_map_count` ≥ 262144, start compose, and MAY pull the Ollama fallback model. RAGFlow MUST NOT auto-read `OPENROUTER_API_KEY`; the operator MUST paste it in the UI.
 
-#### Scenario: Ollama via host-gateway and env start
+#### Scenario: OpenRouter is default chat
+
+- GIVEN OpenRouter is configured in Model providers with the Nano `:free` chat model
+- WHEN the operator follows README first-run
+- THEN System Model Settings chat default MUST be OpenRouter, not Ollama
+
+#### Scenario: Ollama fallback via host-gateway
 
 - GIVEN host Ollama on `0.0.0.0:11434` and `.env` from `.env.example`
-- WHEN `scripts/up.sh` runs and RAGFlow uses LLM/embedding
-- THEN requests MUST use `http://host.docker.internal:11434`; overlay SHALL be up
+- WHEN OpenRouter is unavailable and RAGFlow uses the fallback chat model
+- THEN requests MUST use `http://host.docker.internal:11434`
 
 #### Scenario: Low vm.max_map_count fails fast
 

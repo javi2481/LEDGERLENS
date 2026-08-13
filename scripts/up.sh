@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Start LedgerLens: official RAGFlow v0.26.4 + PaddleOCR overlay + host Ollama pulls.
+# Start LedgerLens: official RAGFlow v0.26.4 (Infinity). UI parser default: Naive.
+# Chat default is OpenRouter (configure in the UI). Host Ollama is fallback.
+# Optional: COMPOSE_PROFILES=infinity,cpu,paddleocr to also start PaddleOCR.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -52,7 +54,7 @@ fi
 mkdir -p "$ROOT/vendor/ragflow-docker"
 cp "$ENV_FILE" "$ROOT/vendor/ragflow-docker/.env"
 
-echo "starting RAGFlow v0.26.4 + PaddleOCR overlay..."
+echo "starting RAGFlow v0.26.4 (Infinity; set dataset PDF parser to Naive in the UI)..."
 docker compose --env-file "$ENV_FILE" \
   -f "$VENDOR_COMPOSE" \
   -f "$OVERLAY" \
@@ -60,20 +62,20 @@ docker compose --env-file "$ENV_FILE" \
 
 echo
 echo "RAGFlow UI: http://localhost (port 80)"
-echo "PaddleOCR (Compose DNS only): http://paddleocr:8080/layout-parsing"
-echo "Ollama from RAGFlow: http://host.docker.internal:11434  (never 127.0.0.1)"
+echo "PDF parser default for this demo: Naive (text PDFs). DeepDoc if scanned. PaddleOCR: profile paddleocr."
+echo "Chat default: OpenRouter in Model providers (paste OPENROUTER_API_KEY in the UI)."
+echo "Ollama fallback from RAGFlow: http://host.docker.internal:11434  (never 127.0.0.1)"
+echo "Embeddings: OpenRouter nvidia/nemotron-3-embed-1b:free (image has none built-in since v0.22)."
 echo
 
 if command -v ollama >/dev/null 2>&1; then
   if [[ -z "${OLLAMA_HOST:-}" ]]; then
-    echo "hint: export OLLAMA_HOST=0.0.0.0 so containers can reach Ollama"
+    echo "hint: export OLLAMA_HOST=0.0.0.0 so containers can reach Ollama (fallback only)"
   fi
-  echo "pulling Ollama models qwen2.5:1.5b and bge-m3..."
+  echo "pulling Ollama fallback chat model qwen2.5:1.5b..."
   ollama pull qwen2.5:1.5b
-  ollama pull bge-m3
 else
-  echo "warning: ollama not found on PATH. Install Ollama, set OLLAMA_HOST=0.0.0.0, then:"
-  echo "  ollama pull qwen2.5:1.5b"
-  echo "  ollama pull bge-m3"
-  echo "Q&A is not ready until those models exist."
+  echo "warning: ollama not found on PATH. Fallback chat unavailable until:"
+  echo "  export OLLAMA_HOST=0.0.0.0 && ollama pull qwen2.5:1.5b"
+  echo "Default chat is OpenRouter; the demo can run without Ollama."
 fi

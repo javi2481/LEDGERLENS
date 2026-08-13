@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# Start LedgerLens: official RAGFlow v0.26.4 + PaddleOCR overlay + host Ollama pulls.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+MIN_MAP_COUNT=262144
+VENDOR_COMPOSE="$ROOT/vendor/ragflow-docker/docker-compose.yml"
+OVERLAY="$ROOT/docker-compose.overlay.yml"
+ENV_FILE="$ROOT/.env"
+ENV_EXAMPLE="$ROOT/.env.example"
+
+fail() {
+  echo "error: $*" >&2
+  exit 1
+}
+
+if [[ ! -f "$VENDOR_COMPOSE" ]]; then
+  fail "missing $VENDOR_COMPOSE (vendor pin v0.26.4)"
+fi
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  if [[ -f "$ENV_EXAMPLE" ]]; then
+    cp "$ENV_EXAMPLE" "$ENV_FILE"
+    echo "created .env from .env.example"
+  else
+    fail "missing .env and .env.example"
+  fi
+fi
+
+if ! command -v docker >/dev/null 2>&1; then
+  fail "Docker is required (Docker ≥24, Compose ≥v2.26.1). Demo not ready."
+fi
+
+if ! docker compose version >/dev/null 2>&1; then
+  fail "Docker Compose v2 is required. Demo not ready."
+fi
+
+if [[ ! -r /proc/sys/vm/max_map_count ]]; then
+  fail "cannot read vm.max_map_count. Demo not ready."
+fi
+
+map_count="$(tr -d '[:space:]' < /proc/sys/vm/max_map_count)"
+if [[ "$map_count" -lt "$MIN_MAP_COUNT" ]]; then
+  echo "error: vm.max_map_count is $map_count (need ≥ $MIN_MAP_COUNT)." >&2
+  echo "Set it as root (documented in README): sysctl -w vm.max_map_count=$MIN_MAP_COUNT" >&2
+  echo "Demo not ready." >&2
+  exit 1
+fi
+
+mkdir -p "$ROOT/vendor/ragflow-docker"
+cp "$ENV_FILE" "$ROOT/vendor/ragflow-docker/.env"
+
+echo "starting RAGFlow v0.26.4 + PaddleOCR overlay..."
+docker compose --env-file "$ENV_FILE" \
+  -f "$VENDOR_COMPOSE" \
+  -f "$OVERLAY" \
+  up -d
+
+echo
+echo "RAGFlow UI: http://localhost (port 80)"
+echo "PaddleOCR (Compose DNS only): http://paddleocr:8080/layout-parsing"
+echo "Ollama from RAGFlow: http://host.docker.internal:11434  (never 127.0.0.1)"
+echo
+
+if command -v ollama >/dev/null 2>&1; then
+  if [[ -z "${OLLAMA_HOST:-}" ]]; then
+    echo "hint: export OLLAMA_HOST=0.0.0.0 so containers can reach Ollama"
+  fi
+  echo "pulling Ollama models qwen2.5:1.5b and bge-m3..."
+  ollama pull qwen2.5:1.5b
+  ollama pull bge-m3
+else
+  echo "warning: ollama not found on PATH. Install Ollama, set OLLAMA_HOST=0.0.0.0, then:"
+  echo "  ollama pull qwen2.5:1.5b"
+  echo "  ollama pull bge-m3"
+  echo "Q&A is not ready until those models exist."
+fi

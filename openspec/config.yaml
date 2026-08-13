@@ -1,0 +1,62 @@
+# openspec/config.yaml
+schema: spec-driven
+project: ledgerlens
+persistence: hybrid
+strict_tdd: false
+
+context: |
+  Product: LedgerLens — Spanish Q&A over financial PDFs with citations; empty/no-evidence reply instead of inventing.
+  Intended stack: RAGFlow (self-host frontend + RAG) + PaddleOCR (self-host parser API) + Ollama (local LLM).
+  Runtime: Docker Compose local. No Gradio, no Hugging Face Space, no custom Python RAG package, no app.py.
+  Repo state: empty except .gitignore; no package.json, go.mod, pyproject.toml, or test runner.
+  Demo constraint: synthetic demos only (NOT real BYMA PDFs). Portfolio demo.
+  Persistence: hybrid (openspec files + Engram observations).
+  Testing: no runner detected; strict_tdd unavailable until a runner exists.
+
+testing:
+  strict_tdd: false
+  strict_tdd_reason: "No test runner exists in the empty repo (no package.json, pyproject.toml, go.mod, Makefile, or pytest.ini). Strict TDD stays disabled until a runner is added."
+  runner:
+    command: ""
+    framework: none
+  layers:
+    unit: false
+    integration: false
+    e2e: false
+  coverage:
+    available: false
+    command: ""
+  quality:
+    linter: ""
+    type_checker: ""
+    formatter: ""
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Do not propose Gradio, Hugging Face Spaces, ZeroGPU, or a custom Python RAG package
+    - Keep the product as a portfolio demo with synthetic documents only
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - Answers MUST be in Spanish and MUST cite retrieved evidence
+    - When evidence is missing, the system MUST return an empty/no-evidence reply instead of inventing
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+    - Compose RAGFlow + PaddleOCR + Ollama via Docker Compose; do not introduce app.py
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    guidelines:
+      - Follow existing code patterns
+      - Use synthetic demo PDFs only; do not ingest real BYMA documents
+    tdd: false
+    test_command: ""
+  verify:
+    test_command: ""
+    build_command: ""
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas

@@ -2,15 +2,15 @@
 
 ## ADDED Requirements
 
-### Requirement: Naive default PDF parser for synthetic fixtures
+### Requirement: Docling default PDF parser for BYMA filings
 
-Ingested demo PDFs MUST use RAGFlow **Naive** by default (skip OCR/TSR/DLR). Fixtures in `examples/synthetic/` MUST have an extractable text layer. Failed parse MUST be visible; MUST NOT invent text. DeepDoc MAY be selected if a PDF has no text layer. PaddleOCR MUST NOT be required for the default demo.
+Ingested demo PDFs MUST use RAGFlow **Docling** (classic layout + TableFormer via sidecar `DOCLING_SERVER_URL`). Corpus lives in `docs/archivos_muestra/`. Failed parse MUST be visible; MUST NOT invent text. Naive MAY be selected if Docling Serve is down. DeepDoc MAY be selected if a PDF has no text layer. PaddleOCR MUST NOT be required for the default demo. Granite-Docling VLM MUST NOT be the default parser.
 
-#### Scenario: Default ingest uses Naive
+#### Scenario: Default ingest uses Docling
 
-- GIVEN `.env.example` defaults (`COMPOSE_PROFILES=infinity,cpu`, PaddleOCR vars commented)
-- WHEN a synthetic PDF is ingested with the dataset PDF parser set to Naive
-- THEN RAGFlow MUST parse via Naive and MUST NOT require `paddleocr` or DeepDoc OCR
+- GIVEN `.env.example` defaults (`COMPOSE_PROFILES=infinity,cpu`, `DOCLING_SERVER_URL=http://docling-serve:5001`, `USE_DOCLING=false`, PaddleOCR vars commented)
+- WHEN a BYMA PDF is ingested with the dataset PDF parser set to Docling
+- THEN RAGFlow MUST call Docling Serve and MUST NOT require `paddleocr`, DeepDoc OCR, or in-process `USE_DOCLING=true`
 
 ### Requirement: Optional PaddleOCR remote layout parser
 
@@ -24,6 +24,6 @@ PaddleOCR MAY be enabled as an alternate PDF parser: Compose profile `paddleocr`
 
 #### Scenario: Parser unavailable
 
-- GIVEN the selected parser (Naive, DeepDoc, or PaddleOCR) is down or errors
+- GIVEN the selected parser (Docling, Naive, DeepDoc, or PaddleOCR) is down or errors
 - WHEN ingest is attempted
 - THEN ingest MUST fail visibly and MUST NOT fabricate text

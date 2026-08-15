@@ -1,11 +1,18 @@
-# Muestras BYMA (E2E local)
+# Archivos de muestra (BYMA)
 
-PDFs reales de BYMA 1T26 para probar RAGFlow en esta PC. No son los fixtures sintéticos de `examples/synthetic/` (Acme Norte).
+PDFs reales de BYMA para el demo local. Dataset UI: `demo_2` (limpio, Docling Serve). Chat: OpenRouter Nano. Embed: Voyage `voyage-finance-2`. Rerank: `rerank-2.5-lite`.
 
-| Archivo | Qué es |
-|---------|--------|
-| `BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf` | Comunicado 8 de mayo de 2026 |
-| `BYMA_-_EEFF_31-03-2026_VF.pdf` | EEFF condensados al 31-03-2026 (~80 págs.; embed Gemini free puede dar 429 RPM) |
-| `Presentación_de_resultados_BYMA-1T26.pdf` | Slides 1T26 |
+Orden: **configurar el dataset** (Docling, KG/RAPTOR off) → **subir** → **Parse** de a uno. Si subís antes de configurar, cada archivo queda en DeepDOC y hay que borrar y volver a cargar.
 
-Dataset UI usado: `demo_1`. Parser **Naive**. Chat: OpenRouter `nvidia/nemotron-3-nano-30b-a3b:free`. Embed: Gemini `gemini-embedding-001`.
+No actives Knowledge graph ni RAPTOR: no son parsers y gastan tokens del chat.
+
+## Orden de parseo
+
+1. Comunicados y transcripción (pocas páginas).
+2. Presentaciones.
+3. EEFF (tablas; tarda en CPU).
+4. Memoria 2025 (190 páginas; al final).
+
+Los archivos ya parseados con Naive o DeepDoc hay que **borrar y volver a subir** después de poner Docling en Configuración. Cambiar el dropdown del dataset no reescribe el parser de cada file ni los chunks.
+
+Un clone de GitHub no trae el índice. El parseo previo vive en volúmenes Docker de esta máquina.

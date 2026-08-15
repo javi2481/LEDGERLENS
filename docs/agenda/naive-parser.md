@@ -1,31 +1,29 @@
-# Parser Naive (aplicado)
+# Parser Naive (fallback)
 
-No es pesado: **salta** OCR/TSR/DLR. Más liviano y más rápido que DeepDoc. Los PDFs de `examples/synthetic/` tienen capa de texto (`pdftotext` los lee enteros). [Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser).
+No es pesado: **salta** OCR/TSR/DLR. Más liviano y más rápido que DeepDoc. Los PDFs con capa de texto (`pdftotext`) alcanzan. [Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser).
 
-Default del demo: **Naive**. DeepDoc / PaddleOCR solo si el PDF es escaneo o tabla-imagen.
+Default del demo: **Docling** clásico ([nota](docling-serve.md)). Naive si el sidecar no está. DeepDoc si el PDF es escaneo.
 
 ## Quick path (UI)
 
-1. Dataset LedgerLens → PDF parser = **Naive**.
-2. Subir los cuatro PDFs de `examples/synthetic/`.
-3. Checklist E2E del README.
+1. Dataset → PDF parser = **Naive** solo si Docling Serve no corre.
+2. Preferir Docling para EEFF / tablas.
 
 ## Details
 
 | Tema | Decisión |
 |------|----------|
-| Default | Naive |
-| Fallback | DeepDoc (en la imagen) |
-| Extra | PaddleOCR (profile `paddleocr`) |
+| Default | Docling Serve CPU |
+| Fallback | Naive (texto); DeepDoc (escaneo) |
+| Extra | PaddleOCR (profile), no MinerU |
 | Dump | `research/extract-ragflow-select-pdf-parser.json` |
 
 ## Checklist
 
-- [x] `pdftotext` extrae los hechos (`./scripts/check.sh`)
-- [x] README first-run = Naive
-- [ ] E2E in-corpus en host ≥16 GB (Rosario / 18.400)
-- [ ] Empty response sin evidencia
+- [x] `pdftotext` / `./scripts/check.sh`
+- [x] E2E in-corpus Windows 32 GB con Naive (Q3 consolidado 21.262.335, comunicado 8 may 2026) — histórico
+- [x] Empty response / Show Quote (KB vacía vs evidencia)
 
 ## Next step
 
-El ingest Naive se verifica en [e2e-16gb.md](e2e-16gb.md), no en esta PC.
+No reabrir Naive como default. Re-parse con Docling.

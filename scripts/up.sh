@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start LedgerLens: official RAGFlow v0.26.4 (Infinity). UI parser default: Naive.
+# Start LedgerLens: official RAGFlow v0.26.4 (Infinity). UI parser default: Docling (classic).
 # Chat default is OpenRouter (configure in the UI). Host Ollama is fallback.
 # Optional: COMPOSE_PROFILES=infinity,cpu,paddleocr to also start PaddleOCR.
 set -euo pipefail
@@ -54,7 +54,7 @@ fi
 mkdir -p "$ROOT/vendor/ragflow-docker"
 cp "$ENV_FILE" "$ROOT/vendor/ragflow-docker/.env"
 
-echo "starting RAGFlow v0.26.4 (Infinity; set dataset PDF parser to Naive in the UI)..."
+echo "starting RAGFlow v0.26.4 (Infinity; set dataset PDF parser to Docling in the UI)..."
 docker compose --env-file "$ENV_FILE" \
   -f "$VENDOR_COMPOSE" \
   -f "$OVERLAY" \
@@ -62,7 +62,7 @@ docker compose --env-file "$ENV_FILE" \
 
 echo
 echo "RAGFlow UI: http://localhost (port 80)"
-echo "PDF parser default for this demo: Naive (text PDFs). DeepDoc if scanned. PaddleOCR: profile paddleocr."
+echo "PDF parser default for this demo: Docling classic (sidecar :5001). Naive/DeepDoc if Docling is down. PaddleOCR: profile paddleocr."
 echo "Chat default: OpenRouter in Model providers (paste OPENROUTER_API_KEY in the UI)."
 echo "Ollama fallback from RAGFlow: http://host.docker.internal:11434  (never 127.0.0.1)"
 echo "Embeddings: OpenRouter nvidia/nemotron-3-embed-1b:free (image has none built-in since v0.22)."

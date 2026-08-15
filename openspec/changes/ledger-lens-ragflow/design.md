@@ -1,6 +1,6 @@
 # Design: LedgerLens RAGFlow local stack
 
-Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **Naive** (synthetic PDFs are text). DeepDoc in-image fallback for scans. Optional PaddleOCR overlay (Compose profile `paddleocr`). Default chat+embed: **OpenRouter** (Nemotron Nano / Nemotron Embed `:free`). Host Ollama is **fallback** chat only. Infinity for lower RAM. No `app.py`, `ledger_lens/`, Gradio, HF Space.
+Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **Docling** classic (sidecar CPU). Naive/DeepDoc fallback. Optional PaddleOCR overlay (Compose profile `paddleocr`). Default chat: **OpenRouter** (Nemotron Nano `:free`). Embed: **Voyage**. Host Ollama is **fallback** chat only. Infinity for lower RAM. No `app.py`, `ledger_lens/`, Gradio, HF Space.
 
 ## Technical Approach
 
@@ -12,7 +12,7 @@ Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **Naive** (synthet
 |----------|--------|----------|-----|
 | Stack shape | Vendor `docker/` v0.26.4 + optional overlay | Submodule; from-scratch compose | Keeps MySQL/MinIO/Redis/Infinity, `extra_hosts`, CPU profile |
 | Doc engine | `DOC_ENGINE=infinity` (`COMPOSE_PROFILES=infinity,cpu`) | Elasticsearch / OpenSearch | Lower RAM; official switch. Not Linux/arm64 |
-| PDF parser | **Naive** default | DeepDoc as default; PaddleOCR as default | Synthetic PDFs have a text layer; Naive skips OCR ([Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser)). DeepDoc remains fallback for scans |
+| PDF parser | **Docling** classic sidecar | Naive as default; PaddleOCR as default; Granite-Docling VLM | EEFF BYMA need layout + tables ([Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser)). Naive/DeepDoc remain fallback. VLM needs NVIDIA |
 | Optional OCR | Profile `paddleocr` + commented env | Always-on PaddleOCR | Keep PaddleOCR as an alternate parser without paying RAM at boot |
 | OCR URL (when enabled) | `http://paddleocr:8080/layout-parsing` | FAQ `localhost:8080` | `localhost` inside RAGFlow is the container |
 | LLM | OpenRouter chat default; Ollama fallback `http://host.docker.internal:11434` | Compose `ollama`; vLLM now | Cloud `:free` for demo quality; Ollama if OpenRouter is down |
@@ -26,13 +26,15 @@ sequenceDiagram
   actor User
   participant UI as RAGFlow :80
   participant RF as ragflow-cpu
+  participant DS as docling-serve :5001
   participant Inf as infinity
   participant Min as minio
-  User->>UI: upload synthetic PDF
-  UI->>RF: parse (Naive default)
-  RF->>RF: extract text layer (no OCR)
+  User->>UI: upload BYMA PDF
+  UI->>RF: parse (Docling default)
+  RF->>DS: convert /v1/convert/source
+  DS-->>RF: markdown + layout
   RF->>Min: store
-  RF->>Inf: chunks+embed (OpenRouter)
+  RF->>Inf: chunks+embed (Voyage)
   Inf-->>RF: indexed
   RF-->>UI: done
 ```
@@ -94,7 +96,7 @@ Vendor relative paths stay valid. Overlay `build: ./docker/paddleocr` is repo-ro
 | Contract | Value |
 |----------|--------|
 | UI | `http://localhost` (`SVR_WEB_HTTP_PORT=80`) |
-| OCR | Naive default (text PDFs); DeepDoc fallback; optional DNS `paddleocr` + `POST /layout-parsing` |
+| OCR | Docling classic default (sidecar :5001); Naive/DeepDoc fallback; optional DNS `paddleocr` + `POST /layout-parsing` |
 | LLM | OpenRouter default; Ollama fallback `http://host.docker.internal:11434` (never container `127.0.0.1`) |
 | Empty response | Non-blank Spanish no-evidence line (copy owned by spec) |
 

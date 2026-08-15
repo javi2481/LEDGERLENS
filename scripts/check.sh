@@ -18,6 +18,9 @@ grep -q 'v0.26.4' vendor/PIN.md || fail "vendor/PIN.md must pin v0.26.4"
 [[ -f vendor/ragflow-docker/docker-compose.yml ]] || fail "missing vendor compose"
 [[ -f docker-compose.overlay.yml ]] || fail "missing docker-compose.overlay.yml"
 grep -q 'profiles:' docker-compose.overlay.yml || fail "overlay must gate paddleocr on a profile"
+grep -q 'docling-serve:' docker-compose.overlay.yml || fail "overlay must define docling-serve sidecar"
+grep -q '^DOCLING_SERVER_URL=http://docling-serve:5001' .env.example || fail ".env.example must set DOCLING_SERVER_URL to Compose DNS"
+grep -q '^USE_DOCLING=false' .env.example || fail ".env.example must keep USE_DOCLING=false (sidecar, not in-process)"
 [[ -f scripts/up.sh ]] || fail "missing scripts/up.sh"
 bash -n scripts/up.sh || fail "scripts/up.sh failed bash -n"
 [[ -f .env.example ]] || fail "missing .env.example"
@@ -31,23 +34,25 @@ fi
 git check-ignore -q .env || fail ".env must be gitignored"
 pass "file contracts"
 
-# --- synthetic PDFs ---
+# --- sample PDFs (BYMA filings for the live demo) ---
 command -v pdftotext >/dev/null 2>&1 || fail "pdftotext required (poppler-utils) for fixture checks"
-mapfile -t pdfs < <(ls examples/synthetic/*.pdf 2>/dev/null || true)
-[[ ${#pdfs[@]} -eq 4 ]] || fail "expected 4 PDFs in examples/synthetic/, got ${#pdfs[@]}"
+mapfile -t pdfs < <(ls docs/archivos_muestra/*.pdf 2>/dev/null || true)
+[[ ${#pdfs[@]} -ge 6 ]] || fail "expected ≥6 PDFs in docs/archivos_muestra/, got ${#pdfs[@]}"
 
 expect_in() {
   local file="$1" needle="$2"
   pdftotext -layout "$file" - | grep -Fq "$needle" || fail "$file missing: $needle"
 }
 
-expect_in examples/synthetic/hechos-relevantes-acme-norte.pdf "No es un filing de BYMA"
-expect_in examples/synthetic/hechos-relevantes-acme-norte.pdf "ARS 1.250 millones"
-expect_in examples/synthetic/hechos-relevantes-acme-norte.pdf "12 de marzo de 2025"
-expect_in examples/synthetic/informe-operativo-acme-norte-q1-2025.pdf "18.400"
-expect_in examples/synthetic/estados-financieros-acme-norte-2024.pdf "ARS 4.800 millones"
-expect_in examples/synthetic/memoria-acme-norte-2024.pdf "120 empleados"
-pass "synthetic PDF fixtures"
+comunicado=""
+for f in docs/archivos_muestra/*.pdf; do
+  case "$f" in
+    *Comunicado*1T26*) comunicado="$f" ;;
+  esac
+done
+[[ -n "$comunicado" ]] || fail "missing BYMA comunicado 1T26 in docs/archivos_muestra/"
+expect_in "$comunicado" "BYMA"
+pass "BYMA sample PDFs"
 
 # --- host probe (informational; does not fail) ---
 arch="$(uname -m)"
@@ -130,4 +135,4 @@ else
 fi
 
 echo
-echo "Done. Compose/E2E remains on a ≥16 GB host — docs/agenda/e2e-16gb.md"
+echo "Done. Compose/E2E remains on a ≥16 GB host."

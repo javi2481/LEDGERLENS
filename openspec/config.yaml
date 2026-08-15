@@ -6,7 +6,7 @@ strict_tdd: false
 
 context: |
   Product: LedgerLens — Spanish Q&A over synthetic financial PDFs with citations; empty/no-evidence reply instead of inventing.
-  Intended stack: RAGFlow v0.26.4 self-host (UI + RAG) + Infinity. Default PDF parser Naive (synthetic text PDFs); DeepDoc fallback for scans; optional PaddleOCR overlay. Default chat+embed: OpenRouter (Nemotron Nano / Nemotron Embed :free). Host Ollama qwen2.5:1.5b is fallback chat only (http://host.docker.internal:11434, never 127.0.0.1).
+  Intended stack: RAGFlow v0.26.4 self-host (UI + RAG) + Infinity. Default PDF parser Docling classic (sidecar DOCLING_SERVER_URL); Naive/DeepDoc fallback; optional PaddleOCR overlay. Default chat: OpenRouter (Nemotron Nano :free). Embed: Voyage. Host Ollama qwen2.5:1.5b is fallback chat only (http://host.docker.internal:11434, never 127.0.0.1).
   Runtime: Docker Compose local, x86_64, ≥16 GB. Host-level checks: ./scripts/check.sh. No Gradio, no Hugging Face Space, no custom Python RAG package, no app.py.
   Demo constraint: synthetic demos only (NOT real BYMA PDFs). Portfolio demo.
   Persistence: hybrid (openspec files + Engram observations, project ledgerlens).
@@ -35,7 +35,7 @@ rules:
   proposal:
     - Include rollback plan for risky changes
     - Do not propose Gradio, Hugging Face Spaces, ZeroGPU, or a custom Python RAG package
-    - Keep the product as a portfolio demo with synthetic documents only
+    - Keep the product as a portfolio demo with BYMA sample documents
   specs:
     - Use Given/When/Then for scenarios
     - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
@@ -44,14 +44,14 @@ rules:
   design:
     - Include sequence diagrams for complex flows
     - Document architecture decisions with rationale
-    - Compose RAGFlow + Infinity + OpenRouter chat/embed; Naive default parser; Ollama fallback; PaddleOCR optional; do not introduce app.py
+    - Compose RAGFlow + Infinity + OpenRouter chat + Voyage embed; Docling classic default parser; Ollama fallback; PaddleOCR optional; do not introduce app.py
   tasks:
     - Group by phase, use hierarchical numbering
     - Keep tasks completable in one session
   apply:
     guidelines:
       - Follow existing code patterns
-      - Use synthetic demo PDFs only; do not ingest real BYMA documents
+      - Use BYMA sample PDFs in docs/archivos_muestra/; do not invent filings
     tdd: false
     test_command: "./scripts/check.sh"
   verify:

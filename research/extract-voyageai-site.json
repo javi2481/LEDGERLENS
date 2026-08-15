@@ -1,0 +1,23 @@
+{
+  "extract_id": "extract_35469bb77d3cefbe843d5ee4897485e4",
+  "session_id": "session_35469bb77d3cefbe843d5ee4897485e4",
+  "status": "ok",
+  "results": [
+    {
+      "url": "https://www.voyageai.com/",
+      "title": "Voyage AI | Home",
+      "publish_date": null,
+      "excerpts": [
+        "Voyage AI\n* [Docs](http://docs.voyageai.com/)\n* [Blog](http://blog.voyageai.com/)\n* Company\nMenu\n  + [Docs](http://docs.voyageai.com/)\n    + [Blog](http://blog.voyageai.com/)\n    + Company\n\n# Embeddings and Rerankers Drive RAG Retrieval and Response Quality\n* Unstructured data\n* Embedding model\n* Vector DB\n* Reranker\n* Relevant files\n* LLM\n* Factual responses with lower costs\n\n## A Spectrum of Models for Your Target Use Cases\n* [](https://docs.voyageai.com/docs/embeddings)\nGeneral-purpose models\nReady for any purpose and language out-of-the-box.\n[Get started](https://docs.voyageai.com/docs/embeddings)\n* [](https://docs.voyageai.com/docs/embeddings)\nDomain-specific models\nHighly optimized for industry-specific data, like finance, legal, and code.\n[Get started](https://docs.voyageai.com/docs/embeddings)\n* [](mailto:contact@voyageai.com)\nCompany-specific models\nFine-tuned librarians for your company\u2019s unique data and lingo.\n[Contact Sales](mailto:contact@voyageai.com)\n\n## Powered by Cutting-Edge AI Research and Engineering\n* High accuracy\nRetrieving the most relevant contextual information\n* Low dimensionality\n3x-8x shorter vectors \u21d2 cheaper vector search and storage\n* Low latency\n4x smaller model and faster inference with superior accuracy\n* Cost efficient\n2x cheaper inference with superior accuracy\n* Long-context\nLongest commercial context length available (32K tokens)\n* Modularity\nPlug-and-play with any vectorDB and LLM\n\n## Deploy Anywhere\nVoyage AI\n\n...\n\nQuick Links\n- [Docs](https://docs.voyageai.com/)\n- [Quick Start Tutorial](https://docs.voyageai.com/docs/quickstart-tutorial)\n- [Embeddings](https://docs.voyageai.com/docs/embeddings)\n- [Rerankers](https://docs.voyageai.com/docs/reranker)\n- [Blog](https://blog.voyageai.com/)\nPrivacy and Compliance\nEngage with Us"
+      ]
+    }
+  ],
+  "errors": [],
+  "usage": [
+    {
+      "name": "sku_extract_excerpts",
+      "count": 1
+    }
+  ],
+  "warnings": []
+}

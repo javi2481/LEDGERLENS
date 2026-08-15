@@ -1,9 +1,36 @@
-# Optional PaddleOCR on the official RAGFlow network (profile: paddleocr).
-# Default demo parser in the UI is Naive (synthetic PDFs are text). DeepDoc stays in-image for scans.
+# Docling Serve CPU is the default PDF parser sidecar (classic layout + TableFormer, not VLM).
+# PaddleOCR stays optional (profile: paddleocr). DeepDoc stays in-image for scans.
 # Do not publish host :8080.
 #
-# Enable: COMPOSE_PROFILES=infinity,cpu,paddleocr
+# Enable PaddleOCR: COMPOSE_PROFILES=infinity,cpu,paddleocr
 services:
+  docling-serve:
+    image: ${DOCLING_SERVE_IMAGE:-quay.io/docling-project/docling-serve-cpu:v1.30.0}
+    restart: unless-stopped
+    networks:
+      - ragflow
+    ports:
+      - "5001:5001"
+    environment:
+      DOCLING_SERVE_ENABLE_UI: "0"
+      # RAGFlow uses the sync convert API; default 120s 504s small BYMA PDFs on CPU.
+      DOCLING_SERVE_MAX_SYNC_WAIT: "3600"
+    volumes:
+      - docling-hf-cache:/root/.cache/huggingface
+    shm_size: "2gb"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5001/health', timeout=5)",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+
   paddleocr:
     profiles:
       - paddleocr
@@ -17,6 +44,9 @@ services:
     shm_size: "2gb"
     environment:
       PADDLE_PDX_MODEL_SOURCE: huggingface
+
+volumes:
+  docling-hf-cache:
 
 networks:
   ragflow:

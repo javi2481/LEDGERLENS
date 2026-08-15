@@ -2,9 +2,9 @@
 
 ## ADDED Requirements
 
-### Requirement: Official pin Infinity Naive default
+### Requirement: Official pin Infinity Docling default
 
-Runtime MUST be Docker Compose with official `infiniflow/ragflow` **v0.26.4**. Engine MUST be Infinity (`DOC_ENGINE=infinity`). Default PDF parser MUST be Naive for synthetic text PDFs. The PaddleOCR overlay MUST be optional (Compose profile `paddleocr`). MUST NOT include `app.py`, `ledger_lens/`, Gradio, HF Space, or `cloud.ragflow.io`.
+Runtime MUST be Docker Compose with official `infiniflow/ragflow` **v0.26.4**. Engine MUST be Infinity (`DOC_ENGINE=infinity`). Default PDF parser MUST be Docling classic via sidecar (`DOCLING_SERVER_URL=http://docling-serve:5001`, `USE_DOCLING=false`). The PaddleOCR overlay MUST be optional (Compose profile `paddleocr`). MUST NOT include `app.py`, `ledger_lens/`, Gradio, HF Space, or `cloud.ragflow.io`.
 
 #### Scenario: Pinned stack starts without forbidden apps
 

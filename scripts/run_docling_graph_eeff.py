@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-PDF Graph overlay. Not used by scripts/up.sh. Does not touch demo_4 or MinerU."""
+"""EEFF Graph overlay for any dedicated filing. Not used by scripts/up.sh. Does not touch MinerU."""
 
 from __future__ import annotations
 
@@ -10,8 +10,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PDF_1T26 = ROOT / "docs" / "archivos_muestra" / "BYMA_-_EEFF_31-03-2026_VF.pdf"
-PDF_2T26 = ROOT / "docs" / "archivos_muestra" / "BYMA - EEFF 30-06-2026.pdf"
+SAMPLES = ROOT / "docs" / "archivos_muestra"
+PDF_1T26 = SAMPLES / "BYMA_-_EEFF_31-03-2026_VF.pdf"
+PDF_2T26 = SAMPLES / "BYMA - EEFF 30-06-2026.pdf"
+sys.path.insert(0, str(ROOT / "scripts"))
+from graph_hechos import format_ars, needs_graph  # noqa: E402
 # Chat demo stays llama-3.3-70b-versatile. Overlay uses gpt-oss-120b (8k TPM / 200k TPD).
 DEFAULT_MODEL = "openai/gpt-oss-120b"
 
@@ -89,9 +92,14 @@ def parse_pages(text: str) -> tuple[int, int]:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Experimental EEFF Graph overlay")
+    parser = argparse.ArgumentParser(description="EEFF Graph overlay (any dedicated filing)")
     parser.add_argument("--preset", choices=["1t26", "2t26"], default=None)
     parser.add_argument("--pdf", type=Path, default=None)
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Every dedicated EEFF PDF in docs/archivos_muestra (not memorias/comunicados)",
+    )
     parser.add_argument("--pages", default="4-4")
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--consolidado", default=None)
@@ -102,7 +110,7 @@ def parse_args() -> argparse.Namespace:
         args.out = args.out or (ROOT / "outputs" / "graph-2t26")
         args.consolidado = args.consolidado or "81956525"
         args.controlante = args.controlante or "81946993"
-    else:
+    elif args.preset == "1t26" or (args.pdf is None and not args.all):
         args.pdf = args.pdf or PDF_1T26
         args.out = args.out or (ROOT / "outputs" / "graph-1t26")
         args.consolidado = args.consolidado or "21262335"
@@ -110,27 +118,43 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def main() -> int:
-    args = parse_args()
-    sys.path.insert(0, str(ROOT))
-    load_env(ROOT / ".env")
-    if not os.environ.get("GROQ_API_KEY"):
-        print("error: GROQ_API_KEY missing in env / .env", file=sys.stderr)
-        return 1
-    pdf = args.pdf if args.pdf.is_absolute() else ROOT / args.pdf
-    if not pdf.is_file():
-        print(f"error: missing {pdf}", file=sys.stderr)
-        return 1
+def slug_for(pdf: Path) -> str:
+    return pdf.stem.replace(" ", "_").replace(".", "_")[:80]
 
+
+def ficha_from_graph(graph: object, pdf_name: str, pagina: int, gold: dict[str, str] | None) -> dict:
+    row: dict = {"name": pdf_name, "pagina": pagina}
+    if gold:
+        row["consolidado"] = format_ars(gold["consolidado"])
+        row["controlante"] = format_ars(gold["controlante"])
+    if graph is None:
+        return row
+    for _node_id, data in graph.nodes(data=True):
+        blob = json.dumps(data, default=str)
+        estado = str(data.get("estado") or "")
+        monto = data.get("monto")
+        valor = monto.get("valor") if isinstance(monto, dict) else None
+        periodo = data.get("periodo")
+        if periodo and "periodo" not in row:
+            row["periodo"] = str(periodo)
+        page = data.get("fuente_pagina")
+        if page is not None:
+            row["pagina"] = page
+        if gold or not valor:
+            continue
+        if ("consolidado" in estado or "resultado_neto" in blob) and "controlante" not in estado:
+            row["consolidado"] = format_ars(str(valor))
+        if "controlante" in estado or "atribuible" in blob:
+            row["controlante"] = format_ars(str(valor))
+    return row
+
+
+def run_one(pdf: Path, output_dir: Path, page_range: tuple[int, int], gold: dict[str, str] | None) -> int:
     from docling_graph import PipelineConfig, run_pipeline
     from docling_graph.config import LlmRuntimeOverrides
 
-    page_range = parse_pages(args.pages)
-    output_dir = args.out if args.out.is_absolute() else ROOT / args.out
     docling_json = output_dir / "docling-document.json"
     stamp = output_dir / "page-range.txt"
-    gold = {"consolidado": args.consolidado, "controlante": args.controlante}
-
     output_dir.mkdir(parents=True, exist_ok=True)
     wanted = f"{page_range[0]}-{page_range[1]}"
     have = stamp.read_text(encoding="utf-8").strip() if stamp.is_file() else ""
@@ -163,8 +187,60 @@ def main() -> int:
     graph = getattr(context, "knowledge_graph", None)
     n_nodes = graph.number_of_nodes() if graph is not None else 0
     print(f"nodes={n_nodes} output={output_dir}")
-    print(f"gold consolidado={gold['consolidado']} controlante={gold['controlante']}")
-    return gold_report(graph, gold)
+    ficha = ficha_from_graph(graph, pdf.name, page_range[0], gold)
+    (output_dir / "ficha.json").write_text(
+        json.dumps(ficha, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    print(f"wrote {output_dir / 'ficha.json'}")
+    if gold:
+        print(f"gold consolidado={gold['consolidado']} controlante={gold['controlante']}")
+        return gold_report(graph, gold)
+    if not ficha.get("consolidado") or not ficha.get("controlante"):
+        print("warn: ficha missing consolidado/controlante; push will skip this PDF")
+        return 2
+    return 0
+
+
+def main() -> int:
+    args = parse_args()
+    sys.path.insert(0, str(ROOT))
+    load_env(ROOT / ".env")
+    if not os.environ.get("GROQ_API_KEY"):
+        print("error: GROQ_API_KEY missing in env / .env", file=sys.stderr)
+        return 1
+
+    page_range = parse_pages(args.pages)
+    jobs: list[tuple[Path, Path, dict[str, str] | None]] = []
+    if args.all:
+        pdfs = sorted(p for p in SAMPLES.glob("*.pdf") if needs_graph(p.name))
+        if not pdfs:
+            print(f"error: no dedicated EEFF PDFs in {SAMPLES}", file=sys.stderr)
+            return 1
+        for pdf in pdfs:
+            gold = None
+            if pdf.resolve() == PDF_1T26.resolve():
+                gold = {"consolidado": "21262335", "controlante": "21259769"}
+            elif pdf.resolve() == PDF_2T26.resolve():
+                gold = {"consolidado": "81956525", "controlante": "81946993"}
+            jobs.append((pdf, ROOT / "outputs" / f"graph-{slug_for(pdf)}", gold))
+    else:
+        pdf = args.pdf if args.pdf.is_absolute() else ROOT / args.pdf
+        if not pdf.is_file():
+            print(f"error: missing {pdf}", file=sys.stderr)
+            return 1
+        out = args.out or (ROOT / "outputs" / f"graph-{slug_for(pdf)}")
+        output_dir = out if out.is_absolute() else ROOT / out
+        gold = None
+        if args.consolidado and args.controlante:
+            gold = {"consolidado": args.consolidado, "controlante": args.controlante}
+        jobs.append((pdf, output_dir, gold))
+
+    worst = 0
+    for pdf, output_dir, gold in jobs:
+        code = run_one(pdf, output_dir, page_range, gold)
+        worst = max(worst, code)
+    return worst
 
 
 if __name__ == "__main__":

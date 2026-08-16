@@ -1,4 +1,4 @@
-"""Narrow BYMA EEFF overlay: resultado neto consolidado vs atribuible a la controlante."""
+"""EEFF overlay: resultado neto consolidado vs atribuible a la controlante."""
 
 from enum import Enum
 from typing import Any
@@ -59,7 +59,7 @@ class Emisor(BaseModel):
 
     nombre: str = Field(
         ...,
-        description="Razón social o ticker (BYMA / Bolsas y Mercados Argentinos).",
+        description="Razón social o ticker del emisor del EEFF.",
         examples=["BYMA"],
     )
     cuit: str = Field(
@@ -80,8 +80,8 @@ class HechoFinanciero(BaseModel):
     hecho_id: str = Field(
         ...,
         description=(
-            "Id: BYMA|YYYY-MM-DD|consolidado|resultado_neto "
-            "o BYMA|YYYY-MM-DD|controlante|resultado_atribuible_controladora."
+            "Id: EMISOR|YYYY-MM-DD|consolidado|resultado_neto "
+            "o EMISOR|YYYY-MM-DD|controlante|resultado_atribuible_controladora."
         ),
         examples=[
             "BYMA|2026-03-31|consolidado|resultado_neto",
@@ -121,7 +121,7 @@ class HechoFinanciero(BaseModel):
 
 
 class EeffByma(BaseModel):
-    """EEFF BYMA de un cierre. No es comunicado ni presentación."""
+    """EEFF de un cierre (consolidado vs controlante). No es comunicado ni presentación."""
 
     model_config = ConfigDict(graph_id_fields=["titulo"])
 

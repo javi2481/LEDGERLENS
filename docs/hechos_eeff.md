@@ -1,6 +1,6 @@
 # Fichas EEFF BYMA (Docling Graph)
 
-Estas fichas desambiguan filas de la misma tabla. Priorizarlas sobre otras cifras del PDF cuando la pregunta sea resultado neto, consolidado, controlante, 1T26 o 2T26.
+Fuente de las cifras que `scripts/push_hechos.py` mete **dentro de cada EEFF** de cada dataset (chunk manual en el PDF + prompt de **todos** los chats). No se sube este `.md` como documento: Show Quote tiene que citar el EEFF. El catálogo machine-readable es `docs/hechos_eeff.json`.
 
 ## 1T26 primer trimestre 2026 — EEFF al 31 de marzo de 2026 (página 4)
 

@@ -6,7 +6,7 @@ Captured 2026-08-13 with `parallel-cli search` / `extract`. JSON is the source o
 
 **Decisión (2026-08-16, tarde):** chat default = **Groq** `llama-3.3-70b-versatile` (`chat_demo_4`). Gemini `gemini-3.1-flash-lite` se documentó el mismo día pero **no** era el asistente vivo. OpenRouter Nano `:free` queda fuera del default (cuota diaria). Fallback Ollama `qwen2.5:1.5b`. Voyage embed/rerank nativos.
 
-**Decisión (2026-08-16, overlay):** Docling Graph entra al demo: extrae fichas y `push_hechos_to_demo4.py` las inyecta en `chat_demo_4` (chunk manual, sin reparsear PDFs MinerU).
+**Decisión (2026-08-16, overlay):** Docling Graph entra al demo: extrae fichas y `push_hechos.py` las inyecta en todos los chats (chunk manual en cada EEFF, sin reparsear PDFs MinerU).
 
 **Decisión (2026-08-16, mañana, supersedida):** factory Gemini nativa `gemini-3.1-flash-lite` como chat. Ya no es la fuente de verdad.
 

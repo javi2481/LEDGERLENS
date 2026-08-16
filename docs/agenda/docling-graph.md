@@ -19,9 +19,9 @@ Lee un PDF con Docling local y extrae fichas Pydantic (Groq remoto). El chat `ch
 - consolidado RESULTADO NETO = **21.262.335** (`BYMA|2026-03-31|consolidado|resultado_neto`)
 - controlante / atribuible = **21.259.769** (`BYMA|2026-03-31|controlante|resultado_atribuible_controladora`)
 
-Siguiente: EEFF 2T26, misma plantilla, página 4, oro **81.956.525** vs **81.946.993**. Si el run falla, esta rama queda; `main` sigue siendo el chat.
+Siguiente: EEFF 2T26 **PASÓ** (página 4): consolidado **81.956.525** vs controlante **81.946.993**, período `2026-06-30`. El consolidado 2T26 quedó con provenance `document` (igual `fuente_pagina=4`); el controlante sí es verbatim sobre la tabla.
 
-Graph **no** está shipped. **No** va en `up.sh`. PR a `main` solo a pedido, y el README del demo no lo vende.
+Graph **no** está shipped. **No** va en `up.sh`. PR a `main` para ver el diff; no merge directo. El README del demo no lo vende.
 
 ## Config
 

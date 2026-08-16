@@ -2,9 +2,9 @@
 
 Captured 2026-08-13 with `parallel-cli search` / `extract`. JSON is the source of truth for follow-up. Índice del stack **actual**: **MinerU** `pipeline` (sidecar CPU), Infinity, chat **Groq** `llama-3.3-70b-versatile` + Ollama fallback, embed **Voyage** nativo, PaddleOCR opcional.
 
-**Decisión (2026-08-16):** parser **LedgerLens** = MinerU `pipeline` vía sidecar `mineru-api:8000`. Docling Serve ya no es el default (cliente v0.26.4 no manda `page_range`, #17450). RAGFlow UI sigue ofreciendo DeepDoc como su default de fábrica; el first-run del README elige MinerU en dataset **`demo_4`**.
+**Decisión (2026-08-16):** parser **LedgerLens** = MinerU `pipeline` vía sidecar `mineru-api:8000`. RAGFlow UI sigue ofreciendo DeepDoc como su default de fábrica; el first-run del README elige MinerU en dataset **`demo_4`**.
 
-**Decisión (2026-08-16, tarde):** chat default = **Groq** `llama-3.3-70b-versatile` (`chat_demo_4`). Gemini `gemini-3.1-flash-lite` se documentó el mismo día pero **no** era el asistente vivo. OpenRouter Nano `:free` queda fuera del default (cuota diaria). Fallback Ollama `qwen2.5:1.5b`. Voyage embed/rerank nativos. El sidecar LiteLLM se probó y se **revirtió** el mismo día.
+**Decisión (2026-08-16, tarde):** chat default = **Groq** `llama-3.3-70b-versatile` (`chat_demo_4`). Gemini `gemini-3.1-flash-lite` se documentó el mismo día pero **no** era el asistente vivo. OpenRouter Nano `:free` queda fuera del default (cuota diaria). Fallback Ollama `qwen2.5:1.5b`. Voyage embed/rerank nativos.
 
 **Decisión (2026-08-16, mañana, supersedida):** factory Gemini nativa `gemini-3.1-flash-lite` como chat. Ya no es la fuente de verdad.
 
@@ -35,39 +35,33 @@ parallel-cli extract "<url>" --objective "<focus>" --json > extract-<name>.json
 | `gemini-new-user-models.json` | Keys nuevas: `gemini-2.5-flash` 404; Flash 3.x vigente |
 | `gemini-replacement-ids.json` | IDs de reemplazo (`gemini-3.1-flash-lite`, `gemini-3.5-flash`) |
 | `ragflow-whitelabel.json` | White-label: no hay no-code; logo/`conf.json`/rebuild. Agenda: [branding-cosmetic.md](../docs/agenda/branding-cosmetic.md) |
-| `extract-docling-reducto-hubs.json` | Hubs: [Docling blog](https://docling.ai/blog/), [papers](https://docling.ai/papers/), [docling-graph](https://github.com/docling-project/docling-graph), [Reducto guides](https://reducto.ai/guides/), [blog](https://reducto.ai/blog) |
-| `extract-docling-graph-docs.json` | Docs Graph: backends LLM/VLM, provenance, dense extraction, Docling Serve |
-| `extract-docling-graph-config.json` | PipelineConfig + PyPI `docling-graph` 1.9.1 (17 jul 2026) |
-| `extract-docling-classic-vlm.json` | Parser clásico vs VLM; Granite-Docling + vLLM `untied`; docling-serve |
-| `extract-reducto-finance-narrative.json` | 10-K parsing (LlamaIndex vs Docling); Deep Extract leaderboard |
+| `extract-reducto-finance-narrative.json` | 10-K parsing; Deep Extract leaderboard |
 | `extract-reducto-10k-idp.json` | [Parsing the 10-K](https://reducto.ai/blog/10k-document), GDP.pdf +9 pp, Deep Extract vs humanos |
-| `search-docling-classic-parser.json` | RAGFlow Docling/`DOCLING_SERVER_URL`; watsonx managed (US$4 / 1.000 pp) |
-| `search-docling-graph.json` | Graph + LiteLLM/vLLM/Ollama; doc→grafo 2026 |
-| `search-docling-vllm.json` | Granite-Docling / SmolDocling en vLLM; pipeline remoto |
 | `search-mineru-ragflow.json` | RAGFlow cliente MinerU (`MINERU_APISERVER`, `POST /file_parse`); FAQ plugin |
 | `extract-mineru-ragflow-plugin.json` | Plugin / env de MinerU en RAGFlow |
 | `extract-mineru-github.json` | MinerU API CPU vs imagen GPU `mineru:latest` |
 | `search-mineru-hybrid.json` | `hybrid-engine` (GPU); no en v0.26.4 ni en esta APU |
 | `extract-mineru-hybrid.json` | Docs hybrid vs pipeline |
 | `extract-mineru-hybrid-hw.json` | Hardware hybrid (VRAM) |
-| `search-idp-market-2026.json` | IDP agéntico 2026, 10-K, GraphRAG |
+| `search-idp-market-2026.json` | IDP agéntico 2026, 10-K |
 | `search-reducto-10k-slugs.json` | Slugs reales del blog Reducto |
-| `deep-docling-graph-vllm-market.json` | Deep research Parallel (pro-fast): arquitectura ahora/después + LinkedIn |
+| `tavily-product.json` | [Tavily](https://www.tavily.com/) + [docs](https://docs.tavily.com/): search/extract/crawl/map/research; 180 ms p50 /search; 1.000 credits gratis |
+| `tavily-api-pricing.json` | [Credits](https://docs.tavily.com/documentation/api-credits): planes, costo Search/Extract/Crawl/Research; Hybrid RAG + financial services |
+| `ragflow-tavily-agent.json` | RAGFlow ya tiene Tavily: Reasoning + API key desde v0.17; operador Agent desde v0.20 (`tavily_search`) |
 
 ## Hallazgos (LedgerLens)
 
 - **Compose:** CPU ≥ 4, RAM ≥ 16 GB, disco ≥ 50 GB, Docker ≥ 24, Compose ≥ v2.26.1, imágenes **x86** ([infiniflow/ragflow](https://github.com/infiniflow/ragflow)). UI puerto 80. `DOC_ENGINE=infinity` es switch oficial; ARM64 + Infinity no soportado.
-- **Parser default:** **MinerU** `pipeline` vía sidecar (`MINERU_APISERVER=http://mineru-api:8000`, `MINERU_BACKEND=pipeline`). Naive = fallback texto. DeepDoc = fallback OCR. Docling Serve fuera del overlay. MinerU hybrid / OpenDataLoader descartados en esta APU. PaddleOCR sigue como profile, no como experimento.
-- **Chat default:** **Groq** `llama-3.3-70b-versatile`. Fallback Ollama `qwen2.5:1.5b` (`http://host.docker.internal:11434`). OpenRouter Nano `:free` no es el default. LiteLLM sidecar revertido.
+- **Parser default:** **MinerU** `pipeline` vía sidecar (`MINERU_APISERVER=http://mineru-api:8000`, `MINERU_BACKEND=pipeline`). Naive = fallback texto. DeepDoc = fallback OCR. MinerU hybrid / OpenDataLoader descartados en esta APU. PaddleOCR sigue como profile, no como experimento.
+- **Chat default:** **Groq** `llama-3.3-70b-versatile`. Fallback Ollama `qwen2.5:1.5b` (`http://host.docker.internal:11434`). OpenRouter Nano `:free` no es el default.
 - **Embeddings (vigente):** Voyage `voyage-finance-2` + rerank `rerank-2.5-lite` nativos en RAGFlow. Desde v0.22 la imagen slim **no** trae BAAI/Youdao ([upgrade 0.21→0.22](https://ragflow.io/blog/ragflow-seamless-upgrade-from-0.21-to-0.22-and-beyond)).
 - **Histórico 13-ago (no es el default):** OpenRouter **no** guarda embeddings nativos (`Embedding model from OpenRouter is not supported yet`). Se probó Nano `:free` para chat y Nemotron/Gemini embed; Nano pegó `QUOTA_EXCEEDED`. Factory **NVIDIA** = NIM, distinto de OpenRouter. Chat Gemini 2.5 `404` para keys nuevas. Embed Gemini free: **100 req/min** (`429` en el EEFF largo).
 - **Windows:** `*.sh` en LF (`.gitattributes`). `up.sh` lee `/proc/sys/vm/max_map_count` (Git Bash no); Docker Desktop VM ya tiene 262144. Compose se levantó a mano con el mismo `docker compose` que `up.sh`.
 - **MinerU (2026-08-16):** sidecar CPU `docker/mineru/Dockerfile` (`mineru[pipeline]==3.4.5`, no `mineru:latest` GPU). Dataset **`demo_4`**, Config MinerU **antes** de subir, `task_page_size=128`. En v0.26.4 el cliente MinerU también manda el PDF entero (`start_page_id=0`); el fix de rangos está en `main`. Timeout 1800 s. Hybrid = GPU + RAGFlow que liste `hybrid-engine`. Informe: `search-mineru-ragflow.json`, `search-mineru-hybrid.json`.
-- **Docling / Graph (2026-08-15, actualizado 16):** parser clásico Docling **ya no** es default. Graph = overlay Pydantic+KG con LLM remoto (agenda). vLLM = tres roles, todos GPU; no en esta APU. Informe: `deep-docling-graph-vllm-market.json`.
 
 ## Agenda
 
-Índice: **[docs/agenda/](../docs/agenda/)** (MinerU pipeline y Groq aplicados; Graph, vLLM, LinkedIn, branding diferidos). Descarte: [descartado.md](../docs/agenda/descartado.md). Este archivo solo indexa dumps.
+Índice: **[docs/agenda/](../docs/agenda/)** (MinerU pipeline y Groq aplicados; vLLM, LinkedIn, branding diferidos). Descarte: [descartado.md](../docs/agenda/descartado.md). Este archivo solo indexa dumps.
 
 ## Dumps anteriores (pre-ajuste DeepDoc)
 

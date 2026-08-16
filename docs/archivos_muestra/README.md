@@ -15,6 +15,6 @@ Runbook completo: [docs/agenda/mineru-pipeline.md](../agenda/mineru-pipeline.md)
 3. EEFF (tablas; tarda en CPU).
 4. Memorias (~190 páginas; al final).
 
-No reusar `demo_3` ni files ya parseados con Docling/DeepDoc/Naive: **dataset nuevo**, subir de nuevo después de poner MinerU en Configuración. Cambiar el dropdown del dataset no reescribe el parser de cada file ni los chunks.
+No reusar `demo_3` ni files ya parseados con DeepDoc/Naive: **dataset nuevo**, subir de nuevo después de poner MinerU en Configuración. Cambiar el dropdown del dataset no reescribe el parser de cada file ni los chunks.
 
 Un clone de GitHub no trae el índice. El parseo previo vive en volúmenes Docker de esta máquina.

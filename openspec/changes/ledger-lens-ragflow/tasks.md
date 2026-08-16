@@ -51,11 +51,11 @@ Chain strategy: size-exception
 - [x] 5.4 Verify: compose healthy (UI `:80`) on ≥16 GB. Manual E2E per README. Host <16 GB: `scripts/check.sh` only. Skip full smoke if no Docker Compose.
 - [x] 5.5 Add `scripts/check.sh` (contracts, `pdftotext` fixtures, host probe) and `docs/agenda/` for deferred Parallel items.
 
-## Phase 6: LiteLLM chat gateway (rolled back 2026-08-16)
+## Phase 6: extra chat proxy (rolled back 2026-08-16)
 
-- [x] 6.1 Add overlay service `litellm` (`ghcr.io/berriai/litellm:v1.97.0`, `:4000`, config-file mode, no Postgres) and `docker/litellm/config.yaml` (`ledgerlens-chat` → Gemini → Ollama; no OpenRouter; no Voyage).
-- [x] 6.2 Point README / `.env.example` / OpenSpec local-stack at OpenAI-API-Compatible `http://litellm:4000/v1` model `ledgerlens-chat`. Voyage embed unchanged.
-- [x] 6.3 Rollback: remove overlay `litellm`, `docker/litellm/`, `docs/agenda/litellm.md`. Chat went Gemini factory then **Groq** `llama-3.3-70b-versatile` (live `chat_demo_4`). OpenRouter Nano `:free` is not the default. Voyage stays native.
+- [x] 6.1 Tried a Compose chat proxy hop; not useful for this demo (RAGFlow already talks to Groq / Ollama / Voyage in Model providers).
+- [x] 6.2 Rolled back the overlay and agenda note the same day.
+- [x] 6.3 Chat went Gemini factory then **Groq** `llama-3.3-70b-versatile` (live `chat_demo_4`). OpenRouter Nano `:free` is not the default. Voyage stays native.
 
 ## Phase 7: Groq chat default (2026-08-16)
 

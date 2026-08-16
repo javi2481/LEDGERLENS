@@ -9,16 +9,15 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 ## Quick path
 
 1. Abrí el ítem que vas a retomar.
-2. Confirmá el disparador (grafo, GPU, chrome UI, LinkedIn).
+2. Confirmá el disparador (GPU, chrome UI, LinkedIn).
 3. Seguí el checklist. No implementar sin disparador.
 
 ## Activo
 
 | Ítem | Cuándo retomarlo |
 |------|------------------|
-| [Docling Graph](docling-graph.md) | Comparar períodos / controlante vs consolidado con hechos anclados. LLM remoto. |
-| [vLLM](vllm.md) | GPU NVIDIA: chat, Granite-Docling VLM, MinerU hybrid, o LLM local de Graph. |
-| [Posicionamiento LinkedIn](posicionamiento-linkedin.md) | Publicar tesis IDP 2026 sin vender Graph/VLM/hybrid no shipped. |
+| [vLLM](vllm.md) | GPU NVIDIA: chat local o MinerU hybrid. |
+| [Posicionamiento LinkedIn](posicionamiento-linkedin.md) | Publicar tesis IDP 2026 sin vender hybrid/KG no shipped. |
 | [Branding cosmético UI](branding-cosmetic.md) | Chrome LedgerLens (logo, nombre, pie Apache-2.0) sin fork. |
 
 ## Ya hecho (no es agenda)
@@ -26,7 +25,7 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 | Tema | Estado |
 |------|--------|
 | Parser **MinerU** `pipeline` | Default del demo ([nota](mineru-pipeline.md)); sidecar `mineru-api:8000` |
-| Chat **Groq** | Default del demo: `llama-3.3-70b-versatile`; OpenRouter Nano `:free` no es el default; sin sidecar LiteLLM |
+| Chat **Groq** | Default del demo: `llama-3.3-70b-versatile`; OpenRouter Nano `:free` no es el default |
 | Embed Voyage | Nativo v0.26.4 en RAGFlow (`VOYAGE_API_KEY` en la UI) |
 | Parser Naive | Fallback ([nota](naive-parser.md)); DeepDoc si escaneo |
 | E2E Windows 32 GB | Compose + BYMA 1T26 (comunicado, EEFF, presentación) |
@@ -37,4 +36,4 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 
 ## Next step
 
-Corpus BYMA en `docs/archivos_muestra/` parseado con MinerU en **`demo_4`** ([runbook](mineru-pipeline.md)). Chat default: Groq `llama-3.3-70b-versatile` (`chat_demo_4`). Después: [plantilla Graph](docling-graph.md) **o** [branding](branding-cosmetic.md) **o** [LinkedIn](posicionamiento-linkedin.md). No retomar TEI ni compose en el Linux de 7 GB. Hybrid MinerU = GPU + RAGFlow que liste el backend.
+Corpus BYMA en `docs/archivos_muestra/` parseado con MinerU en **`demo_4`** ([runbook](mineru-pipeline.md)). Chat default: Groq `llama-3.3-70b-versatile` (`chat_demo_4`). Después: [branding](branding-cosmetic.md) **o** [LinkedIn](posicionamiento-linkedin.md). No retomar TEI ni compose en el Linux de 7 GB. Hybrid MinerU = GPU + RAGFlow que liste el backend.

@@ -19,18 +19,11 @@ grep -q 'v0.26.4' vendor/PIN.md || fail "vendor/PIN.md must pin v0.26.4"
 [[ -f docker-compose.overlay.yml ]] || fail "missing docker-compose.overlay.yml"
 grep -q 'profiles:' docker-compose.overlay.yml || fail "overlay must gate paddleocr on a profile"
 grep -q 'mineru-api:' docker-compose.overlay.yml || fail "overlay must define mineru-api sidecar"
-if grep -qE '^[[:space:]]*litellm:' docker-compose.overlay.yml; then
-  fail "overlay must not define litellm (rolled back)"
-fi
-[[ ! -e docker/litellm ]] || fail "docker/litellm must not exist after LiteLLM rollback"
-if grep -qE '^LITELLM_MASTER_KEY=' .env.example; then
-  fail ".env.example must not set LITELLM_MASTER_KEY"
-fi
 grep -q '^MINERU_APISERVER=http://mineru-api:8000' .env.example || fail ".env.example must set MINERU_APISERVER to Compose DNS"
 grep -q '^MINERU_BACKEND=pipeline' .env.example || fail ".env.example must set MINERU_BACKEND=pipeline"
-grep -q '^USE_DOCLING=false' .env.example || fail ".env.example must keep USE_DOCLING=false (no in-process Docling)"
+grep -q '^USE_DOCLING=false' .env.example || fail ".env.example must keep USE_DOCLING=false (MinerU is the parser)"
 if grep -qE '^DOCLING_SERVER_URL=' .env.example; then
-  fail ".env.example must not set DOCLING_SERVER_URL (MinerU is the default parser)"
+  fail ".env.example must not set DOCLING_SERVER_URL"
 fi
 [[ -f docker/mineru/Dockerfile ]] || fail "missing docker/mineru/Dockerfile"
 [[ -f scripts/up.sh ]] || fail "missing scripts/up.sh"
@@ -116,7 +109,7 @@ else
   skip "ollama not on PATH (ok — default chat is Groq)"
 fi
 
-pass "chat default is Groq llama-3.3-70b-versatile (no LiteLLM overlay, no OpenRouter default)"
+pass "chat default is Groq llama-3.3-70b-versatile (no OpenRouter default)"
 
 echo
 echo "Done. Compose/E2E remains on a ≥16 GB host."

@@ -26,7 +26,7 @@ En una PC de ~7 GB: solo `./scripts/check.sh`. Compose + E2E: esta PC Windows 32
 | Embeddings | Voyage `voyage-finance-2` (nativo v0.26.4) | Gemini `gemini-embedding-001` |
 | Empty response | `No hay evidencia suficiente en los documentos indexados para responder. No invento datos.` | no dejar en blanco |
 
-RAGFlow **no** lee las API keys solo: hay que pegar Groq (`llama-3.3-70b-versatile`) y Voyage en Model providers. Ollama, si lo usás: `http://host.docker.internal:11434` (**nunca** `127.0.0.1` desde el contenedor). `USE_DOCLING=false`. No setear `DOCLING_SERVER_URL`. MinerU hybrid / Granite-Docling VLM no entran en este demo. No hay sidecar LiteLLM. OpenRouter Nano `:free` no es el default (cuota).
+RAGFlow **no** lee las API keys solo: hay que pegar Groq (`llama-3.3-70b-versatile`) y Voyage en Model providers. Ollama, si lo usás: `http://host.docker.internal:11434` (**nunca** `127.0.0.1` desde el contenedor). MinerU hybrid no entra en este demo (pide GPU). OpenRouter Nano `:free` no es el default (cuota).
 
 ## Requisitos
 
@@ -70,7 +70,7 @@ docker compose --env-file .env \
    - **Groq:** `llama-3.3-70b-versatile` (chat default). Pegá `GROQ_API_KEY` en la factory.
    - Voyage: `voyage-finance-2` (embed) y `rerank-2.5-lite`.
    - MinerU: auto-provision con `MINERU_APISERVER` en `.env`, o agregarlo a mano.
-   - Ollama (fallback): `http://host.docker.internal:11434`, modelo `qwen2.5:1.5b`. No uses OpenRouter Nano `:free` ni un proxy LiteLLM.
+   - Ollama (fallback): `http://host.docker.internal:11434`, modelo `qwen2.5:1.5b`. No uses OpenRouter Nano `:free`.
 3. Knowledge base **`demo_4`**: **Configuración primero** (PDF parser = **MinerU**; español; Knowledge graph y RAPTOR off). **Después** subir `docs/archivos_muestra/*.pdf`. En cada file, **Tamaño de la tarea por página = 128**. **Por último** Parse, de a uno. Si MinerU está caído, el ingest debe fallar visible (no texto inventado). Cambiar Configuración no pisa archivos ya subidos. Detalle: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
 4. Chat en español: asistente **`chat_demo_4`**, KB tildada, **Show Quote** on, umbral **0.3** (Voyage rerank; 0.4 devolvía 0 chunks), Empty response no vacío (copy de la tabla de stack). Prompt: *Responde solo en español. Cita los fragmentos. Si no hay evidencia, usa la respuesta vacía. No inventes cifras.*
 
@@ -105,7 +105,7 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 | `.env.example` | Infinity + pin; `MINERU_APISERVER`; `GROQ_API_KEY` comentado; PaddleOCR comentado |
 | `scripts/up.sh` / `scripts/check.sh` | Arranque / contratos+PDFs |
 | `docs/archivos_muestra/` | PDFs BYMA del demo |
-| `docs/agenda/` | Diferidos (Graph, vLLM, branding, LinkedIn) |
+| `docs/agenda/` | Diferidos (vLLM, branding, LinkedIn) |
 | `research/` | Dumps Parallel |
 | `openspec/changes/ledger-lens-ragflow/` | SDD activo (Gentle AI hybrid) |
 

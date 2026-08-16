@@ -4,13 +4,13 @@
 
 ### Requirement: MinerU default PDF parser for BYMA filings
 
-Ingested demo PDFs MUST use RAGFlow **MinerU** (`pipeline` via sidecar `MINERU_APISERVER=http://mineru-api:8000`, `MINERU_BACKEND=pipeline`). Corpus lives in `docs/archivos_muestra/`. Failed parse MUST be visible; MUST NOT invent text. Naive MAY be selected if MinerU API is down. DeepDoc MAY be selected if a PDF has no text layer. PaddleOCR MUST NOT be required for the default demo. Docling Serve, MinerU hybrid, and Granite-Docling VLM MUST NOT be the default parser.
+Ingested demo PDFs MUST use RAGFlow **MinerU** (`pipeline` via sidecar `MINERU_APISERVER=http://mineru-api:8000`, `MINERU_BACKEND=pipeline`). Corpus lives in `docs/archivos_muestra/`. Failed parse MUST be visible; MUST NOT invent text. Naive MAY be selected if MinerU API is down. DeepDoc MAY be selected if a PDF has no text layer. PaddleOCR MUST NOT be required for the default demo. MinerU hybrid MUST NOT be the default parser.
 
 #### Scenario: Default ingest uses MinerU
 
-- GIVEN `.env.example` defaults (`COMPOSE_PROFILES=infinity,cpu`, `MINERU_APISERVER=http://mineru-api:8000`, `MINERU_BACKEND=pipeline`, `USE_DOCLING=false`, no `DOCLING_SERVER_URL`, PaddleOCR vars commented)
+- GIVEN `.env.example` defaults (`COMPOSE_PROFILES=infinity,cpu`, `MINERU_APISERVER=http://mineru-api:8000`, `MINERU_BACKEND=pipeline`, PaddleOCR vars commented)
 - WHEN a BYMA PDF is ingested with the dataset PDF parser set to MinerU
-- THEN RAGFlow MUST call `http://mineru-api:8000/file_parse` with `backend=pipeline` and MUST NOT require `paddleocr`, DeepDoc OCR, or in-process `USE_DOCLING=true`
+- THEN RAGFlow MUST call `http://mineru-api:8000/file_parse` with `backend=pipeline` and MUST NOT require `paddleocr` or DeepDoc OCR
 
 ### Requirement: Optional PaddleOCR remote layout parser
 

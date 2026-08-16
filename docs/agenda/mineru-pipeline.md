@@ -2,7 +2,7 @@
 
 Parser default de LedgerLens para PDFs con tablas y layout (EEFF, filings). Backend **`pipeline`** (CPU). No es hybrid ni VLM.
 
-RAGFlow v0.26.4 es cliente remoto: `MINERU_APISERVER=http://mineru-api:8000` → `POST /file_parse`. `MINERU_BACKEND=pipeline`. `USE_DOCLING=false`. No setear `DOCLING_SERVER_URL`.
+RAGFlow v0.26.4 es cliente remoto: `MINERU_APISERVER=http://mineru-api:8000` → `POST /file_parse`. `MINERU_BACKEND=pipeline`.
 
 [Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser). [FAQ MinerU](https://ragflow.io/docs/faq#how-to-use-mineru-to-parse-pdf-documents). Dumps: `research/search-mineru-ragflow.json`, `research/search-mineru-hybrid.json`.
 
@@ -12,10 +12,10 @@ El compose solo deja el API. El parser se snapshottea en cada file al **subir**.
 
 1. Stack up. Esperar `mineru-api` healthy. Primera vez baja modelos (tarda). Health en el host: `curl http://127.0.0.1:8000/health` y `curl -I http://127.0.0.1:8000/openapi.json`.
 2. **Model providers:** con las vars en `.env`, RAGFlow puede auto-provisionar MinerU OCR. Si no aparece, agregalo a mano (FAQ).
-3. Crear knowledge base **`demo_4`**. No reusar `demo_3` (files con Docling/DeepDoc).
+3. Crear knowledge base **`demo_4`**. No reusar `demo_3` (files parseados con otro parser).
 4. **Configuración primero:**
    - Chunk: **General**
-   - PDF parser: **MinerU** (no Docling, no DeepDOC)
+   - PDF parser: **MinerU** (no DeepDOC)
    - Idioma: **Spanish**
    - Knowledge graph y RAPTOR: **Not generated**
    - Chunk tokens: **512**
@@ -37,12 +37,11 @@ No hay script de reparse. Un clone de git no trae chunks.
 | Hybrid | Fuera. Pide GPU; RAGFlow v0.26.4 no lista `hybrid-engine` |
 | Fallback | Naive (texto). DeepDoc (escaneo) |
 | Timeout cliente | 1800 s (RAGFlow). Memorias en CPU igual tardan |
-| Graph | Overlay aparte: [docling-graph.md](docling-graph.md). No es el parser |
 
 ## Checklist
 
 - [x] Sidecar en `docker-compose.overlay.yml` (sin profile)
-- [x] `MINERU_APISERVER` + `MINERU_BACKEND=pipeline` en `.env.example`; `USE_DOCLING=false`
+- [x] `MINERU_APISERVER` + `MINERU_BACKEND=pipeline` en `.env.example`
 - [x] README first-run = MinerU + `demo_4`
 - [x] `mineru-api` healthy
 - [x] Parse `demo_4` de a uno (10 PDFs BYMA; comunicados primero; EEFF; Memoria al final)

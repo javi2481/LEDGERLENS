@@ -1,6 +1,6 @@
 # Design: LedgerLens RAGFlow local stack
 
-Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **MinerU** `pipeline` (sidecar CPU `mineru-api:8000`). Naive/DeepDoc fallback. Optional PaddleOCR overlay (Compose profile `paddleocr`). Default chat: **Groq** `llama-3.3-70b-versatile`. Embed: **Voyage**. Host Ollama is last fallback. Infinity for lower RAM. No `app.py`, `ledger_lens/`, Gradio, HF Space, LiteLLM sidecar.
+Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **MinerU** `pipeline` (sidecar CPU `mineru-api:8000`). Naive/DeepDoc fallback. Optional PaddleOCR overlay (Compose profile `paddleocr`). Default chat: **Groq** `llama-3.3-70b-versatile`. Embed: **Voyage**. Host Ollama is last fallback. Infinity for lower RAM. No `app.py`, `ledger_lens/`, Gradio, HF Space.
 
 ## Technical Approach
 
@@ -12,11 +12,11 @@ Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **MinerU** `pipeli
 |----------|--------|----------|-----|
 | Stack shape | Vendor `docker/` v0.26.4 + optional overlay | Submodule; from-scratch compose | Keeps MySQL/MinIO/Redis/Infinity, `extra_hosts`, CPU profile |
 | Doc engine | `DOC_ENGINE=infinity` (`COMPOSE_PROFILES=infinity,cpu`) | Elasticsearch / OpenSearch | Lower RAM; official switch. Not Linux/arm64 |
-| PDF parser | **MinerU** `pipeline` sidecar (`MINERU_APISERVER=http://mineru-api:8000`) | Docling Serve as default; Naive as default; PaddleOCR as default; MinerU hybrid; Granite-Docling VLM | EEFF BYMA need layout + tables ([Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser)). RAGFlow v0.26.4 Docling client drops `page_range` (#17450). Hybrid/VLM need NVIDIA. Naive/DeepDoc remain fallback |
+| PDF parser | **MinerU** `pipeline` sidecar (`MINERU_APISERVER=http://mineru-api:8000`) | Naive as default; PaddleOCR as default; MinerU hybrid | EEFF BYMA need layout + tables ([Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser)). Hybrid needs NVIDIA. Naive/DeepDoc remain fallback |
 | Optional OCR | Profile `paddleocr` + commented env | Always-on PaddleOCR | Keep PaddleOCR as an alternate parser without paying RAM at boot |
 | OCR URL (when enabled) | `http://paddleocr:8080/layout-parsing` | FAQ `localhost:8080` | `localhost` inside RAGFlow is the container |
-| LLM | Groq default (`llama-3.3-70b-versatile`); Ollama last fallback | LiteLLM sidecar; OpenRouter Nano `:free` as default; Gemini flash-lite as default; Compose `ollama`; vLLM now | Live `chat_demo_4` uses Groq. Nano `:free` hit daily quota. Gemini was documented but not the running assistant. Voyage stays native. |
-| Embed | Voyage native in RAGFlow (`voyage-finance-2`) | LiteLLM Voyage; OpenRouter embed; TEI; Ollama `bge-m3` | v0.22+ image has no built-in embeddings; `demo_4` already indexed with native Voyage |
+| LLM | Groq default (`llama-3.3-70b-versatile`); Ollama last fallback | OpenRouter Nano `:free` as default; Gemini flash-lite as default; Compose `ollama`; vLLM now | Live `chat_demo_4` uses Groq. Nano `:free` hit daily quota. Gemini was documented but not the running assistant. Voyage stays native. |
+| Embed | Voyage native in RAGFlow (`voyage-finance-2`) | OpenRouter embed; TEI; Ollama `bge-m3` | v0.22+ image has no built-in embeddings; `demo_4` already indexed with native Voyage |
 | Chat model | `llama-3.3-70b-versatile` | OpenRouter Nano `:free`; Gemini `gemini-3.1-flash-lite`; 7B+ in-compose | Groq factory in Model providers; Ollama `qwen2.5:1.5b` is last fallback |
 
 ## Data Flow
@@ -77,7 +77,7 @@ sequenceDiagram
 | `.env.example` | Create | Infinity, `RAGFLOW_IMAGE=infiniflow/ragflow:v0.26.4`; `MINERU_APISERVER` + `MINERU_BACKEND=pipeline`; `GROQ_API_KEY` commented; PaddleOCR vars commented |
 | `scripts/up.sh` | Create | Read-only `vm.max_map_count` ≥ 262144; sync `.env` → vendor; compose both files; optional `ollama pull qwen2.5:1.5b` fallback |
 | `scripts/check.sh` | Create | File contracts, PDF fixtures, host probe |
-| `docs/agenda/` | Create | Applied: MinerU pipeline. Deferred: Graph, vLLM, LinkedIn, branding |
+| `docs/agenda/` | Create | Applied: MinerU pipeline. Deferred: vLLM, LinkedIn, branding |
 | `README.md` | Create | x86_64, ≥16 GB, Docker ≥24, Compose ≥v2.26.1; `OLLAMA_HOST=0.0.0.0`; Empty response + Show Quote; BYMA samples |
 | `docs/archivos_muestra/` | Create | BYMA sample financial PDFs (comunicados, EEFF, presentaciones, memoria) |
 | `.gitignore` | Modify | Keep `.env`; ignore vendor `.env` and `ragflow-logs/` |

@@ -11,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PDF_1T26 = ROOT / "docs" / "archivos_muestra" / "BYMA_-_EEFF_31-03-2026_VF.pdf"
 OUTPUT_DIR = ROOT / "outputs" / "graph-1t26"
 DOCLING_JSON = OUTPUT_DIR / "docling-document.json"
+# Full 81-page TableFormer OOMs (~page 51). Gold rows are on page 4 of the consolidado P&L.
+PAGE_RANGE = (1, 8)
 GOLD = {
     "consolidado": "21262335",
     "controlante": "21259769",
@@ -43,8 +45,8 @@ def convert_pdf_without_ocr(pdf: Path, dest: Path) -> Path:
     converter = DocumentConverter(
         format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=opts)}
     )
-    print(f"converting {pdf.name} (ocr=off)...")
-    result = converter.convert(str(pdf))
+    print(f"converting {pdf.name} (ocr=off, pages={PAGE_RANGE[0]}-{PAGE_RANGE[1]})...")
+    result = converter.convert(str(pdf), page_range=PAGE_RANGE)
     dest.parent.mkdir(parents=True, exist_ok=True)
     result.document.save_as_json(dest)
     print(f"wrote {dest}")

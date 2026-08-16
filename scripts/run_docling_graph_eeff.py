@@ -19,9 +19,9 @@ GOLD = {
     "consolidado": "21262335",
     "controlante": "21259769",
 }
-# Chat demo stays llama-3.3-70b-versatile. That model's free TPD is 100k and
-# already exhausted; dense Graph also overshoots its 12k TPM. Overlay uses 8b.
-DEFAULT_MODEL = "llama-3.1-8b-instant"
+# Chat demo stays llama-3.3-70b-versatile (100k TPD / 12k TPM, exhausted today).
+# 8b free TPM is 6k and Graph's schema+page is ~7k tokens. gpt-oss-120b is 8k TPM / 200k TPD.
+DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 
 def load_env(path: Path) -> None:

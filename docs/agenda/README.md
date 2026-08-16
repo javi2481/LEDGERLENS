@@ -16,7 +16,6 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 
 | Ítem | Cuándo retomarlo |
 |------|------------------|
-| [Overlay de hechos](docling-graph.md) | Rama `feat/docling-graph-eeff`. No shipped. Comparar controlante vs consolidado con ancla de página. |
 | [vLLM](vllm.md) | GPU NVIDIA: chat local o MinerU hybrid. |
 | [Posicionamiento LinkedIn](posicionamiento-linkedin.md) | Publicar tesis IDP 2026 sin vender hybrid/KG no shipped. |
 | [Branding cosmético UI](branding-cosmetic.md) | Chrome LedgerLens (logo, nombre, pie Apache-2.0) sin fork. |
@@ -25,6 +24,7 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 
 | Tema | Estado |
 |------|--------|
+| Overlay **Docling Graph** | En el demo, no en `up.sh` ([nota](docling-graph.md)); 1T26/2T26 oro OK |
 | Parser **MinerU** `pipeline` | Default del demo ([nota](mineru-pipeline.md)); sidecar `mineru-api:8000` |
 | Chat **Groq** | Default del demo: `llama-3.3-70b-versatile`; OpenRouter Nano `:free` no es el default |
 | Embed Voyage | Nativo v0.26.4 en RAGFlow (`VOYAGE_API_KEY` en la UI) |

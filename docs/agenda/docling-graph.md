@@ -1,8 +1,8 @@
-# Overlay de hechos (rama `feat/docling-graph-eeff`)
+# Overlay de hechos (demo)
 
-Experimento. **No** está shipped. **No** va en `scripts/up.sh`. **No** toca `demo_4` ni MinerU.
+En el repo del demo. **No** va en `scripts/up.sh` ni en Compose. **No** toca `demo_4` ni MinerU.
 
-Lee un PDF con Docling local y extrae fichas Pydantic (Groq remoto). El chat `chat_demo_4` se queda.
+Lee un PDF con Docling local y extrae fichas Pydantic (Groq remoto). El chat `chat_demo_4` se queda: Graph no responde preguntas; extrae fichas al costado.
 
 ## Quick path
 
@@ -21,7 +21,7 @@ Lee un PDF con Docling local y extrae fichas Pydantic (Groq remoto). El chat `ch
 
 Siguiente: EEFF 2T26 **PASÓ** (página 4): consolidado **81.956.525** vs controlante **81.946.993**, período `2026-06-30`. El consolidado 2T26 quedó con provenance `document` (igual `fuente_pagina=4`); el controlante sí es verbatim sobre la tabla.
 
-Graph **no** está shipped. **No** va en `up.sh`. PR a `main` para ver el diff; no merge directo. El README del demo no lo vende.
+Graph **no** reemplaza el chat. **No** va en `up.sh`. El README del demo lo lista como overlay, no como parser.
 
 ## Config
 

@@ -91,6 +91,20 @@ Con `ragflow-cpu` en :80, `mineru-api` healthy y Voyage configurado:
 
 Un clone de GitHub **no** trae chunks: Infinity/MySQL/MinIO viven en volúmenes Docker. Quien pruebe el repo parsea en su máquina. El parseo previo es de **esta instancia** (demo LinkedIn / screenshots).
 
+## Overlay de hechos (Docling Graph)
+
+Parte del demo, **aparte** del chat. No va en `up.sh` ni en Compose. No re-parsea `demo_4` ni toca MinerU.
+
+El chat busca chunks. Graph arma fichas: consolidado vs controlante, con página. Misma `GROQ_API_KEY` del `.env`.
+
+```bash
+pip install docling-graph   # sin extra vlm
+python scripts/run_docling_graph_eeff.py           # 1T26, página 4
+python scripts/run_docling_graph_eeff.py --preset 2t26
+```
+
+Oro ya corrido: 1T26 **21.262.335** vs **21.259.769**; 2T26 **81.956.525** vs **81.946.993**. Detalle: [docs/agenda/docling-graph.md](docs/agenda/docling-graph.md). `outputs/` está en gitignore.
+
 ## Opcional: Naive / DeepDoc / PaddleOCR
 
 MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si no hay capa de texto. PaddleOCR: `COMPOSE_PROFILES=infinity,cpu,paddleocr`, descomentar vars en `.env`, factory `http://paddleocr:8080/layout-parsing`, `PP-StructureV3`, token vacío.
@@ -104,8 +118,10 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 | `docker/mineru/` | Sidecar `mineru[pipeline]==3.4.5`, `mineru-api :8000` |
 | `.env.example` | Infinity + pin; `MINERU_APISERVER`; `GROQ_API_KEY` comentado; PaddleOCR comentado |
 | `scripts/up.sh` / `scripts/check.sh` | Arranque / contratos+PDFs |
+| `scripts/run_docling_graph_eeff.py` | Overlay Graph (no lo llama `up.sh`) |
+| `templates/` | Plantilla EEFF BYMA para Graph |
 | `docs/archivos_muestra/` | PDFs BYMA del demo |
-| `docs/agenda/` | Diferidos (vLLM, branding, LinkedIn) |
+| `docs/agenda/` | Diferidos (vLLM, branding, LinkedIn) + nota Graph |
 | `research/` | Dumps Parallel |
 | `openspec/changes/ledger-lens-ragflow/` | SDD activo (Gentle AI hybrid) |
 

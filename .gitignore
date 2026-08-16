@@ -12,3 +12,4 @@ ragflow-logs/
 *.log
 .verify-tmp/
 .DS_Store
+outputs/

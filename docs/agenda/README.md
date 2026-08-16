@@ -9,7 +9,7 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 ## Quick path
 
 1. Abrí el ítem que vas a retomar.
-2. Confirmá el disparador (GPU, chrome UI, LinkedIn).
+2. Confirmá el disparador (grafo, GPU, chrome UI, LinkedIn).
 3. Seguí el checklist. No implementar sin disparador.
 
 ## Activo
@@ -24,6 +24,7 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 
 | Tema | Estado |
 |------|--------|
+| Overlay **Docling Graph** | En el demo, no en `up.sh` ([nota](docling-graph.md)); 1T26/2T26 oro OK |
 | Parser **MinerU** `pipeline` | Default del demo ([nota](mineru-pipeline.md)); sidecar `mineru-api:8000` |
 | Chat **Groq** | Default del demo: `llama-3.3-70b-versatile`; OpenRouter Nano `:free` no es el default |
 | Embed Voyage | Nativo v0.26.4 en RAGFlow (`VOYAGE_API_KEY` en la UI) |

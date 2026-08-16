@@ -9,13 +9,14 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 ## Quick path
 
 1. Abrí el ítem que vas a retomar.
-2. Confirmá el disparador (GPU, chrome UI, LinkedIn).
+2. Confirmá el disparador (grafo, GPU, chrome UI, LinkedIn).
 3. Seguí el checklist. No implementar sin disparador.
 
 ## Activo
 
 | Ítem | Cuándo retomarlo |
 |------|------------------|
+| [Overlay de hechos](docling-graph.md) | Rama `feat/docling-graph-eeff`. No shipped. Comparar controlante vs consolidado con ancla de página. |
 | [vLLM](vllm.md) | GPU NVIDIA: chat local o MinerU hybrid. |
 | [Posicionamiento LinkedIn](posicionamiento-linkedin.md) | Publicar tesis IDP 2026 sin vender hybrid/KG no shipped. |
 | [Branding cosmético UI](branding-cosmetic.md) | Chrome LedgerLens (logo, nombre, pie Apache-2.0) sin fork. |

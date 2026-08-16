@@ -1,6 +1,6 @@
 # Archivos de muestra (BYMA)
 
-PDFs reales de BYMA para el demo local. Dataset UI: **`demo_4`** (MinerU `pipeline`). Chat: Gemini `gemini-3.1-flash-lite`. Embed: Voyage `voyage-finance-2` (nativo RAGFlow). Rerank: `rerank-2.5-lite`.
+PDFs reales de BYMA para el demo local. Dataset UI: **`demo_4`** (MinerU `pipeline`). Chat: Groq `llama-3.3-70b-versatile`. Embed: Voyage `voyage-finance-2` (nativo RAGFlow). Rerank: `rerank-2.5-lite`.
 
 Orden: **configurar el dataset** (MinerU, español, KG/RAPTOR off) → **subir** → en cada file **Tamaño de la tarea por página = 128** → **Parse** de a uno. Si subís antes de configurar, cada archivo queda en DeepDOC y hay que borrar y volver a cargar.
 

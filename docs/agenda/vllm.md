@@ -31,7 +31,7 @@ Experimento VLM **sin** vLLM (opcional, no demo): Ollama `ibm/granite-docling:25
 
 | Tema | Decisión |
 |------|----------|
-| Disparador | GPU NVIDIA dedicada **y** OpenRouter/Ollama no alcanzan, **o** se quiere VLM local |
+| Disparador | GPU NVIDIA dedicada **y** Groq/Ollama no alcanzan, **o** se quiere VLM local |
 | Esta PC | No implementar |
 | Parser clásico | [mineru-pipeline.md](mineru-pipeline.md) en CPU; no necesita vLLM |
 | CPU vLLM | No. No prometer VLM en APU |

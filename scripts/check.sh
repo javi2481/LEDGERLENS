@@ -37,12 +37,16 @@ fi
 bash -n scripts/up.sh || fail "scripts/up.sh failed bash -n"
 [[ -f .env.example ]] || fail "missing .env.example"
 grep -q '^DOC_ENGINE=infinity' .env.example || fail ".env.example must set DOC_ENGINE=infinity"
-grep -qE '^# GEMINI_API_KEY=' .env.example || fail ".env.example must keep GEMINI_API_KEY commented"
+grep -qE '^# GROQ_API_KEY=' .env.example || fail ".env.example must keep GROQ_API_KEY commented"
+if grep -qE '^GROQ_API_KEY=gsk_' .env.example; then
+  fail ".env.example must not contain a real Groq key"
+fi
+grep -qE '^# GEMINI_API_KEY=' .env.example || fail ".env.example must keep GEMINI_API_KEY commented (unused factory)"
 if grep -qE '^GEMINI_API_KEY=AIza' .env.example; then
   fail ".env.example must not contain a real Gemini key"
 fi
 if grep -qE '^OPENROUTER_API_KEY=' .env.example; then
-  fail ".env.example must not set OPENROUTER_API_KEY (OpenRouter is out)"
+  fail ".env.example must not set OPENROUTER_API_KEY (OpenRouter is not the default chat)"
 fi
 [[ ! -e app.py ]] || fail "forbidden app.py"
 [[ ! -d ledger_lens ]] || fail "forbidden ledger_lens/"
@@ -107,12 +111,12 @@ else
 fi
 
 if command -v ollama >/dev/null 2>&1; then
-  info "ollama on PATH (optional last fallback; default chat is Gemini factory)"
+  info "ollama on PATH (optional last fallback; default chat is Groq llama-3.3-70b-versatile)"
 else
-  skip "ollama not on PATH (ok — default chat is Gemini)"
+  skip "ollama not on PATH (ok — default chat is Groq)"
 fi
 
-pass "chat default is Gemini native (no LiteLLM overlay, no OpenRouter)"
+pass "chat default is Groq llama-3.3-70b-versatile (no LiteLLM overlay, no OpenRouter default)"
 
 echo
 echo "Done. Compose/E2E remains on a ≥16 GB host."

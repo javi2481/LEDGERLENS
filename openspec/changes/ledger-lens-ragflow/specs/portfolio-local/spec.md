@@ -14,11 +14,11 @@ The demo MUST include BYMA sample PDFs covering comunicados, EEFF, presentacione
 
 ### Requirement: README startup and E2E checklist
 
-README MUST cover x86_64, ≥16 GB, Docker ≥24 (not ARM64), Spanish UI, Empty response, Show Quote, BYMA samples in `docs/archivos_muestra/`, Gemini default chat (`gemini-3.1-flash-lite`), Voyage embed, Ollama last fallback (`OLLAMA_HOST=0.0.0.0`), MinerU `pipeline` default parser (`demo_4`, task page size 128), and E2E: ingest, in-corpus cited Q, out-of-corpus Empty response.
+README MUST cover x86_64, ≥16 GB, Docker ≥24 (not ARM64), Spanish UI, Empty response, Show Quote, BYMA samples in `docs/archivos_muestra/`, Groq default chat (`llama-3.3-70b-versatile`), Voyage embed, Ollama last fallback (`OLLAMA_HOST=0.0.0.0`), MinerU `pipeline` default parser (`demo_4`, task page size 128), and E2E: ingest, in-corpus cited Q, out-of-corpus Empty response.
 
 #### Scenario: Operator starts from README
 
-- GIVEN Docker and Gemini (optional Ollama last fallback) meet prerequisites
+- GIVEN Docker and Groq (optional Ollama last fallback) meet prerequisites
 - WHEN the operator follows README
 - THEN they SHALL open RAGFlow UI on port 80
 

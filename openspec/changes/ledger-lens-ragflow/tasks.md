@@ -55,4 +55,8 @@ Chain strategy: size-exception
 
 - [x] 6.1 Add overlay service `litellm` (`ghcr.io/berriai/litellm:v1.97.0`, `:4000`, config-file mode, no Postgres) and `docker/litellm/config.yaml` (`ledgerlens-chat` → Gemini → Ollama; no OpenRouter; no Voyage).
 - [x] 6.2 Point README / `.env.example` / OpenSpec local-stack at OpenAI-API-Compatible `http://litellm:4000/v1` model `ledgerlens-chat`. Voyage embed unchanged.
-- [x] 6.3 Rollback: remove overlay `litellm`, `docker/litellm/`, `docs/agenda/litellm.md`. Default chat is Gemini factory `gemini-3.1-flash-lite` + host Ollama last fallback. OpenRouter stays out. Voyage stays native.
+- [x] 6.3 Rollback: remove overlay `litellm`, `docker/litellm/`, `docs/agenda/litellm.md`. Chat went Gemini factory then **Groq** `llama-3.3-70b-versatile` (live `chat_demo_4`). OpenRouter Nano `:free` is not the default. Voyage stays native.
+
+## Phase 7: Groq chat default (2026-08-16)
+
+- [x] 7.1 Align README, `.env.example`, `scripts/check.sh` / `up.sh`, agenda, research index, and OpenSpec local-stack/portfolio-local to Groq `llama-3.3-70b-versatile` (instance `demo_4`). Do not document Gemini flash-lite or OpenRouter Nano `:free` as the running default.

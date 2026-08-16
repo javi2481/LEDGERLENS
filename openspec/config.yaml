@@ -6,7 +6,7 @@ strict_tdd: false
 
 context: |
   Product: LedgerLens — Spanish Q&A over BYMA sample financial PDFs with citations; empty/no-evidence reply instead of inventing.
-  Intended stack: RAGFlow v0.26.4 self-host (UI + RAG) + Infinity. Default PDF parser MinerU pipeline (sidecar MINERU_APISERVER=http://mineru-api:8000, MINERU_BACKEND=pipeline); Naive/DeepDoc fallback; optional PaddleOCR overlay. Default chat: Gemini factory gemini-3.1-flash-lite in RAGFlow UI; host Ollama qwen2.5:1.5b last fallback (http://host.docker.internal:11434, never 127.0.0.1). No LiteLLM sidecar. No OpenRouter. Embed/rerank: Voyage native in RAGFlow.
+  Intended stack: RAGFlow v0.26.4 self-host (UI + RAG) + Infinity. Default PDF parser MinerU pipeline (sidecar MINERU_APISERVER=http://mineru-api:8000, MINERU_BACKEND=pipeline); Naive/DeepDoc fallback; optional PaddleOCR overlay. Default chat: Groq llama-3.3-70b-versatile in RAGFlow UI; host Ollama qwen2.5:1.5b last fallback (http://host.docker.internal:11434, never 127.0.0.1). No LiteLLM sidecar. OpenRouter Nano :free is not the default. Embed/rerank: Voyage native in RAGFlow.
   Runtime: Docker Compose local, x86_64, ≥16 GB. Host-level checks: ./scripts/check.sh. No Gradio, no Hugging Face Space, no custom Python RAG package, no app.py.
   Demo constraint: BYMA sample PDFs in docs/archivos_muestra/ (portfolio demo; not a live market product).
   Persistence: hybrid (openspec files + Engram observations, project ledgerlens).
@@ -44,7 +44,7 @@ rules:
   design:
     - Include sequence diagrams for complex flows
     - Document architecture decisions with rationale
-    - Compose RAGFlow + Infinity + Gemini chat + Voyage embed; MinerU pipeline default parser; Ollama last fallback; PaddleOCR optional; do not introduce app.py
+    - Compose RAGFlow + Infinity + Groq chat + Voyage embed; MinerU pipeline default parser; Ollama last fallback; PaddleOCR optional; do not introduce app.py
   tasks:
     - Group by phase, use hierarchical numbering
     - Keep tasks completable in one session

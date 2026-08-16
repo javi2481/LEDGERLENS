@@ -8,6 +8,6 @@
 | Source tarball | https://github.com/infiniflow/ragflow/archive/refs/tags/v0.26.4.tar.gz |
 | License | Apache-2.0 (copy in `vendor/ragflow-docker/LICENSE`) |
 
-Do **not** edit files under `vendor/ragflow-docker/` except to refresh the pin. Overlay, env, PaddleOCR, MinerU API, and LedgerLens UI defaults (MinerU parser, Gemini chat) live outside `vendor/`.
+Do **not** edit files under `vendor/ragflow-docker/` except to refresh the pin. Overlay, env, PaddleOCR, MinerU API, and LedgerLens UI defaults (MinerU parser, Groq chat) live outside `vendor/`.
 
 `vendor/ragflow-docker/.env` is generated at runtime by `scripts/up.sh` (copy of the repo-root `.env`) and is gitignored.

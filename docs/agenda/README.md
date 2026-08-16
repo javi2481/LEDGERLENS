@@ -1,6 +1,6 @@
 # Agenda (retomar luego)
 
-Ítems que **no** entran en el demo actual. Stack vigente: parser **MinerU** `pipeline` (sidecar CPU), Infinity, chat **Gemini** `gemini-3.1-flash-lite` (factory nativa) + Ollama fallback, embed **Voyage** nativo. Esta PC = Windows Ryzen 8500G 32 GB, **sin NVIDIA**.
+Ítems que **no** entran en el demo actual. Stack vigente: parser **MinerU** `pipeline` (sidecar CPU), Infinity, chat **Groq** `llama-3.3-70b-versatile` + Ollama fallback, embed **Voyage** nativo. Esta PC = Windows Ryzen 8500G 32 GB, **sin NVIDIA**.
 
 Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en `research/`.
 
@@ -26,7 +26,7 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 | Tema | Estado |
 |------|--------|
 | Parser **MinerU** `pipeline` | Default del demo ([nota](mineru-pipeline.md)); sidecar `mineru-api:8000` |
-| Chat **Gemini** | Default del demo: factory nativa `gemini-3.1-flash-lite`; sin OpenRouter; sin sidecar LiteLLM |
+| Chat **Groq** | Default del demo: `llama-3.3-70b-versatile`; OpenRouter Nano `:free` no es el default; sin sidecar LiteLLM |
 | Embed Voyage | Nativo v0.26.4 en RAGFlow (`VOYAGE_API_KEY` en la UI) |
 | Parser Naive | Fallback ([nota](naive-parser.md)); DeepDoc si escaneo |
 | E2E Windows 32 GB | Compose + BYMA 1T26 (comunicado, EEFF, presentación) |
@@ -37,4 +37,4 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 
 ## Next step
 
-Corpus BYMA en `docs/archivos_muestra/` parseado con MinerU en **`demo_4`** ([runbook](mineru-pipeline.md)). Chat default: Gemini `gemini-3.1-flash-lite`. Después: [plantilla Graph](docling-graph.md) **o** [branding](branding-cosmetic.md) **o** [LinkedIn](posicionamiento-linkedin.md). No retomar TEI ni compose en el Linux de 7 GB. Hybrid MinerU = GPU + RAGFlow que liste el backend.
+Corpus BYMA en `docs/archivos_muestra/` parseado con MinerU en **`demo_4`** ([runbook](mineru-pipeline.md)). Chat default: Groq `llama-3.3-70b-versatile` (`chat_demo_4`). Después: [plantilla Graph](docling-graph.md) **o** [branding](branding-cosmetic.md) **o** [LinkedIn](posicionamiento-linkedin.md). No retomar TEI ni compose en el Linux de 7 GB. Hybrid MinerU = GPU + RAGFlow que liste el backend.

@@ -12,13 +12,13 @@ LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 | Tema | Valor |
 |------|--------|
 | Producto | Q&A español + citas; empty response si no hay evidencia |
-| Stack en config | MinerU `pipeline` + Infinity + Gemini chat + Voyage nativo; Ollama último fallback; PaddleOCR opcional |
+| Stack en config | MinerU `pipeline` + Infinity + Groq chat + Voyage nativo; Ollama último fallback; PaddleOCR opcional |
 | Tests | `./scripts/check.sh` (no Strict TDD; E2E manual en ≥16 GB) |
 | Persistencia | `openspec/config.yaml` → `persistence: hybrid` |
 
 ## Checklist
 
-- [ ] Specs/design/README describen el **mismo** default (MinerU pipeline, Gemini, Voyage, Infinity)
+- [ ] Specs/design/README describen el **mismo** default (MinerU pipeline, Groq, Voyage, Infinity)
 - [ ] `.env` y API keys **no** están en git
 
 ## Next step

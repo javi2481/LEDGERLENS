@@ -12,7 +12,7 @@ Dumps: `research/extract-docling-graph-docs.json`, `research/extract-docling-gra
 
 1. `pip install docling-graph` (LiteLLM ya viene). No hace falta extra `vlm`.
 2. Plantilla Pydantic estrecha: emisor, período, estado, métrica, unidad, fuente (página).
-3. `backend="llm"`, `inference="remote"` (Gemini / OpenRouter / Mistral). Misma key que el demo, no commitear.
+3. `backend="llm"`, `inference="remote"` (Groq / Gemini / OpenRouter / Mistral). Misma key que el demo, no commitear.
 4. Opcional: `docling_serve_url` al sidecar de [docling-serve.md](docling-serve.md) para no cargar modelos de conversión en el cliente.
 5. `extraction_contract="dense"` en EEFF largos. `provenance="standard"` (default, cero tokens extra).
 

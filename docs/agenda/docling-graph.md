@@ -8,7 +8,8 @@ Lee un PDF con Docling local y extrae fichas Pydantic (Groq remoto). El chat `ch
 
 1. `pip install docling-graph` (sin extra `vlm`).
 2. `python scripts/run_docling_graph_eeff.py` — un PDF: `docs/archivos_muestra/BYMA_-_EEFF_31-03-2026_VF.pdf`.
-3. Salida en `outputs/graph-1t26/` (gitignored).
+3. El runner convierte el PDF **sin OCR** (el EEFF es digital; el OCR default de Graph rompe RapidOCR/torch en esta PC) y extrae sobre el JSON.
+4. Salida en `outputs/graph-1t26/` (gitignored).
 
 ## Criterio de merge
 

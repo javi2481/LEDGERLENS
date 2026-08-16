@@ -81,7 +81,7 @@ def gold_report(graph: object) -> int:
             controlante_ids.append(str(node_id))
             print(f"gold hit controlante node={node_id} page={data.get('fuente_pagina') or data.get('__provenance__')}")
         if "consolidado" in labels or "controlante" in labels:
-            print(f"node={node_id} keys={sorted(data.keys())}")
+        print(f"node={node_id} payload={blob[:800]}")
     c_set, t_set = set(consolidado_ids), set(controlante_ids)
     if c_set and t_set and c_set.isdisjoint(t_set):
         print("gold PASS: two distinct nodes")

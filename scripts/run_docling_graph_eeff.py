@@ -73,15 +73,13 @@ def gold_report(graph: object) -> int:
     for node_id, data in graph.nodes(data=True):
         blob = json.dumps(data, default=str)
         digits = _digits(blob)
-        labels = blob.lower()
+        print(f"node={node_id} payload={blob[:1200]}")
         if GOLD["consolidado"] in digits or GOLD["consolidado"] in blob:
             consolidado_ids.append(str(node_id))
             print(f"gold hit consolidado node={node_id} page={data.get('fuente_pagina') or data.get('__provenance__')}")
         if GOLD["controlante"] in digits or GOLD["controlante"] in blob:
             controlante_ids.append(str(node_id))
             print(f"gold hit controlante node={node_id} page={data.get('fuente_pagina') or data.get('__provenance__')}")
-        if "consolidado" in labels or "controlante" in labels:
-        print(f"node={node_id} payload={blob[:800]}")
     c_set, t_set = set(consolidado_ids), set(controlante_ids)
     if c_set and t_set and c_set.isdisjoint(t_set):
         print("gold PASS: two distinct nodes")

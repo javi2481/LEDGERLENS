@@ -104,6 +104,7 @@ def main() -> int:
         return 1
 
     from docling_graph import PipelineConfig, run_pipeline
+    from docling_graph.config import LlmRuntimeOverrides
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     wanted = f"{PAGE_RANGE[0]}-{PAGE_RANGE[1]}"
@@ -128,6 +129,7 @@ def main() -> int:
         provenance="standard",
         provider_override="groq",
         model_override=model,
+        llm_overrides=LlmRuntimeOverrides(max_output_tokens=4096),
         docling_config="ocr",
         output_dir=str(OUTPUT_DIR),
     )

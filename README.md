@@ -72,7 +72,7 @@ docker compose --env-file .env \
    - MinerU: auto-provision con `MINERU_APISERVER` en `.env`, o agregarlo a mano.
    - Ollama (fallback): `http://host.docker.internal:11434`, modelo `qwen2.5:1.5b`. No uses OpenRouter Nano `:free`.
 3. Knowledge base **`demo_4`**: **Configuración primero** (PDF parser = **MinerU**; español; Knowledge graph y RAPTOR off). **Después** subir `docs/archivos_muestra/*.pdf`. En cada file, **Tamaño de la tarea por página = 128**. **Por último** Parse, de a uno. Si MinerU está caído, el ingest debe fallar visible (no texto inventado). Cambiar Configuración no pisa archivos ya subidos. Detalle: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
-4. Chat en español: asistente **`chat_demo_4`**, KB tildada, **Show Quote** on, umbral **0.3** (Voyage rerank; 0.4 devolvía 0 chunks), Empty response no vacío (copy de la tabla de stack). Prompt: *Responde solo en español. Cita los fragmentos. Si no hay evidencia, usa la respuesta vacía. No inventes cifras.*
+4. Chat en español: asistente **`chat_demo_4`**, KB tildada, **Show Quote** on, umbral **0.3** (Voyage rerank; 0.4 devolvía 0 chunks), Empty response no vacío (copy de la tabla de stack). Prompt: español + citas + fichas Graph priorizan consolidado vs controlante. Después del overlay: `python scripts/push_hechos_to_demo4.py`.
 
 Ollama en el host, si lo usás:
 
@@ -93,17 +93,12 @@ Un clone de GitHub **no** trae chunks: Infinity/MySQL/MinIO viven en volúmenes 
 
 ## Overlay de hechos (Docling Graph)
 
-Parte del demo, **aparte** del chat. No va en `up.sh` ni en Compose. No re-parsea `demo_4` ni toca MinerU.
+Parte del demo. **No** va en `up.sh` ni en Compose. **No** re-parsea los PDFs de `demo_4` ni toca MinerU.
 
-El chat busca chunks. Graph arma fichas: consolidado vs controlante, con página. Misma `GROQ_API_KEY` del `.env`.
+1. Extraer fichas: `python scripts/run_docling_graph_eeff.py` y `--preset 2t26`.
+2. Meter esas fichas al chat: `python scripts/push_hechos_to_demo4.py` (sube `docs/hechos_eeff.md` como un chunk a `demo_4` y actualiza el prompt de `chat_demo_4`). Hace falta el stack arriba y un API token de RAGFlow (o `RAGFLOW_API_KEY`).
 
-```bash
-pip install docling-graph   # sin extra vlm
-python scripts/run_docling_graph_eeff.py           # 1T26, página 4
-python scripts/run_docling_graph_eeff.py --preset 2t26
-```
-
-Oro ya corrido: 1T26 **21.262.335** vs **21.259.769**; 2T26 **81.956.525** vs **81.946.993**. Detalle: [docs/agenda/docling-graph.md](docs/agenda/docling-graph.md). `outputs/` está en gitignore.
+El chat busca chunks. Las fichas Graph desambiguan consolidado vs controlante (página 4). Preguntas trampa (sin decir “consolidado”) deben dar **21.262.335** (1T26) y **81.956.525** (2T26), no 21.259.769 / 81.946.993. Detalle: [docs/agenda/docling-graph.md](docs/agenda/docling-graph.md). `outputs/` está en gitignore.
 
 ## Opcional: Naive / DeepDoc / PaddleOCR
 
@@ -119,6 +114,8 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 | `.env.example` | Infinity + pin; `MINERU_APISERVER`; `GROQ_API_KEY` comentado; PaddleOCR comentado |
 | `scripts/up.sh` / `scripts/check.sh` | Arranque / contratos+PDFs |
 | `scripts/run_docling_graph_eeff.py` | Overlay Graph (no lo llama `up.sh`) |
+| `scripts/push_hechos_to_demo4.py` | Inyecta fichas Graph en `chat_demo_4` (sin reparsear PDFs) |
+| `docs/hechos_eeff.md` | Fichas 1T26/2T26 para el chat |
 | `templates/` | Plantilla EEFF BYMA para Graph |
 | `docs/archivos_muestra/` | PDFs BYMA del demo |
 | `docs/agenda/` | Diferidos (vLLM, branding, LinkedIn) + nota Graph |

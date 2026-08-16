@@ -1,8 +1,8 @@
 # Overlay de hechos (demo)
 
-En el repo del demo. **No** va en `scripts/up.sh` ni en Compose. **No** toca `demo_4` ni MinerU.
+En el repo del demo. **No** va en `scripts/up.sh` ni en Compose. **No** re-parsea los PDFs de `demo_4` ni toca MinerU.
 
-Lee un PDF con Docling local y extrae fichas Pydantic (Groq remoto). El chat `chat_demo_4` se queda: Graph no responde preguntas; extrae fichas al costado.
+Lee un PDF con Docling local, extrae fichas, y `scripts/push_hechos_to_demo4.py` las inyecta como un chunk en `demo_4` para que `chat_demo_4` las use. El parser MinerU de los EEFF no se toca.
 
 ## Quick path
 
@@ -10,7 +10,7 @@ Lee un PDF con Docling local y extrae fichas Pydantic (Groq remoto). El chat `ch
 2. `python scripts/run_docling_graph_eeff.py` (1T26) o `--preset 2t26`.
 3. El runner convierte **solo la página 4, sin OCR** (el EEFF es digital; el OCR default de Graph rompe RapidOCR/torch; las 81 páginas OOM en TableFormer). El oro está en esa página del consolidado.
 4. Contrato **direct** (un llamado), markdown, `max_output_tokens=4096` (si no, Graph pide 131072 de salida y se niega a llamar). Overlay: `openai/gpt-oss-120b` (8k TPM). El 8b free es 6k TPM y Graph pide ~7k. El chat sigue en `llama-3.3-70b-versatile`. Override: `GRAPH_GROQ_MODEL`.
-5. Salida en `outputs/graph-1t26/` (gitignored).
+5. Para el chat: `python scripts/push_hechos_to_demo4.py` (chunk manual en `demo_4`, prompt de `chat_demo_4`).
 
 ## Criterio de merge
 

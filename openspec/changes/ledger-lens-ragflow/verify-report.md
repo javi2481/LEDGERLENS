@@ -14,6 +14,8 @@ build_exit_code: 0
 build_output_hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
 
+> Snapshot histórico: verify en Linux ~7 GB, `ls examples/synthetic/*.pdf` (Acme Norte). No describe el demo Windows 32 GB / corpus BYMA / MinerU `demo_4`. No re-correr este verify como evidencia actual.
+
 ## Verification Report
 
 **Change**: ledger-lens-ragflow

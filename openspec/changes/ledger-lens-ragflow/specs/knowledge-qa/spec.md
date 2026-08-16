@@ -8,7 +8,7 @@ Q&A MUST be RAGFlow knowledge-base chat. Non-empty answers MUST be Spanish and M
 
 #### Scenario: Evidence-backed Spanish answer
 
-- GIVEN parsed synthetic PDFs contain a known fact
+- GIVEN parsed BYMA PDFs in `demo_4` contain a known fact
 - WHEN the user asks a Spanish question those PDFs answer
 - THEN the reply MUST be Spanish with Show Quote; uncited non-empty answers MUST NOT be shown
 

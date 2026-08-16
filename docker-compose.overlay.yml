@@ -1,22 +1,26 @@
-# Docling Serve CPU is the default PDF parser sidecar (classic layout + TableFormer, not VLM).
+# MinerU pipeline CPU is the default PDF parser sidecar (RAGFlow POST /file_parse).
+# Official mineru:latest is GPU/vLLM; this overlay builds docker/mineru (CPU).
 # PaddleOCR stays optional (profile: paddleocr). DeepDoc stays in-image for scans.
 # Do not publish host :8080.
 #
+# Build contexts are relative to vendor/ragflow-docker (first -f / Compose bake).
+# From that dir, repo docker/ is ../../docker/.
 # Enable PaddleOCR: COMPOSE_PROFILES=infinity,cpu,paddleocr
 services:
-  docling-serve:
-    image: ${DOCLING_SERVE_IMAGE:-quay.io/docling-project/docling-serve-cpu:v1.30.0}
+  mineru-api:
+    build:
+      context: ../../docker/mineru
+      dockerfile: Dockerfile
+    image: ledgerlens-mineru:cpu
     restart: unless-stopped
     networks:
       - ragflow
     ports:
-      - "5001:5001"
+      - "8000:8000"
     environment:
-      DOCLING_SERVE_ENABLE_UI: "0"
-      # RAGFlow uses the sync convert API; default 120s 504s small BYMA PDFs on CPU.
-      DOCLING_SERVE_MAX_SYNC_WAIT: "3600"
+      MINERU_MODEL_SOURCE: huggingface
     volumes:
-      - docling-hf-cache:/root/.cache/huggingface
+      - mineru-cache:/root/.cache
     shm_size: "2gb"
     healthcheck:
       test:
@@ -24,18 +28,25 @@ services:
           "CMD",
           "python",
           "-c",
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5001/health', timeout=5)",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)",
         ]
       interval: 15s
       timeout: 10s
       retries: 20
-      start_period: 90s
+      start_period: 180s
+
+  ragflow-cpu:
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mineru-api:
+        condition: service_healthy
 
   paddleocr:
     profiles:
       - paddleocr
     build:
-      context: ./docker/paddleocr
+      context: ../../docker/paddleocr
       dockerfile: Dockerfile
     image: ledgerlens-paddleocr:cpu
     restart: unless-stopped
@@ -46,7 +57,7 @@ services:
       PADDLE_PDX_MODEL_SOURCE: huggingface
 
 volumes:
-  docling-hf-cache:
+  mineru-cache:
 
 networks:
   ragflow:

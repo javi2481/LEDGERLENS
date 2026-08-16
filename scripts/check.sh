@@ -18,16 +18,31 @@ grep -q 'v0.26.4' vendor/PIN.md || fail "vendor/PIN.md must pin v0.26.4"
 [[ -f vendor/ragflow-docker/docker-compose.yml ]] || fail "missing vendor compose"
 [[ -f docker-compose.overlay.yml ]] || fail "missing docker-compose.overlay.yml"
 grep -q 'profiles:' docker-compose.overlay.yml || fail "overlay must gate paddleocr on a profile"
-grep -q 'docling-serve:' docker-compose.overlay.yml || fail "overlay must define docling-serve sidecar"
-grep -q '^DOCLING_SERVER_URL=http://docling-serve:5001' .env.example || fail ".env.example must set DOCLING_SERVER_URL to Compose DNS"
-grep -q '^USE_DOCLING=false' .env.example || fail ".env.example must keep USE_DOCLING=false (sidecar, not in-process)"
+grep -q 'mineru-api:' docker-compose.overlay.yml || fail "overlay must define mineru-api sidecar"
+if grep -qE '^[[:space:]]*litellm:' docker-compose.overlay.yml; then
+  fail "overlay must not define litellm (rolled back)"
+fi
+[[ ! -e docker/litellm ]] || fail "docker/litellm must not exist after LiteLLM rollback"
+if grep -qE '^LITELLM_MASTER_KEY=' .env.example; then
+  fail ".env.example must not set LITELLM_MASTER_KEY"
+fi
+grep -q '^MINERU_APISERVER=http://mineru-api:8000' .env.example || fail ".env.example must set MINERU_APISERVER to Compose DNS"
+grep -q '^MINERU_BACKEND=pipeline' .env.example || fail ".env.example must set MINERU_BACKEND=pipeline"
+grep -q '^USE_DOCLING=false' .env.example || fail ".env.example must keep USE_DOCLING=false (no in-process Docling)"
+if grep -qE '^DOCLING_SERVER_URL=' .env.example; then
+  fail ".env.example must not set DOCLING_SERVER_URL (MinerU is the default parser)"
+fi
+[[ -f docker/mineru/Dockerfile ]] || fail "missing docker/mineru/Dockerfile"
 [[ -f scripts/up.sh ]] || fail "missing scripts/up.sh"
 bash -n scripts/up.sh || fail "scripts/up.sh failed bash -n"
 [[ -f .env.example ]] || fail "missing .env.example"
 grep -q '^DOC_ENGINE=infinity' .env.example || fail ".env.example must set DOC_ENGINE=infinity"
-grep -qE '^# OPENROUTER_API_KEY=' .env.example || fail ".env.example must keep OPENROUTER_API_KEY commented"
-if grep -qE '^OPENROUTER_API_KEY=sk-' .env.example; then
-  fail ".env.example must not contain a real OpenRouter key"
+grep -qE '^# GEMINI_API_KEY=' .env.example || fail ".env.example must keep GEMINI_API_KEY commented"
+if grep -qE '^GEMINI_API_KEY=AIza' .env.example; then
+  fail ".env.example must not contain a real Gemini key"
+fi
+if grep -qE '^OPENROUTER_API_KEY=' .env.example; then
+  fail ".env.example must not set OPENROUTER_API_KEY (OpenRouter is out)"
 fi
 [[ ! -e app.py ]] || fail "forbidden app.py"
 [[ ! -d ledger_lens ]] || fail "forbidden ledger_lens/"
@@ -64,7 +79,7 @@ if [[ -r /proc/meminfo ]]; then
   mem_gb=$((mem_kb / 1024 / 1024))
   info "MemTotal≈${mem_gb} GiB (RAGFlow wants ≥16)"
   if (( mem_gb < 16 )); then
-    skip "compose/E2E: RAM < 16 GiB — see docs/agenda/e2e-16gb.md"
+    skip "compose/E2E: RAM < 16 GiB — see docs/agenda/descartado.md"
   fi
 fi
 
@@ -92,47 +107,12 @@ else
 fi
 
 if command -v ollama >/dev/null 2>&1; then
-  info "ollama on PATH (fallback chat; default is OpenRouter)"
+  info "ollama on PATH (optional last fallback; default chat is Gemini factory)"
 else
-  skip "ollama not on PATH (ok — OpenRouter is default chat)"
+  skip "ollama not on PATH (ok — default chat is Gemini)"
 fi
 
-# --- OpenRouter smoke (optional) ---
-key=""
-if [[ -f .env ]]; then
-  key="$(python3 - <<'PY'
-from pathlib import Path
-p = Path(".env")
-for line in p.read_text().splitlines():
-    if line.startswith("OPENROUTER_API_KEY="):
-        print(line.split("=", 1)[1].strip().strip("\"'"))
-PY
-)"
-fi
-if [[ -z "$key" ]]; then
-  skip "OpenRouter smoke: no OPENROUTER_API_KEY in .env"
-else
-  code="$(curl -sS -o /tmp/ledgerlens-or-models.json -w '%{http_code}' \
-    --max-time 30 \
-    -H "Authorization: Bearer $key" \
-    https://openrouter.ai/api/v1/models || true)"
-  if [[ "$code" == "200" ]]; then
-    pass "OpenRouter models endpoint (HTTP 200)"
-  else
-    fail "OpenRouter models endpoint HTTP ${code:-none} (key present, request failed)"
-  fi
-  embed_code="$(curl -sS -o /tmp/ledgerlens-or-embed.json -w '%{http_code}' \
-    --max-time 60 \
-    -H "Authorization: Bearer $key" \
-    -H "Content-Type: application/json" \
-    -d '{"model":"nvidia/nemotron-3-embed-1b:free","input":"Acme Norte planta Rosario"}' \
-    https://openrouter.ai/api/v1/embeddings || true)"
-  if [[ "$embed_code" == "200" ]]; then
-    pass "OpenRouter embed nvidia/nemotron-3-embed-1b:free"
-  else
-    fail "OpenRouter embed HTTP ${embed_code:-none}"
-  fi
-fi
+pass "chat default is Gemini native (no LiteLLM overlay, no OpenRouter)"
 
 echo
 echo "Done. Compose/E2E remains on a ≥16 GB host."

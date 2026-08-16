@@ -2,7 +2,7 @@
 
 Demo de portfolio: preguntas en **español** sobre PDFs financieros de **BYMA**, con citas. Si no hay evidencia, responde vacío (no inventa).
 
-Stack: **RAGFlow** v0.26.4 self-host (UI + RAG) + Infinity. Parser **Docling** clásico (sidecar CPU, no VLM). Chat **OpenRouter**. Embed **Voyage**. **Ollama** es fallback. **PaddleOCR** no arranca por defecto.
+Stack: **RAGFlow** v0.26.4 self-host (UI + RAG) + Infinity. Parser **MinerU** `pipeline` (sidecar CPU). Chat **Gemini** `gemini-3.1-flash-lite` (factory nativa) + Ollama fallback. Embed **Voyage** nativo. **PaddleOCR** no arranca por defecto.
 
 Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
 
@@ -11,7 +11,7 @@ Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
 1. Instalar Docker ≥24 y **Compose v2** (`docker compose version`). Tu usuario en el grupo `docker`. `vm.max_map_count` ≥ 262144.
 2. Clonar `https://github.com/javi2481/LEDGERLENS`. Copiar `.env.example` → `.env`. Pegar keys (**.env no está en git**).
 3. `./scripts/check.sh` y después `./scripts/up.sh`. UI: <http://localhost>
-4. En la UI: OpenRouter chat + Voyage embed, dataset `demo_1`, parser **Docling**, Empty response + Show Quote (abajo).
+4. En la UI: Gemini `gemini-3.1-flash-lite` + Voyage embed, dataset **`demo_4`**, parser **MinerU**, Empty response + Show Quote (abajo). Runbook: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
 
 En una PC de ~7 GB: solo `./scripts/check.sh`. Compose + E2E: esta PC Windows 32 GB. Diferidos: [docs/agenda/](docs/agenda/).
 
@@ -21,19 +21,19 @@ En una PC de ~7 GB: solo `./scripts/check.sh`. Compose + E2E: esta PC Windows 32
 |-------|---------|---------------------|
 | UI + RAG | RAGFlow **v0.26.4** puerto 80 | — |
 | Motor docs | **Infinity** | no Elasticsearch |
-| Parser PDF | **Docling** clásico (`DOCLING_SERVER_URL=http://docling-serve:5001`) | Naive; DeepDoc (escaneos); PaddleOCR (profile) |
-| Chat | OpenRouter `nvidia/nemotron-3-nano-30b-a3b:free` | Ollama `qwen2.5:1.5b` en `http://host.docker.internal:11434` |
+| Parser PDF | **MinerU** `pipeline` (`MINERU_APISERVER=http://mineru-api:8000`) | Naive; DeepDoc (escaneos); PaddleOCR (profile) |
+| Chat | Gemini `gemini-3.1-flash-lite` (factory nativa) | Ollama `qwen2.5:1.5b` |
 | Embeddings | Voyage `voyage-finance-2` (nativo v0.26.4) | Gemini `gemini-embedding-001` |
 | Empty response | `No hay evidencia suficiente en los documentos indexados para responder. No invento datos.` | no dejar en blanco |
 
-RAGFlow **no** lee `OPENROUTER_API_KEY` solo: hay que pegarla en Model providers. Nunca `127.0.0.1` para Ollama desde el contenedor. `USE_DOCLING=false`: Docling corre en el sidecar, no in-process. Granite-Docling VLM no entra en este demo.
+RAGFlow **no** lee las API keys solo: hay que pegar Gemini (`gemini-3.1-flash-lite`) y Voyage en Model providers. Ollama, si lo usás: `http://host.docker.internal:11434` (**nunca** `127.0.0.1` desde el contenedor). `USE_DOCLING=false`. No setear `DOCLING_SERVER_URL`. MinerU hybrid / Granite-Docling VLM no entran en este demo. No hay sidecar LiteLLM.
 
 ## Requisitos
 
 | Requisito | Valor |
 |-----------|--------|
 | Arquitectura | **x86_64** (imágenes oficiales, no ARM64) |
-| RAM | **≥ 16 GB** (32 GB recomendado: RAGFlow + Docling Serve CPU) |
+| RAM | **≥ 16 GB** (32 GB recomendado: RAGFlow + MinerU pipeline CPU) |
 | Disco | ≥ 50 GB |
 | Docker | ≥ 24.0.0, usuario en grupo `docker` |
 | Compose | ≥ v2.26.1 (`docker compose`, no el binario mailcap `compose`) |
@@ -53,7 +53,7 @@ cp .env.example .env   # luego keys
 ./scripts/up.sh
 ```
 
-`up.sh` falla si `vm.max_map_count` es bajo; copia `.env` a `vendor/ragflow-docker/.env`; levanta Infinity+CPU+Docling Serve; PaddleOCR queda apagado; pull de Ollama solo si está instalado.
+`up.sh` falla si `vm.max_map_count` es bajo; copia `.env` a `vendor/ragflow-docker/.env`; levanta Infinity+CPU+MinerU API; PaddleOCR queda apagado; pull de Ollama solo si está instalado.
 
 Parar:
 
@@ -67,11 +67,12 @@ docker compose --env-file .env \
 
 1. Registro local.
 2. **Model providers**
-   - OpenRouter: misma key que `.env`. Chat `nvidia/nemotron-3-nano-30b-a3b:free`.
-   - Voyage: `voyage-finance-2` (embed). Defaults en System Model Settings.
-   - Ollama (fallback): `qwen2.5:1.5b`, URL `http://host.docker.internal:11434`.
-3. Knowledge base: **Configuración primero** (Reconocimiento de disposición = **Docling**; Knowledge graph y RAPTOR off). **Después** subir `docs/archivos_muestra/*.pdf`. **Por último** Parse, de a uno. Si Docling Serve está caído, el ingest debe fallar visible (no texto inventado). Cambiar Configuración no pisa archivos ya subidos.
-4. Chat en español: KB tildada, **Show Quote** on, umbral alto (p. ej. 0.4), Empty response no vacío (copy de la tabla de stack). Prompt: *Responde solo en español. Cita los fragmentos. Si no hay evidencia, usa la respuesta vacía. No inventes cifras.*
+   - **Gemini:** `gemini-3.1-flash-lite` (chat default). Pegá `GEMINI_API_KEY` en la factory.
+   - Voyage: `voyage-finance-2` (embed).
+   - MinerU: auto-provision con `MINERU_APISERVER` en `.env`, o agregarlo a mano.
+   - Ollama (fallback): `http://host.docker.internal:11434`, modelo `qwen2.5:1.5b`. No uses OpenRouter ni un proxy LiteLLM.
+3. Knowledge base **`demo_4`**: **Configuración primero** (PDF parser = **MinerU**; español; Knowledge graph y RAPTOR off). **Después** subir `docs/archivos_muestra/*.pdf`. En cada file, **Tamaño de la tarea por página = 128**. **Por último** Parse, de a uno. Si MinerU está caído, el ingest debe fallar visible (no texto inventado). Cambiar Configuración no pisa archivos ya subidos. Detalle: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
+4. Chat en español: KB tildada, **Show Quote** on, umbral **0.3** (Voyage rerank; 0.4 devolvía 0 chunks), Empty response no vacío (copy de la tabla de stack). Prompt: *Responde solo en español. Cita los fragmentos. Si no hay evidencia, usa la respuesta vacía. No inventes cifras.*
 
 Ollama en el host, si lo usás:
 
@@ -82,9 +83,9 @@ ollama pull qwen2.5:1.5b
 
 ## Checklist E2E
 
-Con `ragflow-cpu` en :80, `docling-serve` healthy y Voyage configurado:
+Con `ragflow-cpu` en :80, `mineru-api` healthy y Voyage configurado:
 
-1. Ingest Docling de los PDFs de `docs/archivos_muestra/` (empezar por comunicados; EEFF y Memoria al final).
+1. Ingest MinerU de los PDFs de `docs/archivos_muestra/` (empezar por comunicados; EEFF y Memoria al final).
 2. *¿Cuál es el RESULTADO NETO DEL PERÍODO consolidado del EEFF?* → español + Show Quote (número del PDF, no inventado).
 3. *¿Cuál fue el precio de cierre de YPF en BYMA el 3 de enero?* → Empty response, sin inventar.
 
@@ -92,22 +93,23 @@ Un clone de GitHub **no** trae chunks: Infinity/MySQL/MinIO viven en volúmenes 
 
 ## Opcional: Naive / DeepDoc / PaddleOCR
 
-Docling es el default para EEFF con tablas. Naive si Serve no está. DeepDoc si no hay capa de texto. PaddleOCR: `COMPOSE_PROFILES=infinity,cpu,paddleocr`, descomentar vars en `.env`, factory `http://paddleocr:8080/layout-parsing`, `PP-StructureV3`, token vacío.
+MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si no hay capa de texto. PaddleOCR: `COMPOSE_PROFILES=infinity,cpu,paddleocr`, descomentar vars en `.env`, factory `http://paddleocr:8080/layout-parsing`, `PP-StructureV3`, token vacío.
 
 ## Repo
 
 | Path | Rol |
 |------|-----|
 | `vendor/ragflow-docker/` | Pin oficial v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) |
-| `docker-compose.overlay.yml` | Docling Serve CPU + PaddleOCR opcional, sin `:8080` |
-| `.env.example` | Infinity + pin; `DOCLING_SERVER_URL`; PaddleOCR comentado |
-| `scripts/up.sh` / `scripts/check.sh` | Arranque / contratos+PDFs+OpenRouter |
+| `docker-compose.overlay.yml` | MinerU API CPU + PaddleOCR opcional, sin `:8080` |
+| `docker/mineru/` | Sidecar `mineru[pipeline]==3.4.5`, `mineru-api :8000` |
+| `.env.example` | Infinity + pin; `MINERU_APISERVER`; `GEMINI_API_KEY` comentado; PaddleOCR comentado |
+| `scripts/up.sh` / `scripts/check.sh` | Arranque / contratos+PDFs |
 | `docs/archivos_muestra/` | PDFs BYMA del demo |
 | `docs/agenda/` | Diferidos (Graph, vLLM, branding, LinkedIn) |
 | `research/` | Dumps Parallel |
 | `openspec/changes/ledger-lens-ragflow/` | SDD activo (Gentle AI hybrid) |
 
-No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF. Ignorar `openspec/changes/ledger-lens-mvp/` (residuo Gradio).
+No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF.
 
 ## Documentación coherente
 

@@ -14,7 +14,7 @@ Xinference, GPUStack y SGLang: mismo dump, **descartados** como default ([descar
 |-----|-------------------|----------|
 | 1. Chat RAGFlow | Factory vLLM, URL OpenAI-compatible | Throughput local vs OpenRouter |
 | 2. Parser VLM | `vllm serve ibm-granite/granite-docling-258M --revision untied` | Pipeline VLM de Docling (no el parser clásico) |
-| 3. LLM de Graph | LiteLLM `provider_override="vllm"` | Extracción local sin API |
+| 3. LLM de Graph | LiteLLM **SDK** `provider_override="vllm"` (dependencia de docling-graph; no un proxy Compose) | Extracción local sin API |
 
 `--revision untied` es obligatorio: los pesos tied rompen vLLM actual ([Granite-Docling 258M](https://huggingface.co/ibm-granite/granite-docling-258M)).
 
@@ -33,7 +33,7 @@ Experimento VLM **sin** vLLM (opcional, no demo): Ollama `ibm/granite-docling:25
 |------|----------|
 | Disparador | GPU NVIDIA dedicada **y** OpenRouter/Ollama no alcanzan, **o** se quiere VLM local |
 | Esta PC | No implementar |
-| Parser clásico | [docling-serve.md](docling-serve.md) en CPU; no necesita vLLM |
+| Parser clásico | [mineru-pipeline.md](mineru-pipeline.md) en CPU; no necesita vLLM |
 | CPU vLLM | No. No prometer VLM en APU |
 
 ## Checklist

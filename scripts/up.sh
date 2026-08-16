@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Start LedgerLens: official RAGFlow v0.26.4 (Infinity). UI parser default: Docling (classic).
-# Chat default is OpenRouter (configure in the UI). Host Ollama is fallback.
+# Start LedgerLens: official RAGFlow v0.26.4 (Infinity). UI parser default: MinerU (pipeline CPU).
+# Chat default is Gemini factory gemini-3.1-flash-lite in the UI. Host Ollama is last fallback.
 # Optional: COMPOSE_PROFILES=infinity,cpu,paddleocr to also start PaddleOCR.
 set -euo pipefail
 
@@ -54,7 +54,7 @@ fi
 mkdir -p "$ROOT/vendor/ragflow-docker"
 cp "$ENV_FILE" "$ROOT/vendor/ragflow-docker/.env"
 
-echo "starting RAGFlow v0.26.4 (Infinity; set dataset PDF parser to Docling in the UI)..."
+echo "starting RAGFlow v0.26.4 (Infinity; MinerU parser; Gemini chat)..."
 docker compose --env-file "$ENV_FILE" \
   -f "$VENDOR_COMPOSE" \
   -f "$OVERLAY" \
@@ -62,10 +62,10 @@ docker compose --env-file "$ENV_FILE" \
 
 echo
 echo "RAGFlow UI: http://localhost (port 80)"
-echo "PDF parser default for this demo: Docling classic (sidecar :5001). Naive/DeepDoc if Docling is down. PaddleOCR: profile paddleocr."
-echo "Chat default: OpenRouter in Model providers (paste OPENROUTER_API_KEY in the UI)."
-echo "Ollama fallback from RAGFlow: http://host.docker.internal:11434  (never 127.0.0.1)"
-echo "Embeddings: OpenRouter nvidia/nemotron-3-embed-1b:free (image has none built-in since v0.22)."
+echo "PDF parser default for this demo: MinerU pipeline (sidecar :8000). Naive/DeepDoc if MinerU is down. PaddleOCR: profile paddleocr."
+echo "Chat default: Gemini factory gemini-3.1-flash-lite (paste GEMINI_API_KEY in the UI)."
+echo "Ollama last fallback: http://host.docker.internal:11434  (never 127.0.0.1)"
+echo "Embeddings: Voyage voyage-finance-2 in Model providers (image has none built-in since v0.22)."
 echo
 
 if command -v ollama >/dev/null 2>&1; then
@@ -77,5 +77,5 @@ if command -v ollama >/dev/null 2>&1; then
 else
   echo "warning: ollama not found on PATH. Fallback chat unavailable until:"
   echo "  export OLLAMA_HOST=0.0.0.0 && ollama pull qwen2.5:1.5b"
-  echo "Default chat is OpenRouter; the demo can run without Ollama."
+  echo "Default chat is Gemini; the demo can run without Ollama."
 fi

@@ -2,20 +2,20 @@
 
 No es pesado: **salta** OCR/TSR/DLR. Más liviano y más rápido que DeepDoc. Los PDFs con capa de texto (`pdftotext`) alcanzan. [Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser).
 
-Default del demo: **Docling** clásico ([nota](docling-serve.md)). Naive si el sidecar no está. DeepDoc si el PDF es escaneo.
+Default del demo: **MinerU** `pipeline` ([nota](mineru-pipeline.md)). Naive si el sidecar no está. DeepDoc si el PDF es escaneo.
 
 ## Quick path (UI)
 
-1. Dataset → PDF parser = **Naive** solo si Docling Serve no corre.
-2. Preferir Docling para EEFF / tablas.
+1. Dataset → PDF parser = **Naive** solo si MinerU API no corre.
+2. Preferir MinerU para EEFF / tablas.
 
 ## Details
 
 | Tema | Decisión |
 |------|----------|
-| Default | Docling Serve CPU |
+| Default | MinerU pipeline CPU |
 | Fallback | Naive (texto); DeepDoc (escaneo) |
-| Extra | PaddleOCR (profile), no MinerU |
+| Extra | PaddleOCR (profile) |
 | Dump | `research/extract-ragflow-select-pdf-parser.json` |
 
 ## Checklist
@@ -26,4 +26,4 @@ Default del demo: **Docling** clásico ([nota](docling-serve.md)). Naive si el s
 
 ## Next step
 
-No reabrir Naive como default. Re-parse con Docling.
+No reabrir Naive como default. Re-parse con MinerU en `demo_4`.

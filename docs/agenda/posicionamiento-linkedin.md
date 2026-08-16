@@ -8,7 +8,7 @@ Dumps: `research/deep-docling-graph-vllm-market.json`, `research/extract-reducto
 
 El RAG financiero no se rompe en el LLM: se rompe cuando el parser pierde tablas, notas y el signo de los números ([Parsing the 10-K](https://reducto.ai/blog/10k-document), 8 jun 2026). Analogía local: EEFF BYMA y hechos relevantes.
 
-Reducto es el **benchmark comercial** (Parse / Extract / citas / Deep Extract), no el stack a copiar. LedgerLens: Docling open-source + Graph estrecho + self-host LATAM.
+Reducto es el **benchmark comercial** (Parse / Extract / citas / Deep Extract), no el stack a copiar. LedgerLens: MinerU `pipeline` self-host ahora; Graph estrecho (agenda), no venderlo como shipped.
 
 GDP.pdf: frontier models 17–30 % de éxito en docs profesionales; parse estructurado **+9 pp** y **−13 %** tokens de reasoning ([Reducto GDP.pdf](https://reducto.ai/blog/reducto-raises-frontier-model-accuracy)).
 
@@ -25,9 +25,9 @@ LATAM: CEPAL US$187B emisión internacional récord 2025; Evident 2026, 20 banco
 | Tema | Decisión |
 |------|----------|
 | Disparador | Querés publicar / portfolio |
-| No decir | “ya tenemos knowledge graph / RAPTOR / Docling Graph” hasta un run Graph. El parser clásico Docling **sí** se puede nombrar cuando el corpus de `demo_1` esté re-parseado |
+| No decir | “ya tenemos knowledge graph / RAPTOR / Docling Graph / MinerU hybrid” hasta que esté shipped. El parser MinerU `pipeline` **sí** se puede nombrar cuando `demo_4` esté parseado |
 | Competencia | Reducto, LlamaParse, ABBYY = otras capas. Nosotros: self-host + BYMA/EEFF |
-| Relacionado | [docling-serve.md](docling-serve.md), [docling-graph.md](docling-graph.md), [branding-cosmetic.md](branding-cosmetic.md) |
+| Relacionado | [mineru-pipeline.md](mineru-pipeline.md), [docling-graph.md](docling-graph.md), [branding-cosmetic.md](branding-cosmetic.md) |
 
 ## Checklist
 
@@ -37,4 +37,4 @@ LATAM: CEPAL US$187B emisión internacional récord 2025; Evident 2026, 20 banco
 
 ## Next step
 
-Borrador de **un** post cuando el corpus BYMA esté parseado con Docling en esta instancia. Graph/RAPTOR siguen fuera del copy.
+Borrador de **un** post cuando el corpus BYMA esté parseado con MinerU en `demo_4` en esta instancia. Graph/RAPTOR siguen fuera del copy.

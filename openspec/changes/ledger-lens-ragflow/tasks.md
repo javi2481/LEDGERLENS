@@ -20,7 +20,7 @@ Chain strategy: size-exception
 
 | Unit | Goal | Likely PR | Focused test command | Runtime harness | Rollback boundary |
 |------|------|-----------|----------------------|-----------------|-------------------|
-| 1 | Vendor pin, overlay OCR, up.sh, fixtures, README | single (`size:exception`) | `test -f vendor/PIN.md && test -f docker-compose.overlay.yml && test -f scripts/up.sh && ls examples/synthetic/*.pdf` | `scripts/up.sh`; `docker compose ps`; README E2E. N/A if no Docker or RAM <16 GB | `vendor/`, `docker-compose.overlay.yml`, `docker/paddleocr/`, `.env.example`, `scripts/up.sh`, `README.md`, `examples/synthetic/`, `.gitignore` |
+| 1 | Vendor pin, overlay OCR, up.sh, fixtures, README | single (`size:exception`) | `test -f vendor/PIN.md && test -f docker-compose.overlay.yml && test -f scripts/up.sh && ls docs/archivos_muestra/*.pdf` | `scripts/up.sh`; `docker compose ps`; README E2E. N/A if no Docker or RAM <16 GB | `vendor/`, `docker-compose.overlay.yml`, `docker/paddleocr/`, `.env.example`, `scripts/up.sh`, `README.md`, `docs/archivos_muestra/`, `.gitignore` |
 
 ## Phase 1: Vendor pin and ignores
 
@@ -39,14 +39,20 @@ Chain strategy: size-exception
 - [x] 3.1 Create `scripts/up.sh`: read-only check `vm.max_map_count` ≥ 262144; warn/fail if low and do not claim ready; no `eval` of user strings; no `sysctl -w` unless README documents it.
 - [x] 3.2 In `scripts/up.sh`: sync `.env` → `vendor/ragflow-docker/.env`; `docker compose --env-file .env -f vendor/ragflow-docker/docker-compose.yml -f docker-compose.overlay.yml up -d`; document/run `ollama pull qwen2.5:1.5b` and `bge-m3` with `OLLAMA_HOST=0.0.0.0`.
 
-## Phase 4: Synthetic PDFs
+## Phase 4: BYMA sample PDFs
 
-- [x] 4.1 Create four Spanish synthetic PDFs in `examples/synthetic/` covering hechos, estados, memoria, and operativo; not real BYMA.
+- [x] 4.1 Place BYMA sample PDFs in `docs/archivos_muestra/` covering comunicados, EEFF, presentaciones, and memoria.
 
 ## Phase 5: README, negative scope, verify
 
-- [x] 5.1 Create Spanish `README.md`: x86_64, ≥16 GB, Docker ≥24, Compose ≥v2.26.1, not ARM64; `OLLAMA_HOST=0.0.0.0`; Spanish UI; non-blank Spanish Empty response; Show Quote; synthetic-only; first-run KB/chat.
-- [x] 5.2 Add README E2E: ingest four PDFs via Compose-DNS PaddleOCR; in-corpus Spanish + Show Quote; out-of-corpus Spanish Empty (no invention); parser down → visible ingest fail, no fabricated text.
+- [x] 5.1 Create Spanish `README.md`: x86_64, ≥16 GB, Docker ≥24, Compose ≥v2.26.1, not ARM64; `OLLAMA_HOST=0.0.0.0`; Spanish UI; non-blank Spanish Empty response; Show Quote; BYMA samples; first-run KB/chat.
+- [x] 5.2 Add README E2E: ingest BYMA PDFs via MinerU; in-corpus Spanish + Show Quote; out-of-corpus Spanish Empty (no invention); parser down → visible ingest fail, no fabricated text.
 - [x] 5.3 Confirm no `app.py`, `ledger_lens/`, Gradio, HF Space, Compose Ollama, TEI, or Elasticsearch.
 - [x] 5.4 Verify: compose healthy (UI `:80`) on ≥16 GB. Manual E2E per README. Host <16 GB: `scripts/check.sh` only. Skip full smoke if no Docker Compose.
-- [x] 5.5 Add `scripts/check.sh` (contracts, `pdftotext` fixtures, host probe, optional OpenRouter smoke) and `docs/agenda/` for deferred Parallel items.
+- [x] 5.5 Add `scripts/check.sh` (contracts, `pdftotext` fixtures, host probe) and `docs/agenda/` for deferred Parallel items.
+
+## Phase 6: LiteLLM chat gateway (rolled back 2026-08-16)
+
+- [x] 6.1 Add overlay service `litellm` (`ghcr.io/berriai/litellm:v1.97.0`, `:4000`, config-file mode, no Postgres) and `docker/litellm/config.yaml` (`ledgerlens-chat` → Gemini → Ollama; no OpenRouter; no Voyage).
+- [x] 6.2 Point README / `.env.example` / OpenSpec local-stack at OpenAI-API-Compatible `http://litellm:4000/v1` model `ledgerlens-chat`. Voyage embed unchanged.
+- [x] 6.3 Rollback: remove overlay `litellm`, `docker/litellm/`, `docs/agenda/litellm.md`. Default chat is Gemini factory `gemini-3.1-flash-lite` + host Ollama last fallback. OpenRouter stays out. Voyage stays native.

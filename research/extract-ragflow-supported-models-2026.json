@@ -1,0 +1,23 @@
+{
+  "extract_id": "extract_f4a6923f631bc98f60b342c0dfeb2979",
+  "session_id": "session_f4a6923f631bc98f60b342c0dfeb2979",
+  "status": "ok",
+  "results": [
+    {
+      "url": "https://ragflow.io/docs/supported_models",
+      "title": "Model Providers | RAGFlow",
+      "publish_date": null,
+      "excerpts": [
+        "# Model Providers\n| Provider | URL |\n| 302.AI | `https://302.ai` |\n| aimlapi.com | `https://aimlapi.com` |\n| Anthropic | `https://www.anthropic.com` |\n| Astraflow | `https://astraflow.ucloud-global.com/en-us` |\n| Astraflow-CN | `https://astraflow.ucloud.cn/` |\n| Avian | `https://www.avian.io` |\n| Azure-OpenAI | `https://azure.microsoft.com/en-us/products/ai-services/openai-service` |\n\n...\n\n| Provider | URL |\n| 302.AI | `https://302.ai` |\n| aimlapi.com | `https://aimlapi.com` |\n| Anthropic | `https://www.anthropic.com` |\n| Astraflow | `https://astraflow.ucloud-global.com/en-us` |\n| NovitaAI | `https://novita.ai` |\n| Ollama | `https://ollama.com` |\n| OpenAI | `https://openai.com` |\n| OpenAI-API-Compatible | N/A |\n| OpenDataLoader | \u2014 |\n| OpenRouter | `https://openrouter.ai` |\n| PaddleOCR | \u2014 |\n\n...\n\nIMPORTANT\nIf your model is not listed here but has APIs compatible with those of OpenAI, click **OpenAI-API-Compatible** on the **Model providers** page to configure your model.\n\n## Example: AI Badgr (OpenAI-Compatible) \")\nYou can use **AI Badgr** with RAGFlow via the existing OpenAI-API-Compatible provider.\nTo configure AI Badgr:\n* **Provider** : `OpenAI-API-Compatible`\n* **Base URL** : `https://aibadgr.com/api/v1`\n* **API Key** : your AI Badgr API key (from the AI Badgr dashboard)\n* **Model** : any AI Badgr chat or embedding model ID, as exposed by AI Badgr's OpenAI-compatible APIs\nAI Badgr implements OpenAI-compatible endpoints for `/v1/chat/completions` , `/v1/embeddings` , and `/v1/models` , so no additional code changes in RAGFlow are required.\nnote\nThe list of supported models is extracted from [this source](https://github.com/infiniflow/ragflow/blob/main/rag/llm/__init__.py) and may not be the most current. For the latest supported model list, please refer to the Python file.\n[Edit this page](https://github.com/infiniflow/ragflow/tree/main/docs/guides/models/supported_models.mdx)\nPrevious Deploy Local Models Next Data Sources\nOn this page\n* Example: AI Badgr (OpenAI-Compatible)\nRAGFlow RAGFlow\nR A G F l o w\nAll rights reserved.\nResources"
+      ]
+    }
+  ],
+  "errors": [],
+  "usage": [
+    {
+      "name": "sku_extract_excerpts",
+      "count": 1
+    }
+  ],
+  "warnings": []
+}

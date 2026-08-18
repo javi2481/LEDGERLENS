@@ -23,4 +23,4 @@ LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 
 ## Next step
 
-En la PC potente: `./scripts/up.sh` + checklist E2E del README raíz. Después, verify SDD y archive del change `ledger-lens-ragflow`.
+Retomar: [`docs/handoff-linux.md`](../docs/handoff-linux.md) + [`changes/ledger-lens-ragflow/handoff.md`](changes/ledger-lens-ragflow/handoff.md). Gancho Graph: [`docs/agenda/graph-nativo.md`](../docs/agenda/graph-nativo.md). No archivar este change todavía. No Compose en Linux ~7 GB.

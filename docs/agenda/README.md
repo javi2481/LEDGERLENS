@@ -19,6 +19,7 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 | [vLLM](vllm.md) | GPU NVIDIA: chat local o MinerU hybrid. |
 | [Posicionamiento LinkedIn](posicionamiento-linkedin.md) | Publicar tesis IDP 2026 sin vender hybrid/KG no shipped. |
 | [Branding cosmético UI](branding-cosmetic.md) | Chrome LedgerLens (logo, nombre, pie Apache-2.0) sin fork. |
+| [Gancho nativo Graph](graph-nativo.md) | Catálogo + umbral + página. No reabrir Graph vs KG. |
 
 ## Ya hecho (no es agenda)
 
@@ -37,4 +38,4 @@ Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en 
 
 ## Next step
 
-Corpus BYMA en `docs/archivos_muestra/` parseado con MinerU en **`demo_4`** ([runbook](mineru-pipeline.md)). Chat default: Groq `llama-3.3-70b-versatile` (`chat_demo_4`). Después: [branding](branding-cosmetic.md) **o** [LinkedIn](posicionamiento-linkedin.md). No retomar TEI ni compose en el Linux de 7 GB. Hybrid MinerU = GPU + RAGFlow que liste el backend.
+Mañana en Linux: [handoff](../handoff-linux.md). Investigación: [gancho Graph](graph-nativo.md). Producto después: [branding](branding-cosmetic.md) **o** [LinkedIn](posicionamiento-linkedin.md). No retomar TEI ni compose en el Linux de 7 GB. Hybrid MinerU = GPU + RAGFlow que liste el backend.

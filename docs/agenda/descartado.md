@@ -12,7 +12,7 @@ Decisiones 2026-08-15, actualizado 2026-08-16. Los dumps en `research/` se queda
 | **Xinference / GPUStack / SGLang** | Alternativas locales a vLLM. Un runtime GPU basta; el diferido es solo vLLM. Dump: `research/stack-ollama-vllm-local.json`. |
 | **PaddleOCR como “próximo parser”** | El profile `paddleocr` **sigue en el repo**. No es el experimento de tablas (eso es MinerU). No borrar el profile. |
 | **Parser VLM en esta APU** | Pide NVIDIA. Ollama VLM es experimento, no ítem de agenda. |
-| **Overlay de hechos / grafo** | No hay código en el demo. No documentarlo como stack hasta que exista en una rama y pase el oro. |
+| **Overlay de hechos / grafo (como ítem “sin código”)** | Superado: el overlay está en `main` ([nota](docling-graph.md)). Lo que falta es el gancho de ingest ([graph-nativo.md](graph-nativo.md)), no reabrir “hay Graph o no”. |
 | **MinerU hybrid en esta APU** | `hybrid-engine` no corre en CPU; RAGFlow v0.26.4 no lista el backend. Agenda: [vllm.md](vllm.md) cuando haya NVIDIA. |
 | **Proxy extra de chat (Compose)** | Innecesario para este demo: RAGFlow ya elige Groq / Ollama / Voyage en Model providers. El hop extra no aportaba. |
 

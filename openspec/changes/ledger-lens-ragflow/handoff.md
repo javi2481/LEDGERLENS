@@ -1,6 +1,8 @@
 # Handoff Gentle AI — 2026-08-17
 
-Change activo: `ledger-lens-ragflow`. No archivar. Tasks del change original siguen checked; Graph es **overlay de producto**, no un change SDD nuevo.
+> **Congelado (pin del demo).** Change `ledger-lens-ragflow`: no archivar (el pin tiene que seguir en el repo), no inflar. Producto: `openspec/changes/ledgerlens-idp-kernel/`. Siguiente paso de producto ≠ gancho Graph nativo.
+
+Change original del demo RAGFlow. Tasks del pin siguen checked. Overlay Graph es del **demo**, no del kernel IDP.
 
 ## Persistencia
 
@@ -14,8 +16,8 @@ Parser MinerU `pipeline`. Embed/rerank Voyage. Motor Infinity. RAGFlow **v0.26.4
 
 Graph: CLI + plantilla Pydantic; `scripts/push_hechos.py` post-MinerU. Show Quote al EEFF, no a sidecar markdown.
 
-## Siguiente (no es task del change original)
+## Siguiente (no es task de este pin)
 
-Elegir gancho de integración: catálogo / umbral / página. Ver `docs/agenda/graph-nativo.md` y `docs/handoff-linux.md`.
+Diferidos del demo: `docs/agenda/`. El kernel IDP no se diseña acá.
 
 Verify histórico en Linux 7 GB (`verify-report.md`) **no** es evidencia del demo Windows 32 GB. No re-correrlo como prueba actual.

@@ -1,8 +1,8 @@
 # Overlay de hechos (demo)
 
-En el repo del demo. **No** va en `scripts/up.sh` ni en Compose. **No** re-parsea los PDFs ni toca MinerU.
+En el riel **demo**. **No** es el contrato IDP (`evals/identity_v1.json`). **No** va en `scripts/up.sh` ni Compose. **No** re-parsea MinerU.
 
-Lee un EEFF con Docling local, extrae fichas, y `scripts/push_hechos.py` las pega como chunk manual **en cada PDF que las necesite** (Show Quote cita el estado, no un `.md`) y las deja en el prompt de **todos** los chats. El parser MinerU no se toca.
+Lee un EEFF con Docling local, extrae fichas, y `scripts/push_hechos.py` las pega como chunk manual **en cada PDF que las necesite** (Show Quote cita el estado, no un `.md`) y las deja en el prompt de **todos** los chats. Gold de este riel: `docs/hechos_eeff.json`.
 
 ## Qué archivos
 

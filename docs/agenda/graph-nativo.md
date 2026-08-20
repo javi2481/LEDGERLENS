@@ -1,6 +1,8 @@
-# Gancho nativo para Graph (siguiente investigación)
+# Gancho nativo para Graph (diferido del demo)
 
-Graph vs Knowledge Graph de RAGFlow **ya está cerrado**. No reinvestigar eso. El overlay ya alimenta el chat (`push_hechos.py`). Falta cómo se **elige** y se **engancha** sin parecer un script suelto.
+> **No es el siguiente paso de producto.** El contrato de identidad es el kernel IDP (`evals/identity_v1.json`). Este archivo es investigación del overlay RAGFlow, por si el demo necesita un gancho de ingest menos “script suelto”.
+
+Graph vs Knowledge Graph de RAGFlow **ya está cerrado**. No reinvestigar eso. El overlay ya alimenta el chat (`push_hechos.py`).
 
 Visión (concepto, sin código todavía): orquestador entre parse DONE y chat-ready.
 

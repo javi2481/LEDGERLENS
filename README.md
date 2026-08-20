@@ -1,21 +1,47 @@
 # LedgerLens
 
-Demo de portfolio: preguntas en **español** sobre PDFs financieros de **BYMA**, con citas. Si no hay evidencia, responde vacío (no inventa).
+IDP **multi-dominio**: receta → extract → claims → lookup. Finanzas (EEFF BYMA) es el primer plugin. El chat RAGFlow es un **demo de portfolio**, no la fuente de verdad de identidad.
 
-Stack: **RAGFlow** v0.26.4 self-host (UI + RAG) + Infinity. Parser **MinerU** `pipeline` (sidecar CPU). Chat **Groq** `llama-3.3-70b-versatile` + Ollama fallback. Embed **Voyage** nativo. **PaddleOCR** no arranca por defecto.
+## Dos rieles
+
+| Riel | Qué es | Cómo se prueba |
+|------|--------|----------------|
+| **Kernel IDP** (producto) | `schemas/` + `evals/` + `scripts/idp_ask.py` | `./scripts/check.sh` (pytest; sin Docker) |
+| **Demo RAG** (portfolio) | Compose + MinerU + overlay Graph | PC ≥16 GB, `./scripts/up.sh`, UI `demo_4` |
+
+SDD del producto: [`openspec/changes/ledgerlens-idp-kernel/`](openspec/changes/ledgerlens-idp-kernel/). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
+
+## Oro (no fusionar)
+
+Las cifras coinciden; los archivos no. Mezclarlos vuelve a confundir fila vecina con chunk.
+
+| Rol | Archivo |
+|-----|---------|
+| Contrato IDP | `recipes/financial_statement.json` + [`evals/identity_v1.json`](evals/identity_v1.json) |
+| Overlay del chat | [`docs/hechos_eeff.json`](docs/hechos_eeff.json) (lo inyecta `push_hechos.py`) |
 
 Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
 
-## Quick path (PC ≥16 GB, x86_64)
+## Quick path (kernel, cualquier PC)
 
-1. Instalar Docker ≥24 y **Compose v2** (`docker compose version`). Tu usuario en el grupo `docker`. `vm.max_map_count` ≥ 262144.
-2. Clonar `https://github.com/javi2481/LEDGERLENS`. Copiar `.env.example` → `.env`. Pegar keys (**.env no está en git**).
-3. `./scripts/check.sh` y después `./scripts/up.sh`. UI: <http://localhost>
-4. En la UI: Groq `llama-3.3-70b-versatile` + Voyage embed, dataset **`demo_4`**, parser **MinerU**, Empty response + Show Quote (abajo). Runbook: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
+1. `uv venv && uv pip install -r requirements-dev.txt`
+2. `./scripts/check.sh`
+3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335` (consolidado, página 4)
 
-En una PC de ~7 GB: solo `./scripts/check.sh`. Compose + E2E: esta PC Windows 32 GB. Diferidos: [docs/agenda/](docs/agenda/).
+Trampas: sin decir controlante → consolidado (`21262335` / `81956525`). Controlante explícito → la otra cifra. YPF / memoria / comunicado → abstain. Los 10 casos `route: narrative` se saltan (capa 3). Detalle: [docs/testing.md](docs/testing.md).
 
-## Stack (fuente de verdad del demo)
+## Riel demo (PC ≥16 GB, x86_64)
+
+Stack: **RAGFlow** v0.26.4 + Infinity. Parser **MinerU** `pipeline`. Chat **Groq** `llama-3.3-70b-versatile` + Ollama fallback. Embed **Voyage**. **PaddleOCR** apagado por defecto.
+
+1. Docker ≥24, **Compose v2**, usuario en `docker`, `vm.max_map_count` ≥ 262144.
+2. Copiar `.env.example` → `.env`. Pegar keys (**.env no está en git**).
+3. `./scripts/check.sh` y `./scripts/up.sh`. UI: <http://localhost>
+4. Groq + Voyage, dataset **`demo_4`**, parser **MinerU**, Empty response + Show Quote. Runbook: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
+
+Compose + E2E viven en la PC Windows 32 GB. En ~7 GB: solo el kernel. Diferidos del **demo**: [docs/agenda/](docs/agenda/).
+
+### Stack del demo
 
 | Pieza | Default | Fallback / opcional |
 |-------|---------|---------------------|
@@ -26,14 +52,14 @@ En una PC de ~7 GB: solo `./scripts/check.sh`. Compose + E2E: esta PC Windows 32
 | Embeddings | Voyage `voyage-finance-2` (nativo v0.26.4) | Gemini `gemini-embedding-001` |
 | Empty response | `No hay evidencia suficiente en los documentos indexados para responder. No invento datos.` | no dejar en blanco |
 
-RAGFlow **no** lee las API keys solo: hay que pegar Groq (`llama-3.3-70b-versatile`) y Voyage en Model providers. Ollama, si lo usás: `http://host.docker.internal:11434` (**nunca** `127.0.0.1` desde el contenedor). MinerU hybrid no entra en este demo (pide GPU). OpenRouter Nano `:free` no es el default (cuota).
+RAGFlow **no** lee las API keys solo: pegá Groq y Voyage en Model providers. Ollama, si lo usás: `http://host.docker.internal:11434` (**nunca** `127.0.0.1` desde el contenedor). MinerU hybrid pide GPU; no entra. OpenRouter Nano `:free` no es el default.
 
-## Requisitos
+### Requisitos Compose
 
 | Requisito | Valor |
 |-----------|--------|
 | Arquitectura | **x86_64** (imágenes oficiales, no ARM64) |
-| RAM | **≥ 16 GB** (32 GB recomendado: RAGFlow + MinerU pipeline CPU) |
+| RAM | **≥ 16 GB** (32 GB recomendado) |
 | Disco | ≥ 50 GB |
 | Docker | ≥ 24.0.0, usuario en grupo `docker` |
 | Compose | ≥ v2.26.1 (`docker compose`, no el binario mailcap `compose`) |
@@ -44,8 +70,6 @@ cat /proc/sys/vm/max_map_count
 # si es bajo, como root (no lo hace up.sh):
 sudo sysctl -w vm.max_map_count=262144
 ```
-
-## Arranque
 
 ```bash
 cp .env.example .env   # luego keys
@@ -63,7 +87,7 @@ docker compose --env-file .env \
   -f docker-compose.overlay.yml down -v
 ```
 
-## Primera vez en la UI
+### Primera vez en la UI
 
 1. Registro local.
 2. **Model providers**
@@ -71,8 +95,8 @@ docker compose --env-file .env \
    - Voyage: `voyage-finance-2` (embed) y `rerank-2.5-lite`.
    - MinerU: auto-provision con `MINERU_APISERVER` en `.env`, o agregarlo a mano.
    - Ollama (fallback): `http://host.docker.internal:11434`, modelo `qwen2.5:1.5b`. No uses OpenRouter Nano `:free`.
-3. Knowledge base **`demo_4`**: **Configuración primero** (PDF parser = **MinerU**; español; Knowledge graph y RAPTOR off). **Después** subir `docs/archivos_muestra/*.pdf`. En cada file, **Tamaño de la tarea por página = 128**. **Por último** Parse, de a uno. Si MinerU está caído, el ingest debe fallar visible (no texto inventado). Cambiar Configuración no pisa archivos ya subidos. Detalle: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
-4. Chat en español: asistente **`chat_demo_4`**, KB tildada, **Show Quote** on, umbral **0.3** (Voyage rerank; 0.4 devolvía 0 chunks), Empty response no vacío (copy de la tabla de stack). Prompt: español + citas del EEFF. Graph: `python scripts/push_hechos.py` (todos los chats + cada EEFF que lo requiera) y un **chat nuevo**.
+3. Knowledge base **`demo_4`**: **Configuración primero** (PDF parser = **MinerU**; español; Knowledge graph y RAPTOR off). **Después** subir `docs/archivos_muestra/*.pdf`. En cada file, **Tamaño de la tarea por página = 128**. **Por último** Parse, de a uno. Si MinerU está caído, el ingest debe fallar visible (no texto inventado). Detalle: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
+4. Chat en español: asistente **`chat_demo_4`**, KB tildada, **Show Quote** on, umbral **0.3**, Empty response no vacío. Graph: `python scripts/push_hechos.py` y un **chat nuevo**.
 
 Ollama en el host, si lo usás:
 
@@ -81,56 +105,43 @@ export OLLAMA_HOST=0.0.0.0
 ollama pull qwen2.5:1.5b
 ```
 
-## Checklist E2E
+### Overlay Graph (solo demo)
 
-Con `ragflow-cpu` en :80, `mineru-api` healthy y Voyage configurado:
-
-1. Ingest MinerU de los PDFs de `docs/archivos_muestra/` (empezar por comunicados; EEFF y Memoria al final).
-2. *¿Cuál es el RESULTADO NETO DEL PERÍODO consolidado del EEFF?* → español + Show Quote (número del PDF, no inventado).
-3. *¿Cuál fue el precio de cierre de YPF en BYMA el 3 de enero?* → Empty response, sin inventar.
-
-Un clone de GitHub **no** trae chunks: Infinity/MySQL/MinIO viven en volúmenes Docker. Quien pruebe el repo parsea en su máquina. El parseo previo es de **esta instancia** (demo LinkedIn / screenshots).
-
-## Overlay de hechos (Docling Graph)
-
-Parte del demo. **No** va en `up.sh` ni en Compose. **No** re-parsea los PDFs de `demo_4` ni toca MinerU.
+No es el kernel IDP. **No** va en `up.sh` ni Compose. **No** re-parsea MinerU. Gold de este riel: [`docs/hechos_eeff.json`](docs/hechos_eeff.json).
 
 1. Extraer fichas: `python scripts/run_docling_graph_eeff.py` (un filing, `--preset`, o `--all`).
-2. Meter esas fichas a **todos** los chats: `python scripts/push_hechos.py` (chunk en cada EEFF de cada dataset + prompt de cada asistente). Hace falta el stack arriba y un API token de RAGFlow (o `RAGFLOW_API_KEY`). Un chat ya abierto no toma el prompt nuevo: abrí otro. Si creás otro asistente, volvé a correr el push.
+2. Inyectar: `python scripts/push_hechos.py` (stack arriba + token RAGFlow). Un chat ya abierto no toma el prompt nuevo.
 
-El chat busca chunks. Las fichas Graph desambiguan consolidado vs controlante (página 4) en **cualquier** asistente que use esos PDFs. Preguntas trampa (sin decir “consolidado”) deben dar **21.262.335** (1T26) y **81.956.525** (2T26), no 21.259.769 / 81.946.993. Detalle: [docs/agenda/docling-graph.md](docs/agenda/docling-graph.md). `outputs/` está en gitignore.
+Detalle: [docs/agenda/docling-graph.md](docs/agenda/docling-graph.md). `outputs/` está en gitignore.
 
-## Opcional: Naive / DeepDoc / PaddleOCR
+### Opcional: Naive / DeepDoc / PaddleOCR
 
 MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si no hay capa de texto. PaddleOCR: `COMPOSE_PROFILES=infinity,cpu,paddleocr`, descomentar vars en `.env`, factory `http://paddleocr:8080/layout-parsing`, `PP-StructureV3`, token vacío.
 
 ## Repo
 
-| Path | Rol |
-|------|-----|
-| `vendor/ragflow-docker/` | Pin oficial v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) |
-| `docker-compose.overlay.yml` | MinerU API CPU + PaddleOCR opcional, sin `:8080` |
-| `docker/mineru/` | Sidecar `mineru[pipeline]==3.4.5`, `mineru-api :8000` |
-| `.env.example` | Infinity + pin; `MINERU_APISERVER`; `GROQ_API_KEY` comentado; PaddleOCR comentado |
-| `scripts/up.sh` / `scripts/check.sh` | Arranque / contratos+PDFs |
-| `scripts/run_docling_graph_eeff.py` | Overlay Graph (no lo llama `up.sh`; `--all` o `--pdf`) |
-| `scripts/push_hechos.py` | Inyecta fichas Graph en todos los chats y EEFF (sin reparsear PDFs) |
-| `docs/hechos_eeff.json` | Catálogo de fichas (1T26/2T26 y las que sume Graph) |
-| `recipes/` | Catálogo Identity-by-Schema (un JSON por tipo de documento) |
-| `schemas/` | Contratos Pydantic; hoy extrae `FinancialStatement` (consolidado ≠ controlante) |
-| `templates/` | Plantilla EEFF BYMA para Graph |
-| `docs/archivos_muestra/` | PDFs BYMA del demo |
-| `docs/agenda/` | Diferidos (vLLM, branding, LinkedIn) + nota Graph |
-| `research/` | Dumps Parallel |
-| `openspec/changes/ledger-lens-ragflow/` | SDD activo (Gentle AI hybrid) |
+| Path | Rol | Riel |
+|------|-----|------|
+| `schemas/` / `recipes/` / `evals/` | Kernel IDP | producto |
+| `scripts/idp_ask.py` | Lookup sin RAGFlow | producto |
+| `openspec/changes/ledgerlens-idp-kernel/` | SDD activo | producto |
+| `vendor/ragflow-docker/` | Pin v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) | demo |
+| `docker-compose.overlay.yml` / `docker/mineru/` | Sidecar MinerU | demo |
+| `scripts/up.sh` | Arranque Compose | demo |
+| `scripts/push_hechos.py` / `docs/hechos_eeff.json` | Overlay Graph | demo |
+| `openspec/changes/ledger-lens-ragflow/` | SDD congelado (pin) | demo |
+| `scripts/check.sh` | Contratos + pytest | ambos |
+| `docs/archivos_muestra/` | PDFs BYMA | ambos |
+| `docs/agenda/` | Diferidos del **demo** (vLLM, branding, gancho Graph) | demo |
+| `research/` | Dumps Parallel | — |
 
 No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF.
 
 ## Documentación coherente
 
-Si un cambio modifica el stack, defaults, first-run, scripts o fixtures, **en el mismo trabajo** hay que actualizar `README.md`, `docs/agenda/`, `research/README.md`, comentarios de `.env.example` y el change OpenSpec activo (`proposal` / `design` / `specs`). No dejar docs del default anterior.
+Producto: actualizar `README.md` y `openspec/changes/ledgerlens-idp-kernel/` en el mismo trabajo. Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin. No dejar docs del riel anterior como si fuera el producto.
 
-Ítems diferidos: [docs/agenda/](docs/agenda/).
+Ítems diferidos del demo: [docs/agenda/](docs/agenda/).
 
 ## Licencia del vendor
 

@@ -1,41 +1,34 @@
 # Agenda (retomar luego)
 
-Ítems que **no** entran en el demo actual. Stack vigente: parser **MinerU** `pipeline` (sidecar CPU), Infinity, chat **Groq** `llama-3.3-70b-versatile` + Ollama fallback, embed **Voyage** nativo. Esta PC = Windows Ryzen 8500G 32 GB, **sin NVIDIA**.
+Ítems del **riel demo** (RAGFlow / UI / GPU). El producto IDP no vive acá: [`openspec/changes/ledgerlens-idp-kernel/`](../../openspec/changes/ledgerlens-idp-kernel/).
 
-Consultá un archivo, no todos. Cada uno tiene disparador, checklist y dumps en `research/`.
-
-Ítems cerrados o rechazados: [descartado.md](descartado.md).
+Consultá un archivo, no todos. Cerrados: [descartado.md](descartado.md).
 
 ## Quick path
 
-1. Abrí el ítem que vas a retomar.
-2. Confirmá el disparador (grafo, GPU, chrome UI, LinkedIn).
+1. Confirmá que el ítem es del demo, no del kernel.
+2. Confirmá el disparador (GPU, chrome UI, LinkedIn).
 3. Seguí el checklist. No implementar sin disparador.
 
-## Activo
+## Activo (demo)
 
 | Ítem | Cuándo retomarlo |
 |------|------------------|
 | [vLLM](vllm.md) | GPU NVIDIA: chat local o MinerU hybrid. |
 | [Posicionamiento LinkedIn](posicionamiento-linkedin.md) | Publicar tesis IDP 2026 sin vender hybrid/KG no shipped. |
-| [Branding cosmético UI](branding-cosmetic.md) | Chrome LedgerLens (logo, nombre, pie Apache-2.0) sin fork. |
-| [Gancho nativo Graph](graph-nativo.md) | Catálogo + umbral + página. No reabrir Graph vs KG. |
+| [Branding cosmético UI](branding-cosmetic.md) | Chrome LedgerLens sin fork. |
+| [Gancho nativo Graph](graph-nativo.md) | Solo el overlay del chat. No es el siguiente paso de producto. |
 
 ## Ya hecho (no es agenda)
 
-| Tema | Estado |
-|------|--------|
-| Overlay **Docling Graph** | En el demo, no en `up.sh` ([nota](docling-graph.md)); 1T26/2T26 oro OK |
-| Parser **MinerU** `pipeline` | Default del demo ([nota](mineru-pipeline.md)); sidecar `mineru-api:8000` |
-| Chat **Groq** | Default del demo: `llama-3.3-70b-versatile`; OpenRouter Nano `:free` no es el default |
-| Embed Voyage | Nativo v0.26.4 en RAGFlow (`VOYAGE_API_KEY` en la UI) |
-| Parser Naive | Fallback ([nota](naive-parser.md)); DeepDoc si escaneo |
-| E2E Windows 32 GB | Compose + BYMA 1T26 (comunicado, EEFF, presentación) |
-| Infinity | En el repo |
-| PaddleOCR opcional | Profile `paddleocr` (no es el parser extra) |
-| Ollama `qwen2.5:1.5b` | Último fallback de chat, no default |
-| Tests | `./scripts/check.sh` |
+| Tema | Riel | Estado |
+|------|------|--------|
+| Kernel IDP capa 1–2 | producto | `schemas/` + `evals/identity_v1.json` + pytest |
+| Overlay **Docling Graph** | demo | no en `up.sh` ([nota](docling-graph.md)) |
+| Parser **MinerU** `pipeline` | demo | sidecar `mineru-api:8000` |
+| Chat **Groq** / Voyage / Infinity | demo | pin v0.26.4 |
+| Tests kernel | producto | `./scripts/check.sh` |
 
 ## Next step
 
-Mañana en Linux: [handoff](../handoff-linux.md). Investigación: [gancho Graph](graph-nativo.md). Producto después: [branding](branding-cosmetic.md) **o** [LinkedIn](posicionamiento-linkedin.md). No retomar TEI ni compose en el Linux de 7 GB. Hybrid MinerU = GPU + RAGFlow que liste el backend.
+Handoff: [handoff-linux.md](../handoff-linux.md). Producto = kernel IDP. Demo diferido = branding o LinkedIn. Gancho Graph **no** es el rumbo. No Compose en Linux ~7 GB.

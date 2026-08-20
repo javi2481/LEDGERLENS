@@ -1,6 +1,10 @@
-# Fichas EEFF BYMA (Docling Graph)
+# Fichas EEFF BYMA (overlay del demo)
 
-Fuente de las cifras que `scripts/push_hechos.py` mete **dentro de cada EEFF** de cada dataset (chunk manual en el PDF + prompt de **todos** los chats). No se sube este `.md` como documento: Show Quote tiene que citar el EEFF. El catálogo machine-readable es `docs/hechos_eeff.json`.
+Gold del **chat RAGFlow**, no del kernel IDP. `scripts/push_hechos.py` mete estas cifras **dentro de cada EEFF** (chunk manual + prompt de todos los chats). No se sube este `.md` como documento: Show Quote tiene que citar el EEFF.
+
+Contrato IDP (pytest, `idp_ask.py`): `recipes/financial_statement.json` + `evals/identity_v1.json`. Las cifras coinciden; **no fusionar** los archivos.
+
+Catálogo machine-readable de este riel: `docs/hechos_eeff.json`.
 
 ## 1T26 primer trimestre 2026 — EEFF al 31 de marzo de 2026 (página 4)
 

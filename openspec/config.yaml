@@ -5,17 +5,16 @@ persistence: hybrid
 strict_tdd: false
 
 context: |
-  Product: LedgerLens — Spanish Q&A over BYMA sample financial PDFs with citations; empty/no-evidence reply instead of inventing.
-  Intended stack: RAGFlow v0.26.4 self-host (UI + RAG) + Infinity. Default PDF parser MinerU pipeline (sidecar MINERU_APISERVER=http://mineru-api:8000, MINERU_BACKEND=pipeline); Naive/DeepDoc fallback; optional PaddleOCR overlay. Default chat: Groq llama-3.3-70b-versatile in RAGFlow UI; host Ollama qwen2.5:1.5b last fallback (http://host.docker.internal:11434, never 127.0.0.1). OpenRouter Nano :free is not the default. Embed/rerank: Voyage native in RAGFlow.
-  Runtime: Docker Compose local, x86_64, ≥16 GB. Host-level checks: ./scripts/check.sh. No Gradio, no Hugging Face Space, no custom Python RAG package, no app.py.
-  Demo constraint: BYMA sample PDFs in docs/archivos_muestra/ (portfolio demo; not a live market product).
+  Product: LedgerLens is a domain-general IDP (recipe → typed extract → claims → identity lookup). Finance (BYMA EEFF) is the first plugin, not the ceiling. Active OpenSpec change: ledgerlens-idp-kernel. Identity contract is evals/identity_v1.json + recipes/financial_statement.json; exact-match, no embeddings.
+  Demo track (frozen, not product SoT): RAGFlow v0.26.4 + Infinity + MinerU pipeline sidecar + Groq llama-3.3-70b-versatile + Voyage. OpenSpec change ledger-lens-ragflow is the demo pin — do not inflate it with IDP work. Overlay Graph (docs/hechos_eeff.json + push_hechos.py) is demo-only gold; do not merge with identity evals.
+  Runtime kernel: ./scripts/check.sh (pytest) on any host with pdftotext. Runtime demo: Docker Compose, x86_64, ≥16 GB. No Gradio, no Hugging Face Space, no custom Python RAG package, no app.py, no ledger_lens/.
   Persistence: hybrid (openspec files + Engram observations, project ledgerlens).
-  Docs: when a change modifies the product, README.md, docs/agenda/, research/README.md, .env.example comments, and the active OpenSpec change must be updated in the same work unit.
-  Testing: scripts/check.sh exists; E2E is manual on ≥16 GB. strict_tdd stays false.
+  Docs: product changes update README.md + ledgerlens-idp-kernel in the same work unit. Demo pin / Compose / .env.example stay on the demo track.
+  Testing: ./scripts/check.sh runs file contracts + pytest capa 1-2. RAG E2E is manual on ≥16 GB and is not the IDP DoD. strict_tdd stays false.
 
 testing:
   strict_tdd: false
-  strict_tdd_reason: "Host-level scripts/check.sh is not a Strict TDD runner. E2E is manual RAGFlow UI on ≥16 GB. Strict TDD stays disabled."
+  strict_tdd_reason: "scripts/check.sh runs contracts + pytest for IDP layers 1-2. RAGFlow E2E stays manual on ≥16 GB. Strict TDD stays disabled."
   runner:
     command: "./scripts/check.sh"
     framework: bash

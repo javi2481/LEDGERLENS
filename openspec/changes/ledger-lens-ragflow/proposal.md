@@ -1,5 +1,7 @@
 # Proposal: LedgerLens RAGFlow local stack
 
+> **Congelado (pin del demo).** No es el SDD de producto. El change activo es [`ledgerlens-idp-kernel`](../ledgerlens-idp-kernel/). No inflar este change con extract/lookup/evals.
+
 ## Intent
 
 Local portfolio demo: Spanish Q&A over BYMA financial PDFs with citations. Official RAGFlow is UI+RAG; MinerU `pipeline` parses filings (CPU sidecar); Groq `llama-3.3-70b-versatile` is default chat; Voyage is native embed. No evidence → Spanish empty reply, not invention.

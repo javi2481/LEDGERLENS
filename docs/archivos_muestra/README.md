@@ -1,8 +1,10 @@
 # Archivos de muestra (BYMA)
 
-PDFs reales de BYMA para el demo local. Dataset UI: **`demo_4`** (MinerU `pipeline`). Chat: Groq `llama-3.3-70b-versatile`. Embed: Voyage `voyage-finance-2` (nativo RAGFlow). Rerank: `rerank-2.5-lite`.
+PDFs reales de BYMA. Los usa **los dos rieles**: el kernel IDP (`pdftotext` / pytest) y el demo RAGFlow (dataset UI **`demo_4`**).
 
-Orden: **configurar el dataset** (MinerU, español, KG/RAPTOR off) → **subir** → en cada file **Tamaño de la tarea por página = 128** → **Parse** de a uno. Si subís antes de configurar, cada archivo queda en DeepDOC y hay que borrar y volver a cargar.
+El parseo MinerU de abajo es solo del **demo**. El kernel no necesita Docker.
+
+Orden demo: **configurar el dataset** (MinerU, español, KG/RAPTOR off) → **subir** → en cada file **Tamaño de la tarea por página = 128** → **Parse** de a uno.
 
 No actives Knowledge graph ni RAPTOR: no son parsers y gastan tokens del chat.
 

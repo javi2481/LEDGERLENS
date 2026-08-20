@@ -4,23 +4,25 @@ LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 
 ## Quick path
 
-1. Change activo: [`changes/ledger-lens-ragflow/`](changes/ledger-lens-ragflow/).
-2. E2E Windows 32 GB cerrado (BYMA 1T26). No reabrir compose en el Linux de ~7 GB ([descartado](../docs/agenda/descartado.md)).
+1. Change **activo (producto):** [`changes/ledgerlens-idp-kernel/`](changes/ledgerlens-idp-kernel/).
+2. Change **congelado (pin del demo):** [`changes/ledger-lens-ragflow/`](changes/ledger-lens-ragflow/). No inflarlo. No es el SDD del kernel.
+3. Kernel en cualquier PC: `./scripts/check.sh`. Compose solo en ≥16 GB ([descartado](../docs/agenda/descartado.md) en el Linux de ~7 GB).
 
 ## Details
 
 | Tema | Valor |
 |------|--------|
-| Producto | Q&A español + citas; empty response si no hay evidencia |
-| Stack en config | MinerU `pipeline` + Infinity + Groq chat + Voyage nativo; Ollama último fallback; PaddleOCR opcional |
-| Tests | `./scripts/check.sh` (no Strict TDD; E2E manual en ≥16 GB) |
+| Producto | IDP multi-dominio; finanzas es el primer plugin |
+| Demo | Q&A español + citas en RAGFlow; overlay Graph |
+| Tests | `./scripts/check.sh` (pytest capa 1–2). E2E RAG no es el DoD |
 | Persistencia | `openspec/config.yaml` → `persistence: hybrid` |
 
 ## Checklist
 
-- [ ] Specs/design/README describen el **mismo** default (MinerU pipeline, Groq, Voyage, Infinity)
+- [ ] README y este archivo nombran el **mismo** change activo (`ledgerlens-idp-kernel`)
+- [ ] `ledger-lens-ragflow` sigue marcado congelado
 - [ ] `.env` y API keys **no** están en git
 
 ## Next step
 
-Retomar: [`docs/handoff-linux.md`](../docs/handoff-linux.md) + [`changes/ledger-lens-ragflow/handoff.md`](changes/ledger-lens-ragflow/handoff.md). Gancho Graph: [`docs/agenda/graph-nativo.md`](../docs/agenda/graph-nativo.md). No archivar este change todavía. No Compose en Linux ~7 GB.
+Handoff: [`docs/handoff-linux.md`](../docs/handoff-linux.md). El gancho Graph nativo es diferido del **demo**, no el siguiente paso de producto ([agenda](../docs/agenda/README.md)).

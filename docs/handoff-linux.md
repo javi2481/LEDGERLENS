@@ -12,13 +12,13 @@ uv venv && uv pip install -r requirements-dev.txt
 ./scripts/check.sh
 python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"
 # → 21262335
-python scripts/idp_ask.py "¿Cuál es el resultado bruto del 1T26?"
-# → 60144176
+python scripts/idp_ask.py "¿Cuál es la fecha del comunicado de prensa 1T26?"
+# → 2026-05-08
 ```
 
-Siguiente slice de producto (después de este cache): segundo dominio, ver [plan-siguiente-idp.md](plan-siguiente-idp.md).
+Siguiente producto: `legal_contract` cuando haya PDF. Ver [plan-siguiente-idp.md](plan-siguiente-idp.md).
 
-OpenSpec: activo [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/). Kernel shipped [`ledgerlens-idp-kernel`](../openspec/changes/ledgerlens-idp-kernel/). P&L vecino shipped [`ledgerlens-finance-pnl-claims`](../openspec/changes/ledgerlens-finance-pnl-claims/). Pin demo congelado [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/).
+OpenSpec: activo [`ledgerlens-press-release`](../openspec/changes/ledgerlens-press-release/). Shipped: kernel, P&L, [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/). Pin demo congelado [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/).
 
 ## Máquina
 
@@ -37,6 +37,7 @@ No commitear `.env`. Overlay Graph **no** va en `up.sh`. No reparsear MinerU par
 | Dos rieles (docs) | `ef40b24` | producto IDP vs demo RAGFlow |
 | P&L vecino extract | `26c67de` | bruto / operativo / EBT / impuesto / no controlante |
 | P&L vecino lookup + v2 | `f63d954` | `evals/identity_v2.json` |
+| Cache CLI de claims | `48e9091` | `outputs/claims.json`; evals siguen extrayendo |
 
 SDD hybrid. Finanzas es el primer plugin. `FinancialStatement` sigue de portero de los dos netos; las vecinas salen de `schemas/finance_lines.py`.
 
@@ -44,17 +45,18 @@ SDD hybrid. Finanzas es el primer plugin. `FinancialStatement` sigue de portero 
 
 | Riel | Dónde |
 |------|--------|
-| Contrato IDP | `recipes/financial_statement.json` + `evals/identity_v1.json` + `evals/identity_v2.json` |
+| Contrato IDP | `recipes/financial_statement.json` + `recipes/press_release.json` + `evals/identity_v1.json` + `evals/identity_v2.json` + `evals/press_v1.json` |
 | Overlay del chat | `docs/hechos_eeff.json` (`push_hechos.py`) |
 
-1T26: neto `21262335`, controlante `21259769`, bruto `60144176`, operativo `70223471`, impuesto `-14950948`, no controlante `2566`. Página 4. 2T26: primera columna (YTD).
+1T26: neto `21262335`, controlante `21259769`, bruto `60144176`, operativo `70223471`, impuesto `-14950948`, no controlante `2566`. Página 4. Comunicado 1T26 fecha `2026-05-08`. 2T26 EEFF: primera columna (YTD). Comunicado 2T26 fecha `2026-08-07`.
 
 ## Qué falta (producto)
 
 Orden fijo. Un change OpenSpec **nuevo** por slice. No inflar el kernel ni el pin RAGFlow.
 
-1. **Persistir claims** (activo: [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/)). JSON en `outputs/claims.json`. `idp_ask.py` reusa el cache; `--refresh` reextrae. Pytest de evals sigue extrayendo.
-2. **Segundo dominio.** Una receta + un schema + pocos gold. Prueba que el kernel no es solo BYMA.
+1. **Persistir claims** (shipped: [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/)).
+2. **Comunicado** (activo: [`ledgerlens-press-release`](../openspec/changes/ledgerlens-press-release/)): fecha + período, no P&L del comunicado.
+3. **Después:** `legal_contract` cuando haya PDF. No inflar press-release.
 
 No ahora: capa 3 RAG, MinerU en CI, ingresos/EPS, gancho Graph, Compose, `app.py` / `ledger_lens/`.
 

@@ -1,0 +1,72 @@
+"""Press evals: exact-match date/period. Finance v1/v2 remain the EEFF regression."""
+
+from __future__ import annotations
+
+import json
+import shutil
+from pathlib import Path
+
+import pytest
+
+from schemas.corpus import extract_claims_from_dir
+from schemas.lookup import lookup
+
+ROOT = Path(__file__).resolve().parents[1]
+EVAL_PATH = ROOT / "evals" / "press_v1.json"
+
+needs_pdftotext = pytest.mark.skipif(
+    shutil.which("pdftotext") is None,
+    reason="pdftotext not found (install poppler-utils)",
+)
+
+
+def _load_cases() -> list[dict]:
+    payload = json.loads(EVAL_PATH.read_text(encoding="utf-8"))
+    return list(payload["cases"])
+
+
+@pytest.fixture(scope="module")
+def claims():
+    if shutil.which("pdftotext") is None:
+        pytest.skip("pdftotext not found (install poppler-utils)")
+    return extract_claims_from_dir()
+
+
+@needs_pdftotext
+def test_press_identity(claims) -> None:
+    failures: list[str] = []
+    for case in _load_cases():
+        if case["partition"] != "identity":
+            continue
+        result = lookup(case["question"], claims)
+        if result.route != "identity" or len(result.claims) != 1:
+            failures.append(f"{case['id']} route={result.route} n={len(result.claims)}")
+            continue
+        row = result.claims[0]
+        if row.identity_key != case["expected_identity"]:
+            failures.append(f"{case['id']} identity {row.identity_key}")
+        if row.value != case["expected_value"]:
+            failures.append(f"{case['id']} value {row.value}")
+        if row.period != case["expected_period"]:
+            failures.append(f"{case['id']} period {row.period}")
+        if row.source_page != case["expected_source_page"]:
+            failures.append(f"{case['id']} page {row.source_page}")
+        prov = case.get("expected_provenance") or ""
+        if prov and prov.casefold() not in (row.source_text or "").casefold():
+            failures.append(f"{case['id']} provenance missing {prov!r}")
+        for rejected in case.get("reject_values") or ():
+            if row.value == rejected:
+                failures.append(f"{case['id']} accepted neighbor {rejected}")
+    assert not failures, "\n".join(failures)
+
+
+@needs_pdftotext
+def test_press_abstention(claims) -> None:
+    failures: list[str] = []
+    for case in _load_cases():
+        if case["partition"] != "abstention":
+            continue
+        result = lookup(case["question"], claims)
+        if result.route != "abstain" or result.claims:
+            failures.append(f"{case['id']} route={result.route} claims={len(result.claims)}")
+    assert not failures, "\n".join(failures)

@@ -12,8 +12,11 @@ from schemas.claim import (
     METRIC_NCI,
     METRIC_NETO,
     METRIC_OPERATIVO,
+    METRIC_PRESS_AS_OF,
+    METRIC_PRESS_PERIOD,
     SCOPE_CONSOLIDADO,
     SCOPE_CONTROLANTE,
+    SCOPE_PRESS,
     Claim,
     Route,
 )
@@ -53,6 +56,24 @@ def understand(question: str) -> Intent:
         token in q for token in ("resultado neto", "consolidado", "controlante", "resultado bruto", "impuesto")
     ):
         return Intent("abstain", None, None, None, False, "recipe_no_extract")
+    if "comunicado" in q and any(token in q for token in ("fecha", "cuando salio", "cuándo salió")):
+        period = None
+        has_1t = any(token in q for token in ("1t26", "1t 26", "marzo", "primer trimestre"))
+        has_2t = any(token in q for token in ("2t26", "2t 26", "junio", "segundo trimestre"))
+        if has_1t and not has_2t:
+            period = PERIOD_1T26
+        elif has_2t and not has_1t:
+            period = PERIOD_2T26
+        return Intent("identity", SCOPE_PRESS, METRIC_PRESS_AS_OF, period, False, None)
+    if "comunicado" in q and ("periodo" in q or "período" in q):
+        period = None
+        has_1t = any(token in q for token in ("1t26", "1t 26", "marzo", "primer trimestre"))
+        has_2t = any(token in q for token in ("2t26", "2t 26", "junio", "segundo trimestre"))
+        if has_1t and not has_2t:
+            period = PERIOD_1T26
+        elif has_2t and not has_1t:
+            period = PERIOD_2T26
+        return Intent("identity", SCOPE_PRESS, METRIC_PRESS_PERIOD, period, has_1t and has_2t, None)
     if any(token in q for token in ("contrato", "clausula", "cláusula")):
         return Intent("abstain", None, None, None, False, "recipe_no_extract")
     narrative_hits = (

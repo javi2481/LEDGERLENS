@@ -9,7 +9,7 @@ IDP **multi-dominio**: receta → extract → claims → lookup. Finanzas (EEFF 
 | **Kernel IDP** (producto) | `schemas/` + `evals/` + `scripts/idp_ask.py` | `./scripts/check.sh` (pytest; sin Docker) |
 | **Demo RAG** (portfolio) | Compose + MinerU + overlay Graph | PC ≥16 GB, `./scripts/up.sh`, UI `demo_4` |
 
-SDD del producto (activo): [`ledgerlens-claim-store`](openspec/changes/ledgerlens-claim-store/). Shipped: [`ledgerlens-idp-kernel`](openspec/changes/ledgerlens-idp-kernel/) y [`ledgerlens-finance-pnl-claims`](openspec/changes/ledgerlens-finance-pnl-claims/). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
+SDD del producto (activo): [`ledgerlens-press-release`](openspec/changes/ledgerlens-press-release/). Shipped: kernel, P&L, [`ledgerlens-claim-store`](openspec/changes/ledgerlens-claim-store/). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
 
 ## Oro (no fusionar)
 
@@ -17,7 +17,7 @@ Las cifras coinciden; los archivos no. Mezclarlos vuelve a confundir fila vecina
 
 | Rol | Archivo |
 |-----|---------|
-| Contrato IDP | `recipes/financial_statement.json` + [`evals/identity_v1.json`](evals/identity_v1.json) + [`evals/identity_v2.json`](evals/identity_v2.json) |
+| Contrato IDP | `recipes/financial_statement.json` + `recipes/press_release.json` + [`evals/identity_v1.json`](evals/identity_v1.json) + [`evals/identity_v2.json`](evals/identity_v2.json) + [`evals/press_v1.json`](evals/press_v1.json) |
 | Overlay del chat | [`docs/hechos_eeff.json`](docs/hechos_eeff.json) (lo inyecta `push_hechos.py`) |
 
 Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
@@ -27,8 +27,9 @@ Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
 1. `uv venv && uv pip install -r requirements-dev.txt`
 2. `./scripts/check.sh`
 3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335` (consolidado, página 4). La segunda pregunta reusa `outputs/claims.json` (`"store": "hit"`). `--refresh` vuelve a parsear.
+4. `python scripts/idp_ask.py "¿Cuál es la fecha del comunicado de prensa 1T26?"` → `2026-05-08` (no es el neto del EEFF).
 
-Trampas: sin decir controlante → consolidado neto (`21262335` / `81956525`). Controlante explícito → la otra cifra. Bruto ≠ operativo ≠ neto. Impuesto 1T26 → `-14950948`. No controlante → `2566`, no el controlante. YPF / memoria / comunicado → abstain. Los 10 casos `route: narrative` se saltan (capa 3). Detalle: [docs/testing.md](docs/testing.md).
+Trampas: sin decir controlante → consolidado neto (`21262335` / `81956525`). Controlante explícito → la otra cifra. Bruto ≠ operativo ≠ neto. Impuesto 1T26 → `-14950948`. No controlante → `2566`, no el controlante. Neto/impuesto **del comunicado** → abstain. Fecha del comunicado 1T26 → `2026-05-08`. YPF / memoria → abstain. Los 10 casos `route: narrative` se saltan (capa 3). Detalle: [docs/testing.md](docs/testing.md).
 
 ## Riel demo (PC ≥16 GB, x86_64)
 
@@ -124,7 +125,8 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 |------|-----|------|
 | `schemas/` / `recipes/` / `evals/` | Kernel IDP | producto |
 | `scripts/idp_ask.py` | Lookup; cache en `outputs/claims.json` | producto |
-| `openspec/changes/ledgerlens-claim-store/` | SDD activo (cache local) | producto |
+| `openspec/changes/ledgerlens-press-release/` | SDD activo (comunicado fecha/período) | producto |
+| `openspec/changes/ledgerlens-claim-store/` | SDD cache shipped | producto |
 | `openspec/changes/ledgerlens-finance-pnl-claims/` | SDD P&L shipped | producto |
 | `openspec/changes/ledgerlens-idp-kernel/` | SDD kernel shipped | producto |
 | `vendor/ragflow-docker/` | Pin v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) | demo |
@@ -141,7 +143,7 @@ No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF.
 
 ## Documentación coherente
 
-Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-claim-store](openspec/changes/ledgerlens-claim-store/)). Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
+Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-press-release](openspec/changes/ledgerlens-press-release/)). Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
 
 Ítems diferidos del demo: [docs/agenda/](docs/agenda/).
 

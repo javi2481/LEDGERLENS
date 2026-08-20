@@ -61,8 +61,8 @@ def test_page_select_uses_recipe_keywords() -> None:
 
 
 @needs_pdftotext
-def test_comunicado_does_not_extract() -> None:
-    assert classify_filename(PDF_COMUNICADO.name) == UNKNOWN
+def test_comunicado_does_not_extract_financial_statement() -> None:
+    assert classify_filename(PDF_COMUNICADO.name) == "press_release"
     assert extract_financial_statement(PDF_COMUNICADO) is None
 
 
@@ -73,10 +73,10 @@ def test_memoria_with_eeff_in_name_does_not_extract() -> None:
 
 
 @needs_pdftotext
-def test_extract_false_recipe_yields_no_statement() -> None:
+def test_extract_false_recipe_still_skips_statement() -> None:
     recipes = load_recipes()
-    assert recipes["press_release"].extract is False
-    assert extract_financial_statement(PDF_COMUNICADO, recipes) is None
+    assert recipes["annual_report"].extract is False
+    assert extract_financial_statement(PDF_MEMORIA, recipes) is None
 
 
 def test_fill_rejects_invented_digits() -> None:
@@ -124,5 +124,5 @@ def test_classify_dedicated_eeff() -> None:
     assert classify_filename("BYMA_-_EEFF_31-03-2026_VF.pdf") == "financial_statement"
     assert classify_filename("BYMA - EEFF 30-06-2026.pdf") == "financial_statement"
     assert classify_filename("BYMA-MEMORIA_2024_y_EEFF_31-12-2024.pdf") == UNKNOWN
-    assert classify_filename("BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf") == UNKNOWN
+    assert classify_filename("BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf") == "press_release"
     assert classify_filename("Presentacion_de_resultados_BYMA-2T26.pdf") == UNKNOWN

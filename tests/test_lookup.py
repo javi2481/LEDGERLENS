@@ -79,6 +79,21 @@ def test_ypf_abstains(claims) -> None:
     assert result.claims == ()
 
 
+def test_press_date_not_pnl(claims) -> None:
+    result = lookup("¿Cuál es la fecha del comunicado de prensa 1T26?", claims)
+    assert result.route == "identity"
+    row = result.claims[0]
+    assert row.metric == "press_as_of_date"
+    assert row.value == "2026-05-08"
+    assert row.value != "21262335"
+
+
+def test_eeff_metric_on_comunicado_still_abstains(claims) -> None:
+    result = lookup("¿Cuál es el resultado neto consolidado del comunicado de prensa?", claims)
+    assert result.route == "abstain"
+    assert result.claims == ()
+
+
 def test_understand_narrative_is_not_identity() -> None:
     intent = understand("Explicá el crecimiento de ingresos de BYMA")
     assert intent.route == "narrative"

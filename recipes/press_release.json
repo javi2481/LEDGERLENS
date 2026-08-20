@@ -1,8 +1,24 @@
 {
   "id": "press_release",
-  "extract": false,
-  "schema": null,
+  "extract": true,
+  "schema": "schemas.press_release.PressRelease",
   "threshold": 0.85,
-  "page_select_keywords": [],
-  "description": "Comunicado de prensa de resultados: headline, cifras resumidas, no el estado financiero completo ni la tabla P&L del EEFF. Ejemplo BYMA: Comunicado de Prensa 1T26/2T26."
+  "page_select_keywords": [
+    "comunicado de prensa",
+    "anuncia resultados",
+    "Bolsas y Mercados Argentinos"
+  ],
+  "description": "Comunicado de prensa de resultados: fecha de anuncio y período cubierto. No extrae la tabla P&L (eso vive en el EEFF). Ejemplo BYMA: Comunicado de Prensa 1T26/2T26.",
+  "gold": {
+    "BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf": {
+      "period": "2026-03-31",
+      "press_as_of_date": "2026-05-08",
+      "press_period": "2026-03-31"
+    },
+    "BYMA-Comunicado_de_Prensa-2T26.pdf": {
+      "period": "2026-06-30",
+      "press_as_of_date": "2026-08-07",
+      "press_period": "2026-06-30"
+    }
+  }
 }

@@ -31,4 +31,4 @@ Consultá un archivo, no todos. Cerrados: [descartado.md](descartado.md).
 
 ## Next step
 
-Handoff: [handoff-linux.md](../handoff-linux.md). Producto activo: [claim-store](../../openspec/changes/ledgerlens-claim-store/). Después: segundo dominio ([plan](../plan-siguiente-idp.md)). Demo diferido = branding o LinkedIn. Gancho Graph **no** es el rumbo. No Compose en Linux ~7 GB.
+Handoff: [handoff-linux.md](../handoff-linux.md). Producto activo: [press-release](../../openspec/changes/ledgerlens-press-release/). Demo diferido = branding o LinkedIn. Gancho Graph **no** es el rumbo. No Compose en Linux ~7 GB.

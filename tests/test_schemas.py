@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT))
 
 from schemas.catalog import classifier_labels, load_recipes
 from schemas.financial_statement import FinancialStatement
+from schemas.press_release import PressRelease
 from schemas.money import digits_ars
 from schemas.validate import reject_financial_statement
 
@@ -26,8 +27,9 @@ def test_catalog_covers_sample_types() -> None:
     }
     assert recipes["financial_statement"].extract is True
     assert recipes["financial_statement"].schema_cls() is FinancialStatement
+    assert recipes["press_release"].extract is True
+    assert recipes["press_release"].schema_cls() is PressRelease
     for rid in (
-        "press_release",
         "results_presentation",
         "earnings_transcript",
         "annual_report",

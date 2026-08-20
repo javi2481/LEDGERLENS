@@ -24,6 +24,13 @@ def dedicated_financial_statement(name: str) -> bool:
     return not any(token in lower for token in SKIP_SUBSTR)
 
 
+def dedicated_press_release(name: str) -> bool:
+    lower = name.lower()
+    if not lower.endswith(".pdf"):
+        return False
+    return "comunicado" in lower
+
+
 def classify_filename(name: str, recipe_ids: tuple[str, ...] | None = None) -> str:
     """Return a recipe id or UNKNOWN. Finance is one plugin, not the kernel."""
     ids = recipe_ids
@@ -33,4 +40,6 @@ def classify_filename(name: str, recipe_ids: tuple[str, ...] | None = None) -> s
         ids = tuple(load_recipes())
     if dedicated_financial_statement(name) and "financial_statement" in ids:
         return "financial_statement"
+    if dedicated_press_release(name) and "press_release" in ids:
+        return "press_release"
     return UNKNOWN

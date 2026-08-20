@@ -1,0 +1,90 @@
+{
+  "version": "press_v1",
+  "gold_ref": "recipes/press_release.json",
+  "notes": "Press-release date and period only. Not P&L. Do not merge with docs/hechos_eeff.json. identity_v1/v2 still abstain on EEFF metrics attributed to the comunicado.",
+  "cases": [
+    {
+      "id": "pr-id-01",
+      "partition": "identity",
+      "route": "identity",
+      "question": "¿Cuál es la fecha del comunicado de prensa 1T26?",
+      "expected_identity": "BYMA|2026-03-31|comunicado|press_as_of_date",
+      "expected_value": "2026-05-08",
+      "expected_period": "2026-03-31",
+      "expected_source_page": 1,
+      "expected_provenance": "mayo",
+      "expected_abstain": null
+    },
+    {
+      "id": "pr-id-02",
+      "partition": "identity",
+      "route": "identity",
+      "question": "¿Cuál es la fecha del comunicado de prensa 2T26?",
+      "expected_identity": "BYMA|2026-06-30|comunicado|press_as_of_date",
+      "expected_value": "2026-08-07",
+      "expected_period": "2026-06-30",
+      "expected_source_page": 1,
+      "expected_provenance": "agosto",
+      "expected_abstain": null
+    },
+    {
+      "id": "pr-id-03",
+      "partition": "identity",
+      "route": "identity",
+      "question": "¿De qué período es el comunicado de 1T26?",
+      "expected_identity": "BYMA|2026-03-31|comunicado|press_period",
+      "expected_value": "2026-03-31",
+      "expected_period": "2026-03-31",
+      "expected_source_page": 1,
+      "expected_provenance": "1T26",
+      "expected_abstain": null
+    },
+    {
+      "id": "pr-id-04",
+      "partition": "identity",
+      "route": "identity",
+      "question": "¿De qué período es el comunicado de 2T26?",
+      "expected_identity": "BYMA|2026-06-30|comunicado|press_period",
+      "expected_value": "2026-06-30",
+      "expected_period": "2026-06-30",
+      "expected_source_page": 1,
+      "expected_provenance": "2T26",
+      "expected_abstain": null
+    },
+    {
+      "id": "pr-id-05",
+      "partition": "identity",
+      "route": "identity",
+      "question": "Fecha del comunicado de prensa del 1T26",
+      "expected_identity": "BYMA|2026-03-31|comunicado|press_as_of_date",
+      "expected_value": "2026-05-08",
+      "expected_period": "2026-03-31",
+      "expected_source_page": 1,
+      "expected_provenance": "mayo",
+      "reject_values": ["2026-08-07"],
+      "expected_abstain": null
+    },
+    {
+      "id": "pr-ab-01",
+      "partition": "abstention",
+      "route": "abstain",
+      "question": "¿Cuál es el resultado neto consolidado del comunicado de prensa?",
+      "expected_identity": null,
+      "expected_value": null,
+      "expected_period": null,
+      "expected_source_page": null,
+      "expected_abstain": true
+    },
+    {
+      "id": "pr-ab-02",
+      "partition": "abstention",
+      "route": "abstain",
+      "question": "¿Cuál es el impuesto a las ganancias del comunicado de prensa?",
+      "expected_identity": null,
+      "expected_value": null,
+      "expected_period": null,
+      "expected_source_page": null,
+      "expected_abstain": true
+    }
+  ]
+}

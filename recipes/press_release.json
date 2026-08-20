@@ -1,0 +1,8 @@
+{
+  "id": "press_release",
+  "extract": false,
+  "schema": null,
+  "threshold": 0.85,
+  "page_select_keywords": [],
+  "description": "Comunicado de prensa de resultados: headline, cifras resumidas, no el estado financiero completo ni la tabla P&L del EEFF. Ejemplo BYMA: Comunicado de Prensa 1T26/2T26."
+}

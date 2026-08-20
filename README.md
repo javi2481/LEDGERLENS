@@ -116,6 +116,8 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 | `scripts/run_docling_graph_eeff.py` | Overlay Graph (no lo llama `up.sh`; `--all` o `--pdf`) |
 | `scripts/push_hechos.py` | Inyecta fichas Graph en todos los chats y EEFF (sin reparsear PDFs) |
 | `docs/hechos_eeff.json` | Catálogo de fichas (1T26/2T26 y las que sume Graph) |
+| `recipes/` | Catálogo Identity-by-Schema (un JSON por tipo de documento) |
+| `schemas/` | Contratos Pydantic; hoy extrae `FinancialStatement` (consolidado ≠ controlante) |
 | `templates/` | Plantilla EEFF BYMA para Graph |
 | `docs/archivos_muestra/` | PDFs BYMA del demo |
 | `docs/agenda/` | Diferidos (vLLM, branding, LinkedIn) + nota Graph |

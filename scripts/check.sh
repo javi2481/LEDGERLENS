@@ -44,6 +44,12 @@ fi
 [[ ! -e app.py ]] || fail "forbidden app.py"
 [[ ! -d ledger_lens ]] || fail "forbidden ledger_lens/"
 git check-ignore -q .env || fail ".env must be gitignored"
+[[ -f recipes/financial_statement.json ]] || fail "missing recipes/financial_statement.json"
+[[ -f schemas/financial_statement.py ]] || fail "missing schemas/financial_statement.py"
+[[ -f schemas/catalog.py ]] || fail "missing schemas/catalog.py"
+if [[ -e recipes/UNKNOWN.json ]] || [[ -e recipes/unknown.json ]]; then
+  fail "UNKNOWN is a classifier class, not a recipe file"
+fi
 pass "file contracts"
 
 # --- sample PDFs (BYMA filings for the live demo) ---

@@ -1,0 +1,8 @@
+{
+  "id": "earnings_transcript",
+  "extract": false,
+  "schema": null,
+  "threshold": 0.85,
+  "page_select_keywords": [],
+  "description": "Transcripción de conference call o webcast de resultados. Texto hablado, no el estado de resultados consolidado."
+}

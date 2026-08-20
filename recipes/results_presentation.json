@@ -1,0 +1,8 @@
+{
+  "id": "results_presentation",
+  "extract": false,
+  "schema": null,
+  "threshold": 0.85,
+  "page_select_keywords": [],
+  "description": "Presentación de resultados (slides/PPT en PDF): gráficos, highlights, no el EEFF auditado. Ejemplo BYMA: Presentacion de resultados 1T26/2T26."
+}

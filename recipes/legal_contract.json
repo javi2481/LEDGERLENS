@@ -1,0 +1,8 @@
+{
+  "id": "legal_contract",
+  "extract": false,
+  "schema": null,
+  "threshold": 0.85,
+  "page_select_keywords": [],
+  "description": "Contrato o acuerdo legal: partes, cláusulas, vigencia, firmas. No hay PDFs de este tipo en docs/archivos_muestra; la receta existe para el clasificador. Extraer campos legales = agregar un schema y poner extract true."
+}

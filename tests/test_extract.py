@@ -1,0 +1,123 @@
+"""Layer 1: PDF → FinancialStatement. Skips if pdftotext is missing."""
+
+from __future__ import annotations
+
+import shutil
+
+import pytest
+
+from schemas.catalog import load_recipes
+from schemas.classify import UNKNOWN, classify_filename
+from schemas.corpus import SAMPLES, extract_claims_from_dir
+from schemas.extract import extract_financial_statement, fill_financial_statement, select_page
+from schemas.page_text import pdf_page_text
+
+needs_pdftotext = pytest.mark.skipif(
+    shutil.which("pdftotext") is None,
+    reason="pdftotext not found (install poppler-utils)",
+)
+
+PDF_1T26 = SAMPLES / "BYMA_-_EEFF_31-03-2026_VF.pdf"
+PDF_2T26 = SAMPLES / "BYMA - EEFF 30-06-2026.pdf"
+PDF_COMUNICADO = SAMPLES / "BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf"
+PDF_MEMORIA = SAMPLES / "BYMA-MEMORIA_2024_y_EEFF_31-12-2024.pdf"
+
+
+def _gold() -> dict[str, dict[str, str]]:
+    return load_recipes()["financial_statement"].gold
+
+
+@needs_pdftotext
+def test_extract_1t26_matches_recipe_gold() -> None:
+    gold = _gold()["BYMA_-_EEFF_31-03-2026_VF.pdf"]
+    row = extract_financial_statement(PDF_1T26)
+    assert row is not None
+    assert row.period == gold["period"] == "2026-03-31"
+    assert row.net_income_consolidated == gold["net_income_consolidated"] == "21262335"
+    assert row.net_income_attributable_to_parent == gold["net_income_attributable_to_parent"] == "21259769"
+    assert row.prior_period_amount_to_ignore == gold["prior_period_amount_to_ignore"] == "22362983"
+    assert row.source_page == 4
+    page_digits = "".join(ch for ch in pdf_page_text(PDF_1T26, 4) if ch.isdigit())
+    assert row.net_income_consolidated in page_digits
+    assert row.net_income_attributable_to_parent in page_digits
+
+
+@needs_pdftotext
+def test_extract_2t26_matches_recipe_gold() -> None:
+    gold = _gold()["BYMA - EEFF 30-06-2026.pdf"]
+    row = extract_financial_statement(PDF_2T26)
+    assert row is not None
+    assert row.period == gold["period"] == "2026-06-30"
+    assert row.net_income_consolidated == gold["net_income_consolidated"] == "81956525"
+    assert row.net_income_attributable_to_parent == gold["net_income_attributable_to_parent"] == "81946993"
+    assert row.source_page == 4
+
+
+@needs_pdftotext
+def test_page_select_uses_recipe_keywords() -> None:
+    recipe = load_recipes()["financial_statement"]
+    assert select_page(PDF_1T26, recipe.page_select_keywords) == 4
+    assert select_page(PDF_2T26, recipe.page_select_keywords) == 4
+
+
+@needs_pdftotext
+def test_comunicado_does_not_extract() -> None:
+    assert classify_filename(PDF_COMUNICADO.name) == UNKNOWN
+    assert extract_financial_statement(PDF_COMUNICADO) is None
+
+
+@needs_pdftotext
+def test_memoria_with_eeff_in_name_does_not_extract() -> None:
+    assert classify_filename(PDF_MEMORIA.name) == UNKNOWN
+    assert extract_financial_statement(PDF_MEMORIA) is None
+
+
+@needs_pdftotext
+def test_extract_false_recipe_yields_no_statement() -> None:
+    recipes = load_recipes()
+    assert recipes["press_release"].extract is False
+    assert extract_financial_statement(PDF_COMUNICADO, recipes) is None
+
+
+def test_fill_rejects_invented_digits() -> None:
+    fake = (
+        "RESULTADO NETO DEL PERÍODO  99.999.999\n"
+        "Resultado neto del período atribuible a la participación controlante  11.111.111\n"
+        "31 DE MARZO DE 2026\n"
+    )
+    row = fill_financial_statement(fake, source_page=4, filename="BYMA_-_EEFF_fake.pdf")
+    assert row is not None
+    page_without = (
+        "RESULTADO NETO DEL PERÍODO\n"
+        "Resultado neto del período atribuible a la participación controlante\n"
+        "31 DE MARZO DE 2026\n"
+    )
+    assert fill_financial_statement(page_without, source_page=4, filename="x.pdf") is None
+
+
+@needs_pdftotext
+def test_corpus_projects_four_claims() -> None:
+    claims = extract_claims_from_dir()
+    keys = {c.identity_key for c in claims}
+    assert "BYMA|2026-03-31|consolidado|resultado_neto" in keys
+    assert "BYMA|2026-03-31|controlante|resultado_atribuible_controladora" in keys
+    assert "BYMA|2026-06-30|consolidado|resultado_neto" in keys
+    assert "BYMA|2026-06-30|controlante|resultado_atribuible_controladora" in keys
+    by_key = {c.identity_key: c.value for c in claims}
+    gold = _gold()
+    assert (
+        by_key["BYMA|2026-03-31|consolidado|resultado_neto"]
+        == gold["BYMA_-_EEFF_31-03-2026_VF.pdf"]["net_income_consolidated"]
+    )
+    assert (
+        by_key["BYMA|2026-06-30|controlante|resultado_atribuible_controladora"]
+        == gold["BYMA - EEFF 30-06-2026.pdf"]["net_income_attributable_to_parent"]
+    )
+
+
+def test_classify_dedicated_eeff() -> None:
+    assert classify_filename("BYMA_-_EEFF_31-03-2026_VF.pdf") == "financial_statement"
+    assert classify_filename("BYMA - EEFF 30-06-2026.pdf") == "financial_statement"
+    assert classify_filename("BYMA-MEMORIA_2024_y_EEFF_31-12-2024.pdf") == UNKNOWN
+    assert classify_filename("BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf") == UNKNOWN
+    assert classify_filename("Presentacion_de_resultados_BYMA-2T26.pdf") == UNKNOWN

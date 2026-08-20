@@ -54,8 +54,8 @@ def load_recipes(directory: Path | None = None) -> dict[str, Recipe]:
         if recipe.id in found:
             raise ValueError(f"duplicate recipe id: {recipe.id}")
         found[recipe.id] = recipe
-    if "financial_statement" not in found:
-        raise ValueError("catalog missing financial_statement")
+    if not found:
+        raise ValueError("catalog empty")
     return found
 
 

@@ -4,23 +4,21 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
+
+_ROOT = Path(__file__).resolve().parents[1]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+from schemas.classify import dedicated_financial_statement
 
 MARKER = "Ficha Graph EEFF"
 GRAPH_START = "--- Fichas Graph (LedgerLens) ---"
 GRAPH_END = "--- Fin fichas Graph ---"
-CATALOG = Path(__file__).resolve().parents[1] / "docs" / "hechos_eeff.json"
-OUTPUTS = Path(__file__).resolve().parents[1] / "outputs"
+CATALOG = _ROOT / "docs" / "hechos_eeff.json"
+OUTPUTS = _ROOT / "outputs"
 SIDECAR = "hechos_eeff.md"
-
-SKIP_SUBSTR = (
-    "memoria",
-    "comunicado",
-    "presentacion",
-    "presentación",
-    "transcripcion",
-    "transcripción",
-)
 
 GRAPH_RULES = (
     "Si el conocimiento incluye un bloque «Ficha Graph EEFF», esas cifras tienen "
@@ -37,12 +35,7 @@ GRAPH_RULES = (
 
 def needs_graph(name: str) -> bool:
     """Dedicated EEFF filings. Memorias/comunicados/presentaciones are not auto-Graph."""
-    lower = name.lower()
-    if not lower.endswith(".pdf"):
-        return False
-    if "eeff" not in lower:
-        return False
-    return not any(token in lower for token in SKIP_SUBSTR)
+    return dedicated_financial_statement(name)
 
 
 def format_ars(value: str) -> str:

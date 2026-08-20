@@ -1,8 +1,15 @@
 # Mapa de pruebas LedgerLens
 
-Hoy **no hay pytest**. Lo único automatizado es `scripts/check.sh` (contratos de archivos, pin v0.26.4, PDFs de muestra). El E2E del README y el `gold_report` de Graph se corren a mano. OpenSpec dejó 11 escenarios en PARTIAL.
+El contrato IDP es **capa 2** (extract + lookup, exact-match, sin embeddings). `scripts/check.sh` corre contratos **y** `pytest tests/`. El eval RAG (Ola 3) es del demo `demo_4`; **no** sustituye al kernel.
 
-No testear el interior de RAGFlow / Infinity. LedgerLens es overlay + scripts + contratos de producto. Si el bug es del vendor, se documenta y se pinnea.
+## Oro (no fusionar)
+
+| Riel | Archivo | Quién lo usa |
+|------|---------|--------------|
+| Contrato IDP | `recipes/financial_statement.json` + `evals/identity_v1.json` | pytest, `idp_ask.py` |
+| Overlay demo | `docs/hechos_eeff.json` | `push_hechos.py` / chat |
+
+Las cifras 1T26/2T26 son las mismas. Los archivos no se mezclan.
 
 Abrí este archivo en preview (`Ctrl+Shift+V`) para ver los diagramas.
 
@@ -10,72 +17,62 @@ Abrí este archivo en preview (`Ctrl+Shift+V`) para ver los diagramas.
 
 ```mermaid
 flowchart TB
-  subgraph fuera [Fuera de alcance]
+  subgraph fuera [Fuera de alcance del kernel]
     V[RAGFlow / Infinity / MySQL]
   end
 
-  subgraph ola1 [Ola 1 — CI cualquier PC]
+  subgraph capa12 [Contrato IDP — CI cualquier PC]
     C[check.sh contratos]
-    U[pytest overlay Graph]
-    G[golden PDF vs JSON]
+    P[pytest extract + identity_v1]
   end
 
   subgraph ola2 [Ola 2 — PC 32 GB]
     S[smoke Compose]
-    P[MinerU / Docling]
-    H[gold_report 1T26 y 2T26]
+    M[MinerU / Docling]
+    H[gold_report Graph overlay]
   end
 
-  subgraph ola3 [Ola 3 — promesa del demo]
+  subgraph ola3 [Ola 3 — demo RAG, no es el contrato IDP]
     R[eval RAG API de chat]
   end
 
-  C --> U --> G
-  G --> S --> P --> H
-  H --> R
-  R -.->|no sustituye| U
+  C --> P
+  P -.-> S --> M --> H
+  H -.-> R
+  R -.->|no sustituye| P
   V ~~~ C
 ```
 
-Un eval RAG rojo no dice si falló el PDF, el chunk o Groq. Por eso la Ola 3 no reemplaza a la 1.
+Un eval RAG rojo no dice si falló el PDF, el chunk o Groq. Por eso la Ola 3 no reemplaza a capa 1–2.
 
-## Cobertura hoy
+## Promesa IDP (capa 2)
 
-```mermaid
-pie title Catalogo propuesto — 24 items
-  "Ya corre" : 3
-  "Manual / incompleto" : 6
-  "No existe" : 15
-```
-
-## Qué promete el demo (set gold)
-
-Estas cinco aserciones son el contrato visible. El resto de capas existe para que estas no se rompan en silencio.
+Estas aserciones son el contrato del kernel. Se miden en `evals/identity_v1.json` + pytest. **Ningún test llama a RAGFlow.**
 
 ```mermaid
 flowchart TD
   Q[Pregunta en español]
-  Q --> E{Hay chunks del corpus?}
-  E -->|no o similitud baja| Empty[Empty response en español<br/>sin cifra ni cita falsa]
-  E -->|sí| Cita{Show Quote al PDF?}
-  Cita -->|cita hechos_eeff.md| FailCita[FAIL]
-  Cita -->|cita el EEFF| Tipo{Qué pide?}
-  Tipo -->|neto / período / 1T26 sin decir controlante| Cons[1T26: 21.262.335<br/>2T26: 81.956.525]
-  Tipo -->|controlante / atribuible| Ctrl[1T26: 21.259.769<br/>2T26: 81.946.993]
-  Tipo -->|YPF 3 de enero| Empty
-  Cons --> NoLado[Rechazar la fila de al lado<br/>y 22.362.983]
-  Ctrl --> NoLado
+  Q --> R{route}
+  R -->|identity| L[lookup identity_key + período]
+  R -->|abstain| A[sin cifra]
+  R -->|narrative| S[skip capa 3]
+  L --> Tipo{Qué pide?}
+  Tipo -->|neto / período / trimestre sin controlante| Cons[1T26: 21262335<br/>2T26: 81956525]
+  Tipo -->|controlante / atribuible / propietarios| Ctrl[1T26: 21259769<br/>2T26: 81946993]
+  Tipo -->|YPF / memoria / comunicado| A
+  Cons --> Ev[página 4 + source_text]
+  Ctrl --> Ev
 ```
 
 | Caso | Pregunta | Debe devolver | Debe rechazar |
 |------|----------|---------------|---------------|
-| 1T26 trampa | ¿Cuál es el RESULTADO NETO DEL PERÍODO consolidado? | **21.262.335** | 21.259.769 y 22.362.983 |
-| 1T26 controlante | ¿Resultado atribuible a la participación controlante 1T26? | **21.259.769** | el consolidado |
-| 2T26 trampa | Resultado neto del período (sin decir consolidado) | **81.956.525** | 81.946.993 (controlante / pág. 45) |
-| Fuera de corpus | ¿Precio de cierre de YPF en BYMA el 3 de enero? | Empty response en español | cifra inventada o cita falsa |
-| Cita | Cualquier respuesta no vacía | Show Quote al PDF del EEFF | `hechos_eeff.md` |
+| 1T26 trampa | ¿Cuál es el resultado neto del período 1T26? | **21262335** | 21259769 y 22362983 |
+| 1T26 controlante | ¿Resultado atribuible a la participación controlante 1T26? | **21259769** | el consolidado |
+| 2T26 trampa | Resultado neto del período 2T26 (sin decir consolidado) | **81956525** | 81946993 |
+| Fuera de corpus | ¿Precio de cierre de YPF en BYMA el 3 de enero? | abstain | cifra inventada |
+| Comparación | consolidado 1T26 vs 2T26 | ambas cifras, mismo scope | mezclar controlante |
 
-Condición del eval RAG: dataset `demo_4` parseado, `push_hechos.py` corrido, **chat nuevo** (un chat ya abierto no toma el prompt Graph).
+El demo RAG (Show Quote, empty response, `hechos_eeff.md`) queda en Ola 3; no es el DoD de esta slice.
 
 ## Pipeline del demo vs tests
 
@@ -107,21 +104,21 @@ Completar de a una. Ola 1 entra en CI de cualquier PC (también la de ~7 GB). Ol
 
 ```mermaid
 flowchart LR
-  A[Ola 1<br/>pytest + check.sh<br/>0 Docker] --> B[Ola 2<br/>Compose + MinerU<br/>marker slow]
-  B --> C[Ola 3<br/>eval RAG<br/>Groq + Voyage]
+  A[Capa 1-2<br/>pytest + check.sh<br/>0 Docker] --> B[Ola 2<br/>Compose + MinerU<br/>marker slow]
+  B --> C[Ola 3<br/>eval RAG demo<br/>no es contrato IDP]
 ```
 
-### Ola 1 — CI barato (primero)
+### Capa 1 y 2 — contrato IDP (primero)
 
-pytest sobre `scripts/graph_hechos.py` y `templates/eeff_byma.py`, catálogo vs PDFs, ampliar `check.sh`. Cubre clasificar mal un filing, formatear mal un monto, o desincronizar el oro del JSON contra el PDF. **Sin Docker.**
+pytest sobre `schemas/extract.py`, `schemas/lookup.py` y `evals/identity_v1.json`. Extrae página 4 con `pdftotext -layout`, proyecta dos claims, lookup léxico (default consolidado). Host sin poppler: skip explícito de extract, no fail silencioso. **Sin Docker, sin RAGFlow.**
 
 ### Ola 2 — stack vivo
 
 Smoke de Compose, health de MinerU, sidecar caído, `gold_report` de Graph como job opcional. Marker `slow` / `compose`. No en cada push.
 
-### Ola 3 — promesa del demo
+### Ola 3 — demo RAG (no es el contrato IDP)
 
-Eval RAG contra la API de chat (no clicks en la UI): las 3 preguntas del README más las trampas consolidado/controlante. Un eval rojo no dice si falló el PDF, el chunk o Groq: por eso no sustituye a la Ola 1.
+Eval RAG contra la API de chat (no clicks en la UI): trampas consolidado/controlante en el asistente `chat_demo_4`. Un eval rojo no dice si falló el PDF, el chunk o Groq: por eso no sustituye a capa 1–2.
 
 ## Criterio Graph: dos nodos, no uno
 
@@ -170,7 +167,7 @@ sequenceDiagram
 | Contratos | PDFs BYMA ≥6 + comunicado 1T26 contiene BYMA | Fixtures de `docs/archivos_muestra/` | `check.sh` + `pdftotext` | CI, 0 Docker | 1 | Ya corre |
 | Contratos | `bash -n` de todos los scripts + overlay sin `:8080` PaddleOCR | `up.sh` no eval; PaddleOCR no publica host | `check.sh` ampliado | CI, 0 Docker | 1 | Manual / incompleto |
 | Contratos | Catálogo JSON + nombres de PDF coinciden con `archivos_muestra` | Fichas Graph apuntan a un filing que no existe | `pytest tests/test_catalog_files.py` | CI, 0 Docker | 1 | No existe |
-| Unitarios | Identity-by-Schema: catálogo + oro 1T26/2T26 + abstener si montos iguales | El portero no tiene contrato consolidado ≠ controlante | `pytest tests/test_schemas.py` | CI, 0 Docker | 1 | Ya corre |
+| Unitarios | IDP extract + identity lookup + `evals/identity_v1.json` | Fila vecina / período mezclado / YPF no abstiene | `pytest tests/` vía `check.sh` | CI + poppler | 1–2 | Ya corre |
 | Unitarios | `needs_graph`: EEFF sí; memoria/comunicado/presentación no | Graph corre sobre Memorias (OOM) o sobre no-P&L | `pytest tests/test_graph_hechos.py` | CI, 0 Docker | 1 | No existe |
 | Unitarios | `Monto.strip_thousands` y `format_ars` (21.262.335 ↔ 21262335) | La plantilla redondea o pierde dígitos | `pytest tests/test_eeff_byma.py` | CI, 0 Docker | 1 | No existe |
 | Unitarios | `ficha_chunk` + `upsert_graph_prompt` (idempotente, no cita `.md`) | Show Quote cita markdown auxiliar; re-push duplica el bloque | `pytest tests/test_graph_hechos.py` | CI, 0 Docker | 1 | No existe |
@@ -229,6 +226,6 @@ Performance de parse 1800 s, carga de Memoria anual, UI visual, tests internos d
 
 ## Orden recomendado
 
-1. Directorio `tests/` + pytest + 8–12 casos sobre Graph + catálogo + `check.sh` (Ola 1).
+1. `uv venv && uv pip install -r requirements-dev.txt` y `./scripts/check.sh` (capa 1–2).
 2. Smoke Compose + MinerU + `gold_report` en la PC de 32 GB (Ola 2).
-3. Eval RAG de las cinco filas gold (Ola 3).
+3. Eval RAG de las cinco filas gold del demo (Ola 3; no es el contrato IDP).

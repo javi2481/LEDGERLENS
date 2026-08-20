@@ -47,6 +47,9 @@ git check-ignore -q .env || fail ".env must be gitignored"
 [[ -f recipes/financial_statement.json ]] || fail "missing recipes/financial_statement.json"
 [[ -f schemas/financial_statement.py ]] || fail "missing schemas/financial_statement.py"
 [[ -f schemas/catalog.py ]] || fail "missing schemas/catalog.py"
+[[ -f schemas/claim.py ]] || fail "missing schemas/claim.py"
+[[ -f evals/identity_v1.json ]] || fail "missing evals/identity_v1.json"
+[[ -f scripts/idp_ask.py ]] || fail "missing scripts/idp_ask.py"
 if [[ -e recipes/UNKNOWN.json ]] || [[ -e recipes/unknown.json ]]; then
   fail "UNKNOWN is a classifier class, not a recipe file"
 fi
@@ -116,6 +119,17 @@ else
 fi
 
 pass "chat default is Groq llama-3.3-70b-versatile (no OpenRouter default)"
+
+# --- IDP kernel pytest (capa 1-2; no RAGFlow) ---
+PY=python3
+if [[ -x "$ROOT/.venv/bin/python" ]]; then
+  PY="$ROOT/.venv/bin/python"
+fi
+if ! "$PY" -c "import pytest, pydantic" >/dev/null 2>&1; then
+  fail "pytest+pydantic required — uv venv && uv pip install -r requirements-dev.txt"
+fi
+"$PY" -m pytest tests/ -q || fail "pytest tests/"
+pass "pytest IDP capa 1-2"
 
 echo
 echo "Done. Compose/E2E remains on a ≥16 GB host."

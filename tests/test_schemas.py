@@ -46,6 +46,14 @@ def test_digits_ars() -> None:
     assert digits_ars(None) is None
 
 
+def test_signed_ars_parentheses() -> None:
+    from schemas.money import signed_ars
+
+    assert signed_ars("(14.950.948)") == "-14950948"
+    assert signed_ars("60.144.176") == "60144176"
+    assert signed_ars(None) is None
+
+
 def test_identity_gold_1t26() -> None:
     gold = load_recipes()["financial_statement"].gold["BYMA_-_EEFF_31-03-2026_VF.pdf"]
     row = FinancialStatement(

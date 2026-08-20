@@ -96,23 +96,28 @@ def test_fill_rejects_invented_digits() -> None:
 
 
 @needs_pdftotext
-def test_corpus_projects_four_claims() -> None:
+def test_corpus_projects_neto_and_neighbors() -> None:
     claims = extract_claims_from_dir()
     keys = {c.identity_key for c in claims}
-    assert "BYMA|2026-03-31|consolidado|resultado_neto" in keys
-    assert "BYMA|2026-03-31|controlante|resultado_atribuible_controladora" in keys
-    assert "BYMA|2026-06-30|consolidado|resultado_neto" in keys
-    assert "BYMA|2026-06-30|controlante|resultado_atribuible_controladora" in keys
-    by_key = {c.identity_key: c.value for c in claims}
     gold = _gold()
-    assert (
-        by_key["BYMA|2026-03-31|consolidado|resultado_neto"]
-        == gold["BYMA_-_EEFF_31-03-2026_VF.pdf"]["net_income_consolidated"]
-    )
-    assert (
-        by_key["BYMA|2026-06-30|controlante|resultado_atribuible_controladora"]
-        == gold["BYMA - EEFF 30-06-2026.pdf"]["net_income_attributable_to_parent"]
-    )
+    g1 = gold["BYMA_-_EEFF_31-03-2026_VF.pdf"]
+    g2 = gold["BYMA - EEFF 30-06-2026.pdf"]
+    by_key = {c.identity_key: c.value for c in claims}
+    assert by_key["BYMA|2026-03-31|consolidado|resultado_neto"] == g1["net_income_consolidated"]
+    assert by_key["BYMA|2026-03-31|controlante|resultado_atribuible_controladora"] == g1["net_income_attributable_to_parent"]
+    assert by_key["BYMA|2026-03-31|consolidado|resultado_bruto"] == g1["resultado_bruto"]
+    assert by_key["BYMA|2026-03-31|consolidado|resultado_operativo"] == g1["resultado_operativo"]
+    assert by_key["BYMA|2026-03-31|consolidado|resultado_antes_impuesto"] == g1["resultado_antes_impuesto"]
+    assert by_key["BYMA|2026-03-31|consolidado|impuesto_ganancias"] == g1["impuesto_ganancias"]
+    assert by_key["BYMA|2026-03-31|consolidado|resultado_no_controlante"] == g1["resultado_no_controlante"]
+    assert by_key["BYMA|2026-06-30|consolidado|resultado_bruto"] == g2["resultado_bruto"]
+    assert by_key["BYMA|2026-06-30|consolidado|resultado_operativo"] == g2["resultado_operativo"]
+    assert by_key["BYMA|2026-06-30|consolidado|impuesto_ganancias"] == g2["impuesto_ganancias"]
+    assert by_key["BYMA|2026-06-30|consolidado|resultado_bruto"] != "58533038"
+    assert keys >= {
+        "BYMA|2026-03-31|consolidado|resultado_neto",
+        "BYMA|2026-06-30|controlante|resultado_atribuible_controladora",
+    }
 
 
 def test_classify_dedicated_eeff() -> None:

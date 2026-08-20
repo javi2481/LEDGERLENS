@@ -11,6 +11,11 @@ SCOPE_CONSOLIDADO = "consolidado"
 SCOPE_CONTROLANTE = "controlante"
 METRIC_NETO = "resultado_neto"
 METRIC_ATRIBUIBLE = "resultado_atribuible_controladora"
+METRIC_BRUTO = "resultado_bruto"
+METRIC_OPERATIVO = "resultado_operativo"
+METRIC_EBT = "resultado_antes_impuesto"
+METRIC_IMPUESTO = "impuesto_ganancias"
+METRIC_NCI = "resultado_no_controlante"
 
 
 def identity_key(issuer: str, period: str, scope: str, metric: str) -> str:

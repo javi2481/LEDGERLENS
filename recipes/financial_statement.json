@@ -11,17 +11,27 @@
     "atribuible a la controlante"
   ],
   "description": "Estados financieros (EEFF) con estado de resultados: balance, resultado, flujo de efectivo o notas. Incluye RESULTADO NETO DEL PERÍODO consolidado y, aparte, resultado atribuible a la participación controlante. No es comunicado de prensa, presentación de slides, transcripción ni memoria anual.",
-  "gold": {
+    "gold": {
     "BYMA_-_EEFF_31-03-2026_VF.pdf": {
       "period": "2026-03-31",
       "net_income_consolidated": "21262335",
       "net_income_attributable_to_parent": "21259769",
-      "prior_period_amount_to_ignore": "22362983"
+      "prior_period_amount_to_ignore": "22362983",
+      "resultado_bruto": "60144176",
+      "resultado_operativo": "70223471",
+      "resultado_antes_impuesto": "36213283",
+      "impuesto_ganancias": "-14950948",
+      "resultado_no_controlante": "2566"
     },
     "BYMA - EEFF 30-06-2026.pdf": {
       "period": "2026-06-30",
       "net_income_consolidated": "81956525",
-      "net_income_attributable_to_parent": "81946993"
+      "net_income_attributable_to_parent": "81946993",
+      "resultado_bruto": "122610546",
+      "resultado_operativo": "143236114",
+      "resultado_antes_impuesto": "114688061",
+      "impuesto_ganancias": "-32731536",
+      "resultado_no_controlante": "9532"
     }
   }
 }

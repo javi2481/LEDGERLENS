@@ -18,3 +18,18 @@ def digits_ars(value: Any) -> str | None:
             return "".join(parts)
     digits = "".join(ch for ch in text if ch.isdigit())
     return digits or None
+
+
+def signed_ars(value: Any) -> str | None:
+    """Parentheses mean negative. (14.950.948) → -14950948."""
+    if value is None:
+        return None
+    text = str(value).strip().replace(" ", "")
+    if not text:
+        return None
+    negative = text.startswith("(") and text.endswith(")")
+    inner = text[1:-1] if negative else text
+    digits = digits_ars(inner)
+    if not digits:
+        return None
+    return f"-{digits}" if negative else digits

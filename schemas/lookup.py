@@ -5,6 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from schemas.claim import (
+    METRIC_ATRIBUIBLE,
+    METRIC_BRUTO,
+    METRIC_EBT,
+    METRIC_IMPUESTO,
+    METRIC_NCI,
+    METRIC_NETO,
+    METRIC_OPERATIVO,
     SCOPE_CONSOLIDADO,
     SCOPE_CONTROLANTE,
     Claim,
@@ -20,6 +27,7 @@ PERIOD_2T26 = "2026-06-30"
 class Intent:
     route: Route
     scope: str | None
+    metric: str | None
     period: str | None
     compare: bool
     abstain_reason: str | None = None
@@ -38,13 +46,15 @@ def understand(question: str) -> Intent:
     if any(token in q for token in ("ypf",)) and any(
         token in q for token in ("precio", "cierre", "3 de enero", "3 enero")
     ):
-        return Intent("abstain", None, None, False, "off_corpus")
+        return Intent("abstain", None, None, None, False, "off_corpus")
     if "memoria" in q and any(token in q for token in ("resultado", "neto", "eeff", "pl")):
-        return Intent("abstain", None, None, False, "recipe_no_extract")
-    if "comunicado" in q and any(token in q for token in ("resultado neto", "consolidado", "controlante")):
-        return Intent("abstain", None, None, False, "recipe_no_extract")
+        return Intent("abstain", None, None, None, False, "recipe_no_extract")
+    if "comunicado" in q and any(
+        token in q for token in ("resultado neto", "consolidado", "controlante", "resultado bruto", "impuesto")
+    ):
+        return Intent("abstain", None, None, None, False, "recipe_no_extract")
     if any(token in q for token in ("contrato", "clausula", "cláusula")):
-        return Intent("abstain", None, None, False, "recipe_no_extract")
+        return Intent("abstain", None, None, None, False, "recipe_no_extract")
     narrative_hits = (
         "crecimiento de ingresos",
         "explica",
@@ -57,7 +67,7 @@ def understand(question: str) -> Intent:
         "slides",
     )
     if any(token in q for token in narrative_hits) and "resultado neto" not in q:
-        return Intent("narrative", None, None, False, None)
+        return Intent("narrative", None, None, None, False, None)
 
     compare = any(
         token in q
@@ -80,6 +90,8 @@ def understand(question: str) -> Intent:
         compare = True
         period = None
 
+    if "no controlante" in q:
+        return Intent("identity", SCOPE_CONSOLIDADO, METRIC_NCI, period, compare, None)
     negated_parent = any(
         phrase in q
         for phrase in (
@@ -87,12 +99,20 @@ def understand(question: str) -> Intent:
             "no atribuible",
             "no la controlante",
             "no el controlante",
-            "no controlante",
         )
     )
-    controlante = (
-        "controlante" in q or "atribuible" in q or "propietarios" in q
-    ) and not negated_parent
+    controlante = ("controlante" in q or "atribuible" in q or "propietarios" in q) and not negated_parent
+    if controlante:
+        return Intent("identity", SCOPE_CONTROLANTE, METRIC_ATRIBUIBLE, period, compare, None)
+    if "resultado bruto" in q or "bruto del" in q:
+        return Intent("identity", SCOPE_CONSOLIDADO, METRIC_BRUTO, period, compare, None)
+    if "resultado operativo" in q:
+        return Intent("identity", SCOPE_CONSOLIDADO, METRIC_OPERATIVO, period, compare, None)
+    if "antes del impuesto" in q or "antes de impuesto" in q:
+        return Intent("identity", SCOPE_CONSOLIDADO, METRIC_EBT, period, compare, None)
+    if "impuesto a las ganancias" in q or "impuesto a las" in q:
+        return Intent("identity", SCOPE_CONSOLIDADO, METRIC_IMPUESTO, period, compare, None)
+
     identity_ask = any(
         token in q
         for token in (
@@ -109,11 +129,9 @@ def understand(question: str) -> Intent:
             "síntesis",
         )
     )
-    if controlante:
-        return Intent("identity", SCOPE_CONTROLANTE, period, compare, None)
     if identity_ask or compare:
-        return Intent("identity", SCOPE_CONSOLIDADO, period, compare, None)
-    return Intent("abstain", None, None, False, "unresolved_identity")
+        return Intent("identity", SCOPE_CONSOLIDADO, METRIC_NETO, period, compare, None)
+    return Intent("abstain", None, None, None, False, "unresolved_identity")
 
 
 def lookup(question: str, claims: tuple[Claim, ...] | list[Claim]) -> LookupResult:
@@ -125,6 +143,8 @@ def lookup(question: str, claims: tuple[Claim, ...] | list[Claim]) -> LookupResu
         return LookupResult("abstain", (), intent.abstain_reason, False)
 
     scoped = tuple(c for c in store if c.scope == intent.scope)
+    if intent.metric:
+        scoped = tuple(c for c in scoped if c.metric == intent.metric)
     if intent.period:
         scoped = tuple(c for c in scoped if c.period == intent.period)
     if not scoped:

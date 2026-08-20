@@ -43,6 +43,24 @@ def test_explicit_controlante(claims) -> None:
     assert result.claims[0].value == "21259769"
 
 
+def test_no_controlante_is_not_neto(claims) -> None:
+    result = lookup("Resultado atribuible a la participación no controlante 1T26", claims)
+    assert result.route == "identity"
+    row = result.claims[0]
+    assert row.metric == "resultado_no_controlante"
+    assert row.value == "2566"
+    assert row.value != "21262335"
+    assert row.value != "21259769"
+
+
+def test_bruto_not_operativo(claims) -> None:
+    result = lookup("¿Cuál es el resultado bruto del 1T26?", claims)
+    assert result.route == "identity"
+    assert result.claims[0].value == "60144176"
+    assert result.claims[0].value != "70223471"
+    assert result.claims[0].value != "21262335"
+
+
 def test_compare_same_identity(claims) -> None:
     result = lookup("Comparar resultado neto consolidado 1T26 vs 2T26", claims)
     assert result.route == "identity"

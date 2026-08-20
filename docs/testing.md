@@ -6,7 +6,7 @@ El contrato IDP es **capa 2** (extract + lookup, exact-match, sin embeddings). `
 
 | Riel | Archivo | Quién lo usa |
 |------|---------|--------------|
-| Contrato IDP | `recipes/financial_statement.json` + `evals/identity_v1.json` | pytest, `idp_ask.py` |
+| Contrato IDP | `recipes/financial_statement.json` + `evals/identity_v1.json` + `evals/identity_v2.json` | pytest, `idp_ask.py` |
 | Overlay demo | `docs/hechos_eeff.json` | `push_hechos.py` / chat |
 
 Las cifras 1T26/2T26 son las mismas. Los archivos no se mezclan.
@@ -47,7 +47,7 @@ Un eval RAG rojo no dice si falló el PDF, el chunk o Groq. Por eso la Ola 3 no 
 
 ## Promesa IDP (capa 2)
 
-Estas aserciones son el contrato del kernel. Se miden en `evals/identity_v1.json` + pytest. **Ningún test llama a RAGFlow.**
+Estas aserciones son el contrato del kernel. v1 = neto/controlante; v2 = filas vecinas del P&L. **Ningún test llama a RAGFlow.**
 
 ```mermaid
 flowchart TD
@@ -59,9 +59,11 @@ flowchart TD
   L --> Tipo{Qué pide?}
   Tipo -->|neto / período / trimestre sin controlante| Cons[1T26: 21262335<br/>2T26: 81956525]
   Tipo -->|controlante / atribuible / propietarios| Ctrl[1T26: 21259769<br/>2T26: 81946993]
+  Tipo -->|bruto / operativo / impuesto / no controlante| Vec[fila de ese nivel<br/>no el vecino]
   Tipo -->|YPF / memoria / comunicado| A
   Cons --> Ev[página 4 + source_text]
   Ctrl --> Ev
+  Vec --> Ev
 ```
 
 | Caso | Pregunta | Debe devolver | Debe rechazar |
@@ -70,7 +72,9 @@ flowchart TD
 | 1T26 controlante | ¿Resultado atribuible a la participación controlante 1T26? | **21259769** | el consolidado |
 | 2T26 trampa | Resultado neto del período 2T26 (sin decir consolidado) | **81956525** | 81946993 |
 | Fuera de corpus | ¿Precio de cierre de YPF en BYMA el 3 de enero? | abstain | cifra inventada |
-| Comparación | consolidado 1T26 vs 2T26 | ambas cifras, mismo scope | mezclar controlante |
+| 1T26 bruto | ¿Cuál es el resultado bruto del 1T26? | **60144176** | operativo 70223471 y neto |
+| 1T26 impuesto | ¿Impuesto a las ganancias 1T26? | **-14950948** | el neto |
+| 1T26 no controlante | participación no controlante 1T26 | **2566** | controlante 21259769 |
 
 El demo RAG (Show Quote, empty response, `hechos_eeff.md`) queda en Ola 3; no es el DoD de esta slice.
 

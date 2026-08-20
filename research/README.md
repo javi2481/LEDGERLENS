@@ -8,6 +8,8 @@ Captured 2026-08-13 with `parallel-cli search` / `extract`. JSON is the source o
 
 **Decisión (2026-08-16, overlay):** Docling Graph entra al demo: extrae fichas y `push_hechos.py` las inyecta en todos los chats (chunk manual en cada EEFF, sin reparsear PDFs MinerU).
 
+**Decisión (2026-08-20, P&L vecino):** plugin financiero extrae bruto/operativo/EBT/impuesto/no-controlante como claims aparte. Gold en la receta + `evals/identity_v2.json`. `FinancialStatement` no se infla. Overlay `hechos_eeff.json` sigue siendo solo los dos netos.
+
 **Decisión (2026-08-20, higiene):** dos rieles. Producto = kernel IDP (`ledgerlens-idp-kernel`). Demo RAG = pin congelado (`ledger-lens-ragflow`). Oro IDP ≠ overlay `hechos_eeff.json`.
 
 **Decisión (2026-08-20):** Kernel IDP capa 1–2 (`schemas/` extract + lookup, `evals/identity_v1.json`). `pdftotext -layout`, sin embeddings. RAGFlow sigue siendo el demo, no la fuente de verdad de identidad.

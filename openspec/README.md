@@ -4,8 +4,8 @@ LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 
 ## Quick path
 
-1. Change **activo (producto):** [`changes/ledgerlens-idp-kernel/`](changes/ledgerlens-idp-kernel/).
-2. Change **congelado (pin del demo):** [`changes/ledger-lens-ragflow/`](changes/ledger-lens-ragflow/). No inflarlo. No es el SDD del kernel.
+1. Change **activo (producto):** [`changes/ledgerlens-finance-pnl-claims/`](changes/ledgerlens-finance-pnl-claims/).
+2. Kernel shipped: [`changes/ledgerlens-idp-kernel/`](changes/ledgerlens-idp-kernel/). Pin congelado: [`changes/ledger-lens-ragflow/`](changes/ledger-lens-ragflow/).
 3. Kernel en cualquier PC: `./scripts/check.sh`. Compose solo en ≥16 GB ([descartado](../docs/agenda/descartado.md) en el Linux de ~7 GB).
 
 ## Details
@@ -19,7 +19,7 @@ LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 
 ## Checklist
 
-- [ ] README y este archivo nombran el **mismo** change activo (`ledgerlens-idp-kernel`)
+- [ ] README y este archivo nombran el **mismo** change activo (`ledgerlens-finance-pnl-claims`)
 - [ ] `ledger-lens-ragflow` sigue marcado congelado
 - [ ] `.env` y API keys **no** están en git
 

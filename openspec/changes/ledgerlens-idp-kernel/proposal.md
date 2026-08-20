@@ -1,6 +1,6 @@
 # Proposal: LedgerLens IDP kernel (extract + identity)
 
-> **Change activo (producto).** El pin del demo RAGFlow está congelado en [`ledger-lens-ragflow`](../ledger-lens-ragflow/).
+> **Shipped.** El change activo de producto es [`ledgerlens-finance-pnl-claims`](../ledgerlens-finance-pnl-claims/). El pin del demo RAGFlow está congelado en [`ledger-lens-ragflow`](../ledger-lens-ragflow/).
 
 ## Intent
 

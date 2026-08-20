@@ -7,7 +7,7 @@ Abrí este archivo primero. Hay **dos rieles**. El clone **no** trae volúmenes 
 ## Quick path
 
 1. Producto (kernel IDP): `uv venv && uv pip install -r requirements-dev.txt` → `./scripts/check.sh` → `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"`.
-2. OpenSpec activo: [`openspec/changes/ledgerlens-idp-kernel/`](../openspec/changes/ledgerlens-idp-kernel/).
+2. OpenSpec activo: [`openspec/changes/ledgerlens-finance-pnl-claims/`](../openspec/changes/ledgerlens-finance-pnl-claims/). Kernel shipped: [`ledgerlens-idp-kernel`](../openspec/changes/ledgerlens-idp-kernel/).
 3. Demo RAG: solo si hay ≥16 GB + Docker. **No** `up.sh` en el Linux de ~7 GB.
 
 ## Máquina

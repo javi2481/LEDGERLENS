@@ -49,6 +49,8 @@ git check-ignore -q .env || fail ".env must be gitignored"
 [[ -f schemas/catalog.py ]] || fail "missing schemas/catalog.py"
 [[ -f schemas/claim.py ]] || fail "missing schemas/claim.py"
 [[ -f evals/identity_v1.json ]] || fail "missing evals/identity_v1.json"
+[[ -f evals/identity_v2.json ]] || fail "missing evals/identity_v2.json"
+[[ -f schemas/finance_lines.py ]] || fail "missing schemas/finance_lines.py"
 [[ -f scripts/idp_ask.py ]] || fail "missing scripts/idp_ask.py"
 if [[ -e recipes/UNKNOWN.json ]] || [[ -e recipes/unknown.json ]]; then
   fail "UNKNOWN is a classifier class, not a recipe file"

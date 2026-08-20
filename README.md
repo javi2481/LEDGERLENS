@@ -9,7 +9,7 @@ IDP **multi-dominio**: receta → extract → claims → lookup. Finanzas (EEFF 
 | **Kernel IDP** (producto) | `schemas/` + `evals/` + `scripts/idp_ask.py` | `./scripts/check.sh` (pytest; sin Docker) |
 | **Demo RAG** (portfolio) | Compose + MinerU + overlay Graph | PC ≥16 GB, `./scripts/up.sh`, UI `demo_4` |
 
-SDD del producto: [`openspec/changes/ledgerlens-idp-kernel/`](openspec/changes/ledgerlens-idp-kernel/). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
+SDD del producto (activo): [`openspec/changes/ledgerlens-finance-pnl-claims/`](openspec/changes/ledgerlens-finance-pnl-claims/). Kernel ya shipped: [`ledgerlens-idp-kernel`](openspec/changes/ledgerlens-idp-kernel/). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
 
 ## Oro (no fusionar)
 
@@ -17,7 +17,7 @@ Las cifras coinciden; los archivos no. Mezclarlos vuelve a confundir fila vecina
 
 | Rol | Archivo |
 |-----|---------|
-| Contrato IDP | `recipes/financial_statement.json` + [`evals/identity_v1.json`](evals/identity_v1.json) |
+| Contrato IDP | `recipes/financial_statement.json` + [`evals/identity_v1.json`](evals/identity_v1.json) + [`evals/identity_v2.json`](evals/identity_v2.json) |
 | Overlay del chat | [`docs/hechos_eeff.json`](docs/hechos_eeff.json) (lo inyecta `push_hechos.py`) |
 
 Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
@@ -28,7 +28,7 @@ Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
 2. `./scripts/check.sh`
 3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335` (consolidado, página 4)
 
-Trampas: sin decir controlante → consolidado (`21262335` / `81956525`). Controlante explícito → la otra cifra. YPF / memoria / comunicado → abstain. Los 10 casos `route: narrative` se saltan (capa 3). Detalle: [docs/testing.md](docs/testing.md).
+Trampas: sin decir controlante → consolidado neto (`21262335` / `81956525`). Controlante explícito → la otra cifra. Bruto ≠ operativo ≠ neto. Impuesto 1T26 → `-14950948`. No controlante → `2566`, no el controlante. YPF / memoria / comunicado → abstain. Los 10 casos `route: narrative` se saltan (capa 3). Detalle: [docs/testing.md](docs/testing.md).
 
 ## Riel demo (PC ≥16 GB, x86_64)
 
@@ -124,7 +124,8 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 |------|-----|------|
 | `schemas/` / `recipes/` / `evals/` | Kernel IDP | producto |
 | `scripts/idp_ask.py` | Lookup sin RAGFlow | producto |
-| `openspec/changes/ledgerlens-idp-kernel/` | SDD activo | producto |
+| `openspec/changes/ledgerlens-finance-pnl-claims/` | SDD activo (filas vecinas P&L) | producto |
+| `openspec/changes/ledgerlens-idp-kernel/` | SDD kernel shipped | producto |
 | `vendor/ragflow-docker/` | Pin v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) | demo |
 | `docker-compose.overlay.yml` / `docker/mineru/` | Sidecar MinerU | demo |
 | `scripts/up.sh` | Arranque Compose | demo |
@@ -139,7 +140,7 @@ No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF.
 
 ## Documentación coherente
 
-Producto: actualizar `README.md` y `openspec/changes/ledgerlens-idp-kernel/` en el mismo trabajo. Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin. No dejar docs del riel anterior como si fuera el producto.
+Producto: actualizar `README.md` y `openspec/changes/ledgerlens-finance-pnl-claims/` en el mismo trabajo. Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
 
 Ítems diferidos del demo: [docs/agenda/](docs/agenda/).
 

@@ -16,9 +16,9 @@ python scripts/idp_ask.py "¿Cuál es el resultado bruto del 1T26?"
 # → 60144176
 ```
 
-Siguiente slice de producto (aún no implementada): [plan-siguiente-idp.md](plan-siguiente-idp.md).
+Siguiente slice de producto (después de este cache): segundo dominio, ver [plan-siguiente-idp.md](plan-siguiente-idp.md).
 
-OpenSpec: kernel shipped [`ledgerlens-idp-kernel`](../openspec/changes/ledgerlens-idp-kernel/). P&L vecino shipped [`ledgerlens-finance-pnl-claims`](../openspec/changes/ledgerlens-finance-pnl-claims/). Pin demo congelado [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/).
+OpenSpec: activo [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/). Kernel shipped [`ledgerlens-idp-kernel`](../openspec/changes/ledgerlens-idp-kernel/). P&L vecino shipped [`ledgerlens-finance-pnl-claims`](../openspec/changes/ledgerlens-finance-pnl-claims/). Pin demo congelado [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/).
 
 ## Máquina
 
@@ -53,7 +53,7 @@ SDD hybrid. Finanzas es el primer plugin. `FinancialStatement` sigue de portero 
 
 Orden fijo. Un change OpenSpec **nuevo** por slice. No inflar el kernel ni el pin RAGFlow.
 
-1. **Persistir claims** (siguiente). JSON o SQLite local, no Postgres. Hoy `idp_ask.py` reextrae el corpus en cada pregunta. Detalle: [plan-siguiente-idp.md](plan-siguiente-idp.md).
+1. **Persistir claims** (activo: [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/)). JSON en `outputs/claims.json`. `idp_ask.py` reusa el cache; `--refresh` reextrae. Pytest de evals sigue extrayendo.
 2. **Segundo dominio.** Una receta + un schema + pocos gold. Prueba que el kernel no es solo BYMA.
 
 No ahora: capa 3 RAG, MinerU en CI, ingresos/EPS, gancho Graph, Compose, `app.py` / `ledger_lens/`.

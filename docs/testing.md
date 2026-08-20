@@ -6,7 +6,7 @@ El contrato IDP es **capa 2** (extract + lookup, exact-match, sin embeddings). `
 
 | Riel | Archivo | Quién lo usa |
 |------|---------|--------------|
-| Contrato IDP | `recipes/financial_statement.json` + `evals/identity_v1.json` + `evals/identity_v2.json` | pytest, `idp_ask.py` |
+| Contrato IDP | `recipes/financial_statement.json` + `evals/identity_v1.json` + `evals/identity_v2.json` | pytest (extrae siempre). CLI: `idp_ask.py` usa `outputs/claims.json` |
 | Overlay demo | `docs/hechos_eeff.json` | `push_hechos.py` / chat |
 
 Las cifras 1T26/2T26 son las mismas. Los archivos no se mezclan.

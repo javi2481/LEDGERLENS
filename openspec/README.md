@@ -4,8 +4,8 @@ LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 
 ## Quick path
 
-1. Changes **shipped (producto):** [`ledgerlens-idp-kernel`](changes/ledgerlens-idp-kernel/) y [`ledgerlens-finance-pnl-claims`](changes/ledgerlens-finance-pnl-claims/).
-2. Pin congelado: [`ledger-lens-ragflow`](changes/ledger-lens-ragflow/). Siguiente slice: [`docs/plan-siguiente-idp.md`](../docs/plan-siguiente-idp.md) (aún sin change abierto).
+1. Change **activo (producto):** [`ledgerlens-claim-store`](changes/ledgerlens-claim-store/).
+2. Shipped: [`ledgerlens-idp-kernel`](changes/ledgerlens-idp-kernel/) y [`ledgerlens-finance-pnl-claims`](changes/ledgerlens-finance-pnl-claims/). Pin congelado: [`ledger-lens-ragflow`](changes/ledger-lens-ragflow/).
 3. Kernel en cualquier PC: `./scripts/check.sh`. Compose solo en ≥16 GB ([descartado](../docs/agenda/descartado.md) en el Linux de ~7 GB).
 
 ## Details
@@ -19,10 +19,10 @@ LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 
 ## Checklist
 
-- [ ] README y este archivo nombran kernel + P&L como **shipped**, no como work activo
+- [ ] README y este archivo nombran el **mismo** change activo (`ledgerlens-claim-store`)
 - [ ] `ledger-lens-ragflow` sigue marcado congelado
 - [ ] `.env` y API keys **no** están en git
 
 ## Next step
 
-Handoff: [`docs/handoff-linux.md`](../docs/handoff-linux.md). Siguiente slice: [`docs/plan-siguiente-idp.md`](../docs/plan-siguiente-idp.md) (persistir claims). Gancho Graph = demo, no producto.
+Handoff: [`docs/handoff-linux.md`](../docs/handoff-linux.md). Activo: persistir claims. Después: segundo dominio ([plan](../docs/plan-siguiente-idp.md)). Gancho Graph = demo, no producto.

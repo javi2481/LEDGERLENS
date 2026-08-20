@@ -12,21 +12,27 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from schemas.corpus import extract_claims_from_dir
 from schemas.lookup import lookup
+from schemas.store import load_claims
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Identity lookup over docs/archivos_muestra/")
     parser.add_argument("question", nargs="+", help="Pregunta en español")
+    parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help="Reextraer PDFs y reescribir outputs/claims.json",
+    )
     args = parser.parse_args()
     question = " ".join(args.question)
-    claims = extract_claims_from_dir()
+    claims, cached = load_claims(force=args.refresh)
     result = lookup(question, claims)
     payload = {
         "route": result.route,
         "compare": result.compare,
         "abstain_reason": result.abstain_reason,
+        "store": "hit" if cached else "miss",
         "claims": [
             {
                 "identity_key": row.identity_key,

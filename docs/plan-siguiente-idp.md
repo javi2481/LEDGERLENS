@@ -1,22 +1,22 @@
 # Plan siguiente (producto IDP)
 
-Slice **aún no implementada**. Abrir un change OpenSpec **nuevo**. No inflar `ledgerlens-idp-kernel` ni `ledgerlens-finance-pnl-claims` (ya shipped en `main` / `f63d954`) ni el pin `ledger-lens-ragflow`.
+Persistir claims está en curso: [`openspec/changes/ledgerlens-claim-store/`](../openspec/changes/ledgerlens-claim-store/). No inflar `ledgerlens-idp-kernel` ni `ledgerlens-finance-pnl-claims` ni el pin `ledger-lens-ragflow`.
 
-Handoff operativo: [handoff-linux.md](handoff-linux.md). Código de producto ya está en GitHub; local y origin estaban alineados en `f63d954` antes de este archivo.
+Handoff operativo: [handoff-linux.md](handoff-linux.md).
 
-## 1. Persistencia de claims (hacer primero)
+## 1. Persistencia de claims (activa)
 
-**Problema.** `scripts/idp_ask.py` llama `extract_claims_from_dir()` en cada pregunta: `pdftotext` otra vez sobre los EEFF.
+**Problema.** `idp_ask.py` reparseaba el corpus en cada pregunta.
 
-**Alcance.** Guardar los claims extraídos (JSON o SQLite en el repo o en `outputs/`, gitignore si es cache). Lookup lee el store. Reextract solo con flag o si el PDF cambió. No Postgres. No tocar Compose ni `hechos_eeff.json`.
+**Decisión.** JSON en `outputs/claims.json` (gitignored). No SQLite ni Postgres. Lookup del CLI lee el store. Reextract con `--refresh` o si cambió un PDF. Evals siguen llamando `extract_claims_from_dir`.
 
 **DoD.**
 
-- Segunda pregunta al mismo corpus no vuelve a parsear si el store está fresco.
-- `identity_v1` y `identity_v2` siguen verdes (pueden extraer en el test; el CLI usa el store).
-- SDD: `openspec/changes/ledgerlens-claim-store/` (nombre tentativo).
+- Segunda pregunta al mismo corpus: `"store": "hit"` y extract no corre.
+- `identity_v1` y `identity_v2` verdes.
+- Change `ledgerlens-claim-store`.
 
-**Fuera.** Capa 3 RAG, embeddings, MinerU.
+**Fuera.** Capa 3 RAG, embeddings, MinerU, overlay Graph.
 
 ## 2. Segundo dominio (después)
 
@@ -31,9 +31,9 @@ Una receta `extract: true` que no sea `financial_statement` (p. ej. un campo tip
 - Gancho Graph nativo.
 - `app.py` / `ledger_lens/` / Gradio.
 
-## Cómo arrancar la slice 1
+## Cómo arrancar la slice 2 (cuando 1 esté en main)
 
 1. `git pull` y `./scripts/check.sh`.
-2. Change OpenSpec nuevo (proposal / design / spec / tasks).
-3. Store + `idp_ask.py` lee store + test de “no reparsear”.
-4. Docs del mismo work unit (este archivo + README si cambia el quick path).
+2. Change OpenSpec **nuevo** (no inflar claim-store).
+3. Receta + schema + gold + pytest.
+4. Docs del mismo work unit.

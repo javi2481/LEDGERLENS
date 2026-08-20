@@ -5,11 +5,11 @@ persistence: hybrid
 strict_tdd: false
 
 context: |
-  Product: LedgerLens is a domain-general IDP (recipe → typed extract → claims → identity lookup). Finance (BYMA EEFF) is the first plugin, not the ceiling. Active OpenSpec change: ledgerlens-idp-kernel. Identity contract is evals/identity_v1.json + recipes/financial_statement.json; exact-match, no embeddings.
+  Product: LedgerLens is a domain-general IDP (recipe → typed extract → claims → identity lookup). Finance (BYMA EEFF) is the first plugin, not the ceiling. Active OpenSpec change: ledgerlens-claim-store. Identity contract is evals/identity_v1.json + identity_v2.json + recipes/financial_statement.json; exact-match, no embeddings. CLI caches claims in outputs/claims.json; evals still extract.
   Demo track (frozen, not product SoT): RAGFlow v0.26.4 + Infinity + MinerU pipeline sidecar + Groq llama-3.3-70b-versatile + Voyage. OpenSpec change ledger-lens-ragflow is the demo pin — do not inflate it with IDP work. Overlay Graph (docs/hechos_eeff.json + push_hechos.py) is demo-only gold; do not merge with identity evals.
   Runtime kernel: ./scripts/check.sh (pytest) on any host with pdftotext. Runtime demo: Docker Compose, x86_64, ≥16 GB. No Gradio, no Hugging Face Space, no custom Python RAG package, no app.py, no ledger_lens/.
   Persistence: hybrid (openspec files + Engram observations, project ledgerlens).
-  Docs: product changes update README.md + ledgerlens-idp-kernel in the same work unit. Demo pin / Compose / .env.example stay on the demo track.
+  Docs: product changes update README.md + the open change in the same work unit. Demo pin / Compose / .env.example stay on the demo track.
   Testing: ./scripts/check.sh runs file contracts + pytest capa 1-2. RAG E2E is manual on ≥16 GB and is not the IDP DoD. strict_tdd stays false.
 
 testing:

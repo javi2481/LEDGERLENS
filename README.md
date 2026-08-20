@@ -9,7 +9,7 @@ IDP **multi-dominio**: receta → extract → claims → lookup. Finanzas (EEFF 
 | **Kernel IDP** (producto) | `schemas/` + `evals/` + `scripts/idp_ask.py` | `./scripts/check.sh` (pytest; sin Docker) |
 | **Demo RAG** (portfolio) | Compose + MinerU + overlay Graph | PC ≥16 GB, `./scripts/up.sh`, UI `demo_4` |
 
-SDD del producto (shipped): [`ledgerlens-idp-kernel`](openspec/changes/ledgerlens-idp-kernel/) y [`ledgerlens-finance-pnl-claims`](openspec/changes/ledgerlens-finance-pnl-claims/). Siguiente slice: [`docs/plan-siguiente-idp.md`](docs/plan-siguiente-idp.md). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
+SDD del producto (activo): [`ledgerlens-claim-store`](openspec/changes/ledgerlens-claim-store/). Shipped: [`ledgerlens-idp-kernel`](openspec/changes/ledgerlens-idp-kernel/) y [`ledgerlens-finance-pnl-claims`](openspec/changes/ledgerlens-finance-pnl-claims/). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
 
 ## Oro (no fusionar)
 
@@ -26,7 +26,7 @@ Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
 
 1. `uv venv && uv pip install -r requirements-dev.txt`
 2. `./scripts/check.sh`
-3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335` (consolidado, página 4)
+3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335` (consolidado, página 4). La segunda pregunta reusa `outputs/claims.json` (`"store": "hit"`). `--refresh` vuelve a parsear.
 
 Trampas: sin decir controlante → consolidado neto (`21262335` / `81956525`). Controlante explícito → la otra cifra. Bruto ≠ operativo ≠ neto. Impuesto 1T26 → `-14950948`. No controlante → `2566`, no el controlante. YPF / memoria / comunicado → abstain. Los 10 casos `route: narrative` se saltan (capa 3). Detalle: [docs/testing.md](docs/testing.md).
 
@@ -123,7 +123,8 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 | Path | Rol | Riel |
 |------|-----|------|
 | `schemas/` / `recipes/` / `evals/` | Kernel IDP | producto |
-| `scripts/idp_ask.py` | Lookup sin RAGFlow | producto |
+| `scripts/idp_ask.py` | Lookup; cache en `outputs/claims.json` | producto |
+| `openspec/changes/ledgerlens-claim-store/` | SDD activo (cache local) | producto |
 | `openspec/changes/ledgerlens-finance-pnl-claims/` | SDD P&L shipped | producto |
 | `openspec/changes/ledgerlens-idp-kernel/` | SDD kernel shipped | producto |
 | `vendor/ragflow-docker/` | Pin v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) | demo |
@@ -140,7 +141,7 @@ No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF.
 
 ## Documentación coherente
 
-Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy no hay change activo; siguiente: [docs/plan-siguiente-idp.md](docs/plan-siguiente-idp.md)). Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
+Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-claim-store](openspec/changes/ledgerlens-claim-store/)). Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
 
 Ítems diferidos del demo: [docs/agenda/](docs/agenda/).
 

@@ -8,6 +8,8 @@ Captured 2026-08-13 with `parallel-cli search` / `extract`. JSON is the source o
 
 **Decisión (2026-08-16, overlay):** Docling Graph entra al demo: extrae fichas y `push_hechos.py` las inyecta en todos los chats (chunk manual en cada EEFF, sin reparsear PDFs MinerU).
 
+**Decisión (2026-08-19):** Identity-by-Schema. Catálogo `recipes/` + `schemas/FinancialStatement` (consolidado ≠ controlante). Splink/Zingg/GraphRAG no: fusionan. PixelRAG = RAG visual, no portero. El clasificador/inyección todavía no está.
+
 **Decisión (2026-08-16, mañana, supersedida):** factory Gemini nativa `gemini-3.1-flash-lite` como chat. Ya no es la fuente de verdad.
 
 Re-run from repo root:
@@ -50,6 +52,35 @@ parallel-cli extract "<url>" --objective "<focus>" --json > extract-<name>.json
 | `tavily-product.json` | [Tavily](https://www.tavily.com/) + [docs](https://docs.tavily.com/): search/extract/crawl/map/research; 180 ms p50 /search; 1.000 credits gratis |
 | `tavily-api-pricing.json` | [Credits](https://docs.tavily.com/documentation/api-credits): planes, costo Search/Extract/Crawl/Research; Hybrid RAG + financial services |
 | `ragflow-tavily-agent.json` | RAGFlow ya tiene Tavily: Reasoning + API key desde v0.17; operador Agent desde v0.20 (`tavily_search`) |
+
+## Identity / IDP (2026-08-19)
+
+| Dump | Qué cubre |
+|------|-----------|
+| `search-idp-classifier-router.json` | Clasificar receta en ingest; no hay router nativo RAGFlow |
+| `search-identityrag-reject-option.json` | Abstención / reject option |
+| `search-selective-prediction-llm.json` | Selective prediction; entropy sola no basta |
+| `search-ragflow-orchestrator.json` | Poll parse DONE; Ingestion Pipeline no rutea schemas |
+| `search-oss-idp-orchestrator.json` | No hay orquestador OSS plug-in de RAGFlow 0.26.4 |
+| `search-ragflow-agent-switch.json` | Agent Switch = chat, no ingest |
+| `search-ragflow-chunk-api.json` | POST/PATCH chunks |
+| `extract-ragflow-http-api-chunks.json` | HTTP API add/update chunk |
+| `extract-ragflow-ingestion-pipeline.json` | Parser → Transformer → Chunker → Indexer |
+| `extract-ragflow-switch.json` | Switch/categorize en agentes |
+| `extract-issue-11797.json` | Discussion: PATCH positions vs Show Quote |
+| `extract-issue-5648.json` / `extract-issue-8056.json` | Significado de `positions` |
+| `extract-issue-13616.json` | MinerU lento post-parse; no prueba polling |
+| `search-llamaextract-claims.json` / `extract-llamaextract-*.json` | LlamaExtract = extractor cloud, no router |
+| `search-zingg-entity-resolution.json` | Zingg/Splink fusionan registros |
+| `search-docling-pathway-extract.json` | Docling extractor / Pathway |
+| `search-haystack-llamacloud-classify.json` | Haystack router; LlamaCloud Classify |
+| `search-llamacloud-classify-api.json` | type + confidence + unknown |
+| `search-groq-langextract-hf.json` | Groq json_schema; LangExtract |
+| `extract-langextract-idp-layer.json` | LangExtract grounding |
+| `extract-google-docai-classifier.json` | Document AI = patrón, no stack |
+| `extract-idp-pipeline-stages.json` / `extract-idp-routing-confidence.json` | IDP classify → extract → abstain |
+| `extract-haystack-metadatarouter.json` | MetadataRouter `unmatched` |
+| `search-pixelrag.json` | PixelRAG: RAG visual, no identity schema |
 
 ## Hallazgos (LedgerLens)
 

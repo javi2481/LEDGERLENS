@@ -1,0 +1,23 @@
+{
+  "extract_id": "extract_8c8d4763da009d3a28ca61e10d94a025",
+  "session_id": "session_8c8d4763da009d3a28ca61e10d94a025",
+  "status": "ok",
+  "results": [
+    {
+      "url": "https://github.com/infiniflow/ragflow/issues/11797",
+      "title": "Chat Citation Issues \u00b7 infiniflow \u00b7 Discussion #11797 \u00b7 GitHub",
+      "publish_date": "2025-12-07",
+      "excerpts": [
+        "# Chat Citation Issues\nFor chunks parsed using a pre-defined chunking method, if these chunks are subsequently modified, can they be highlighted in the original text when cited (not as newly added chunks, but just modifications to existing chunks)? [@dosu](https://github.com/dosu)\n\n...\n\n## Comments\n> Manually added chunks can't be highlighted in the original text when cited because they lack the positional metadata (the positions field) that maps them to specific locations in the source document.\n\n...\n\nWithout these coordinates, the system can't visually highlight the cited region in the original file\u2014manual chunks can be cited, but not highlighted in context [(source)](https://github.com/infiniflow/ragflow/blob/8de6b9780681617ad83333ba01d78b46faf8d22f/api/apps/chunk_app.py) .If you modify a pre-defined (pipeline) chunk, the\nability to highlight depends on whether the positional metadata is preserved and still matches the new content. The current API for modifying chunks updates the content and tokenization but does not update or guarantee the accuracy of the positions field.\nIf the positions metadata is missing or no longer matches the chunk's content, highlighting will not work or may be inaccurate [(source)](https://github.com/infiniflow/ragflow/blob/8de6b9780681617ad83333ba01d78b46faf8d22f/api/apps/chunk_app.py) .To enable highlighting for manually added or modified chunks, the backend would need\nto let users (or the system) supply or update the positions metadata for those chunks, and the frontend would need to consume this metadata as it does for pipeline chunks.\n\n...\n\nIf the edit changes the chunk enough that the original offsets no longer match, the safer behavior is to mark it as `span_status=shifted` and ask for re-anchoring rather than highlighting the wrong part of the document.That would also make the UI clearer: \"citation available\" and \"highlight available\" become two separate states"
+      ]
+    }
+  ],
+  "errors": [],
+  "usage": [
+    {
+      "name": "sku_extract_excerpts",
+      "count": 1
+    }
+  ],
+  "warnings": []
+}

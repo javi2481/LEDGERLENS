@@ -1,0 +1,23 @@
+{
+  "extract_id": "extract_6d0da1fd6f22fe266564866dc8437c58",
+  "session_id": "session_6d0da1fd6f22fe266564866dc8437c58",
+  "status": "ok",
+  "results": [
+    {
+      "url": "https://github.com/infiniflow/ragflow/issues/5648",
+      "title": "[Question]: What does \"positions\" in the reference returned by the chat interface mean? \u00b7 Issue #5648 \u00b7 infiniflow/ragflow \u00b7 GitHub",
+      "publish_date": "2025-03-05",
+      "excerpts": [
+        "# [Question]: What does \"positions\" in the reference returned by the chat interface mean?\n## Labels\n### Describe your problem\nI want to develop a flexible interface using the results returned by the chat API, but I don\u2019t understand the meaning of the \"positions\" field in reference. I checked the official API documentation, but there is no corresponding explanation for this field.\n\n...\n\n## Timeline\n- labeled by sinopec on 2025-03-05T08:02:12Z\n**KevinHuSh** commented on 2025-03-06T03:32:49Z:\n> The number braced by `##` and `$$` is the index of chunks in `response[\"reference\"][\"chunks\"]`.\n> Positions are composed of page number, coordinates and size.\n**sinopec** commented on 2025-03-06T06:32:22Z:\n> The number braced by `##` and `$$` is the index of chunks in `response[\"reference\"][\"chunks\"]`. Positions are composed of page number, coordinates and size.How does the front-end page insert the corresponding circular button into a specific position in the text?\n\n...\n\n**sun-qisen** commented on 2025-03-06T10:16:17Z:\n> I want to insert a chunk into a document through the API so that the chunk can be displayed directly on the PDF as if it had been parsed automatically. Actually, I now have this chunk coordinates in the PDF, is there a way to achieve it?\n\n...\n\n> The number braced by `##` and `$$` is the index of chunks in `response[\"reference\"][\"chunks\"]`. Positions are composed of page number, coordinates and size.in 0.17.2 use elasticsearch\n> positions are normally Arabic numerals, but there are some things in English letters sometimes, eg. #$$\n> how to fix it?"
+      ]
+    }
+  ],
+  "errors": [],
+  "usage": [
+    {
+      "name": "sku_extract_excerpts",
+      "count": 1
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,16 @@
+{
+  "extract_id": "extract_6f78ae97087a947c804f1cb624e160fe",
+  "session_id": "session_6f78ae97087a947c804f1cb624e160fe",
+  "status": "ok",
+  "results": [],
+  "errors": [
+    {
+      "url": "https://ragflow.io/docs/ingestion_pipeline_quickstart",
+      "error_type": "http_error",
+      "http_status_code": 404,
+      "content": null
+    }
+  ],
+  "usage": [],
+  "warnings": []
+}

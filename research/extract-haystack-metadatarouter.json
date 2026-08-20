@@ -1,0 +1,23 @@
+{
+  "extract_id": "extract_979e2962007a91f191b8b9dd5c690d10",
+  "session_id": "session_979e2962007a91f191b8b9dd5c690d10",
+  "status": "ok",
+  "results": [
+    {
+      "url": "https://docs.haystack.deepset.ai/docs/metadatarouter",
+      "title": "MetadataRouter | Haystack Documentation",
+      "publish_date": null,
+      "excerpts": [
+        "# MetadataRouter\nUse this component to route documents or byte streams to different output connections based on the content of their metadata fields.\n|  |  |\n| **Most common position in a pipeline** | After components that classify documents, such as `DocumentLanguageClassifier` |\n| **Mandatory run variables** | `documents` : A list of documents or byte streams |\n| **Output variables** | `unmatched` : A list of documents or byte streams not matching any rule |\n`<rule_name>` : A list of documents or byte streams matching custom rules (where `<rule_name>` is the name of the rule). There's one output per one rule you define. Each of these outputs is a list of documents or byte streams. |\n|**API reference** |Routers |\n\n...\n\n## Overview \u200b\n`MetadataRouter` routes documents or byte streams to different outputs based on their metadata. You initialize it with `rules` defining the names of the outputs and filters to match documents or byte streams to one of the connections. The filters follow the same syntax as filters in Document Stores.\nIf a document or byte stream matches multiple filters, it is sent to multiple outputs. Objects that do not match any rule go to an output connection named `unmatched` .\nIn pipelines, this component is most useful after a Classifier (such as the `DocumentLanguageClassifier` ) that adds the classification results to the documents' metadata.\nThis component has no default rules. If you don't define any rules when initializing the component, it routes all documents or byte streams to the `unmatched` output.\n\n## Usage \u200b\n### On its own \u200b\nBelow is an example that uses the `MetadataRouter` to filter out documents based on their metadata. We initialize the router by setting a rule to pass on all documents with `language` set to `en` in their metadata to an output connection called `en` .\nDocuments that don't match this rule go to an output connection named `unmatched` .\npython\n\n...\n\n```\nrules = { \"en\" : { \"field\" : \"meta.language\" , \"operator\" : \"==\" , \"value\" : \"en\" } } , ) router . run ( documents = docs )\n```\n\n### Routing ByteStreams \u200b\nYou can also use `MetadataRouter` to route `ByteStream` objects based on their metadata. This is useful when working with binary data or when you need to route files before they're converted to documents.\npython\n```\nfrom haystack . dataclasses import ByteStream from haystack . components . routers import MetadataRouter streams = [ ByteStream . from_string ( \"Hello world\" , meta = { \"language\" : \"en\" } ) , ByteStream . from_string ( \"Bonjour le monde\" , meta = { \"language\" : \"fr\" } ) , ] router = MetadataRouter ( rules = {\n \"english\" : { \"field\" : \"meta.language\" , \"operator\" : \"==\" , \"value\" : \"en\" } } , output_type = list [ ByteStream ] , ) result = router . run ( documents = streams ) # {'english': [ByteStream(...)], 'unmatched': [ByteStream(...)]}\n```\n\n### In a pipeline \u200b\nBelow is an example of an indexing pipeline that converts text files to documents and uses the `DocumentLanguageClassifier` to detect the language of the text and add it to the documents' metadata. It then uses the `MetadataRouter` to forward only English language documents to the `DocumentWriter` .\n\n...\n\n```\nuage_classifier.documents\" ) p . connect ( \"language_classifier.documents\" , \"router.documents\" ) p . connect ( \"router.en\" , \"writer.documents\" ) p . run ( { \"text_file_converter\" : { \"sources\" : [ \"english-file-will-be-added.txt\" , \"german-file-will-not-be-added.txt\" , ] , } , } , )\n```\n[Edit this page](https://github.com/deepset-ai/haystack/tree/main/docs-website/versioned_docs/version-3.0/pipeline-components/routers/metadatarouter.mdx)\nPrevious LLMMessagesRouter Next TextLanguageRouter\n* Overview\n* Usage\n  + On its own\n  + Routing ByteStreams\n  + In a pipeline"
+      ]
+    }
+  ],
+  "errors": [],
+  "usage": [
+    {
+      "name": "sku_extract_excerpts",
+      "count": 1
+    }
+  ],
+  "warnings": []
+}

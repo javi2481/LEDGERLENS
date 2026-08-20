@@ -1,0 +1,23 @@
+{
+  "extract_id": "extract_4f67725e47e98a1258c978ae14fc07d3",
+  "session_id": "session_4f67725e47e98a1258c978ae14fc07d3",
+  "status": "ok",
+  "results": [
+    {
+      "url": "https://kefron.com/information-management/news/intelligent-document-processing-automated-document-routing",
+      "title": "Intelligent Document Processing: How Documents Get Classified & Routed",
+      "publish_date": "2026-08-13",
+      "excerpts": [
+        "# Intelligent Document Processing: How Documents Get Classified & Routed\nIntelligent document processing (IDP) is a technology that reads an inbound document, determines what it is, extracts the relevant fields, and sends it to the right team or system without a person opening it first.\n\n...\n\nDeciding where that page belongs, and knowing when the system is not confident enough to decide, is what separates automation that works from automation that quietly misfiles things.\nThis article explains how that decision is made, the five methods used to make it, and what happens to the documents the system cannot place.\n**Multi-channel intake funnel showing post, email, web portal, SFTP and mobile capture converging into a single processing queue.\n** _Figure 1: Every channel lands in one queue.\nThat consolidation is what makes automated routing possible._ ## Key Takeaways * Intelligent document processing combines capture, OCR, classification, extraction and rules to route documents without manual sorting.\n* Routing is driven by five methods, from simple keyword triggers through to machine learning classification, usually layered rather than chosen.\n* A confidence score decides whether a document is routed automatically or sent for human review.\nSystems without one do not fail safely, they fail silently.\n* The exception queue is a feature, not a shortfall. It is also the training data that improves the model.\n* AIIM research found 78% of surveyed organisations are now operational with AI, and that HR files and contracts have caught up with invoices as IDP use cases.\n\n## What Is Intelligent Document Processing? Intelligent document processing is the layer that sits between capturing a document and doing something with it. It converts an i\n** _Figure 3: The five methods, ordered by sophistication. Most working systems layer several._ These are usually presented as alternatives. In practice they are layers, "
+      ]
+    }
+  ],
+  "errors": [],
+  "usage": [
+    {
+      "name": "sku_extract_excerpts",
+      "count": 1
+    }
+  ],
+  "warnings": []
+}

@@ -1,6 +1,6 @@
 # Agenda (retomar luego)
 
-Ítems del **riel demo** (RAGFlow / UI / GPU). El producto IDP no vive acá: [`openspec/changes/ledgerlens-idp-kernel/`](../../openspec/changes/ledgerlens-idp-kernel/).
+Ítems del **riel demo** (RAGFlow / UI / GPU). El producto IDP no vive acá: [handoff](../handoff-linux.md) y [plan siguiente](../plan-siguiente-idp.md).
 
 Consultá un archivo, no todos. Cerrados: [descartado.md](descartado.md).
 
@@ -23,7 +23,7 @@ Consultá un archivo, no todos. Cerrados: [descartado.md](descartado.md).
 
 | Tema | Riel | Estado |
 |------|------|--------|
-| Kernel IDP capa 1–2 | producto | `schemas/` + `evals/identity_v1.json` + pytest |
+| Kernel IDP capa 1–2 + P&L vecino | producto | `evals/identity_v1.json` + `v2`; ver [handoff](../handoff-linux.md) |
 | Overlay **Docling Graph** | demo | no en `up.sh` ([nota](docling-graph.md)) |
 | Parser **MinerU** `pipeline` | demo | sidecar `mineru-api:8000` |
 | Chat **Groq** / Voyage / Infinity | demo | pin v0.26.4 |
@@ -31,4 +31,4 @@ Consultá un archivo, no todos. Cerrados: [descartado.md](descartado.md).
 
 ## Next step
 
-Handoff: [handoff-linux.md](../handoff-linux.md). Producto = kernel IDP. Demo diferido = branding o LinkedIn. Gancho Graph **no** es el rumbo. No Compose en Linux ~7 GB.
+Handoff: [handoff-linux.md](../handoff-linux.md). Producto siguiente: [plan-siguiente-idp.md](../plan-siguiente-idp.md). Demo diferido = branding o LinkedIn. Gancho Graph **no** es el rumbo. No Compose en Linux ~7 GB.

@@ -9,7 +9,7 @@ IDP **multi-dominio**: receta → extract → claims → lookup. Finanzas (EEFF 
 | **Kernel IDP** (producto) | `schemas/` + `evals/` + `scripts/idp_ask.py` | `./scripts/check.sh` (pytest; sin Docker) |
 | **Demo RAG** (portfolio) | Compose + MinerU + overlay Graph | PC ≥16 GB, `./scripts/up.sh`, UI `demo_4` |
 
-SDD del producto (activo): [`openspec/changes/ledgerlens-finance-pnl-claims/`](openspec/changes/ledgerlens-finance-pnl-claims/). Kernel ya shipped: [`ledgerlens-idp-kernel`](openspec/changes/ledgerlens-idp-kernel/). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
+SDD del producto (shipped): [`ledgerlens-idp-kernel`](openspec/changes/ledgerlens-idp-kernel/) y [`ledgerlens-finance-pnl-claims`](openspec/changes/ledgerlens-finance-pnl-claims/). Siguiente slice: [`docs/plan-siguiente-idp.md`](docs/plan-siguiente-idp.md). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
 
 ## Oro (no fusionar)
 
@@ -124,7 +124,7 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 |------|-----|------|
 | `schemas/` / `recipes/` / `evals/` | Kernel IDP | producto |
 | `scripts/idp_ask.py` | Lookup sin RAGFlow | producto |
-| `openspec/changes/ledgerlens-finance-pnl-claims/` | SDD activo (filas vecinas P&L) | producto |
+| `openspec/changes/ledgerlens-finance-pnl-claims/` | SDD P&L shipped | producto |
 | `openspec/changes/ledgerlens-idp-kernel/` | SDD kernel shipped | producto |
 | `vendor/ragflow-docker/` | Pin v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) | demo |
 | `docker-compose.overlay.yml` / `docker/mineru/` | Sidecar MinerU | demo |
@@ -140,7 +140,7 @@ No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF.
 
 ## Documentación coherente
 
-Producto: actualizar `README.md` y `openspec/changes/ledgerlens-finance-pnl-claims/` en el mismo trabajo. Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
+Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy no hay change activo; siguiente: [docs/plan-siguiente-idp.md](docs/plan-siguiente-idp.md)). Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
 
 Ítems diferidos del demo: [docs/agenda/](docs/agenda/).
 

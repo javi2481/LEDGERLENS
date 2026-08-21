@@ -2,7 +2,7 @@
 
 Claimprint no tiene once suites paralelas. Tiene **cuatro capas**. La taxonomía QA (unit, E2E, security, load, ML, etc.) se mapea a esas capas; no se inventan carpetas `tests/unit|e2e|security|load`.
 
-El contrato de identidad es extract + lookup, exact-match, sin embeddings. El chat RAGFlow **no** sustituye al IDP. First-run del repo: capas 1–2 vía `./scripts/check.sh` e `idp_ask` (sin keys); capa 4 es el apéndice RAG del [README](../README.md).
+El contrato de identidad es extract + lookup, exact-match, sin embeddings. El chat RAGFlow **no** sustituye al IDP. First-run del repo: capas 1–2 vía `./scripts/check.sh` e `idp_ask` (sin keys); capa 4 es el runbook de [cierre-academico.md](cierre-academico.md). El README resume las métricas del piloto.
 
 ## Cuatro capas
 

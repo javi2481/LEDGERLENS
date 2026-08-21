@@ -42,7 +42,11 @@ class Claim:
 
 
 def claims_from_financial_statement(row: object) -> tuple[Claim, ...]:
-    """Project the finance plugin DTO into two claims. Other domains add their own projector."""
+    """Project the BYMA financial-statement DTO into consolidado and controlante claims.
+
+    Press and presentation have their own projectors. This repository ships
+    one domain (finance); there is no second-domain registry.
+    """
     from schemas.financial_statement import FinancialStatement
 
     if not isinstance(row, FinancialStatement):

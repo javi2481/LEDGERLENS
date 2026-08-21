@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: Claimprint
+message: If you use this software, please cite it as below.
+type: software
+authors:
+  - given-names: Javier
+    email: rjavierst@gmail.com
+    alias: javi2481
+    website: https://github.com/javi2481
+repository-code: https://github.com/javi2481/claimprint
+url: https://github.com/javi2481/claimprint
+abstract: >-
+  Claimprint explores a verification-first approach to document AI:
+  structured claims are extracted and evaluated before retrieval-augmented
+  generation is allowed to answer. This instance ships a finance plugin
+  over BYMA financial statements.
+keywords:
+  - document-ai
+  - claims
+  - identity
+  - retrieval-augmented-generation
+  - financial-statements
+license: Apache-2.0
+version: 1.0.0
+date-released: "2026-08-21"

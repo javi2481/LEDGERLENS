@@ -1,12 +1,16 @@
 # Claimprint
 
+[![CI](https://github.com/javi2481/claimprint/actions/workflows/ci.yml/badge.svg)](https://github.com/javi2481/claimprint/actions/workflows/ci.yml)
+
 **Category:** Claims Intelligence  
 **Instance:** BYMA financial statements  
 **Rule:** no claim, no answer.
 
-The document produces verifiable claims. This repository ships the finance plugin over the BYMA corpus in [`docs/archivos_muestra/`](docs/archivos_muestra/). Recipes and [`evals/`](evals/) define the figures; the RAGFlow chat consumes them and is **not** the source of truth.
+Claimprint explores a verification-first approach to document AI: structured claims are extracted and evaluated before retrieval-augmented generation is allowed to answer.
 
-Identity lookup runs with no Docker and no API keys. Retrieval Recall@5 is 0.25 (n=20); grounded chat answer is 0.6 (n=10).
+This repository ships the finance plugin over the BYMA corpus in [`docs/archivos_muestra/`](docs/archivos_muestra/). Recipes and [`evals/`](evals/) define the figures; the RAGFlow chat consumes them and is **not** the source of truth.
+
+Identity lookup runs with no Docker and no API keys. Pilot evaluation: retrieval Recall@5 is 0.25 (n=20); grounded chat answer is 0.6 (n=10).
 
 ![De PDF a claim verificado](docs/assets/architecture.svg)
 
@@ -51,13 +55,13 @@ On Windows, run `./scripts/check.sh` from Git Bash or WSL.
 | Layer | Role | Verification |
 |------|--------|----------------|
 | **IDP** | fixtures → classify → extract → claims → `idp_ask` | `./scripts/check.sh` |
-| **RAG** | RAGFlow + Infinity + Voyage + Groq (`demo_4`) | Optional, ≥16 GB (section below) |
+| **RAG** | RAGFlow + Infinity + Voyage + Groq (`demo_4`) | Optional, ≥16 GB ([docs/cierre-academico.md](docs/cierre-academico.md)) |
 
 Contracts: `recipes/financial_statement.json`, `press_release.json`, `results_presentation.json`, plus [`evals/identity_v1.json`](evals/identity_v1.json), [`identity_v2.json`](evals/identity_v2.json), [`press_v1.json`](evals/press_v1.json), and [`presentation_v1.json`](evals/presentation_v1.json).
 
 Identity traps: an unspecified controlling interest defaults to consolidated. Net income or tax **from the press release** or **from the presentation** abstains. EBITDA in millions comes from the **presentation**; LTM margin `76`/`75` appears in **press release and presentation**. YPF / annual report abstains.
 
-Evaluation catalog: four layers (files → identity → inject mock → live RAG). See [docs/testing.md](docs/testing.md), [docs/cierre-academico.md](docs/cierre-academico.md), and [docs/handoff-linux.md](docs/handoff-linux.md).
+Evaluation catalog: four layers (files → identity → inject mock → live RAG). See [docs/testing.md](docs/testing.md) and [docs/cierre-academico.md](docs/cierre-academico.md).
 
 ## Layout
 
@@ -69,6 +73,7 @@ Evaluation catalog: four layers (files → identity → inject mock → live RAG
 | `scripts/check.sh` | Contracts + pytest |
 | `scripts/review_pack.py` / `informe.py` | HITL and academic dossier |
 | `docs/archivos_muestra/` | BYMA PDFs |
+| [`docs/handoff-linux.md`](docs/handoff-linux.md) | Resume the project on another machine |
 | `scripts/up.sh` / `push_claims.py` | Optional RAG stack |
 | `vendor/ragflow-docker/` | RAGFlow v0.26.4 pin (do not edit) |
 | `docs/assets/` | README / LinkedIn diagrams |
@@ -77,19 +82,7 @@ Evaluation catalog: four layers (files → identity → inject mock → live RAG
 
 ## Optional RAGFlow UI
 
-This stack is not required for identity lookup. It is a grounded-chat demo over the same corpus. It needs Docker Compose and local API keys (Groq + Voyage). The clone does not include an indexed `demo_4`.
-
-Stack: **RAGFlow** v0.26.4 + Infinity. Parser **MinerU** `pipeline`. Chat **Groq** `llama-3.3-70b-versatile` (Ollama fallback). Embed **Voyage**. PaddleOCR is off by default.
-
-### Requirements
-
-| Requirement | Value |
-|-----------|--------|
-| Architecture | **x86_64** (not ARM64) |
-| RAM | **≥ 16 GB** (32 GB recommended) |
-| Disk | ≥ 50 GB |
-| Docker | ≥ 24.0.0, Compose ≥ v2.26.1 |
-| Kernel | `vm.max_map_count` ≥ 262144 |
+This stack is not required for identity lookup. It is a grounded-chat demo over the same corpus. It needs Docker Compose, **x86_64**, **≥16 GB RAM**, and local API keys (Groq + Voyage). The clone does not include an indexed `demo_4`.
 
 ```bash
 cp .env.example .env   # add keys; .env is not in git
@@ -97,32 +90,11 @@ cp .env.example .env   # add keys; .env is not in git
 ./scripts/up.sh        # UI: http://localhost
 ```
 
-RAGFlow does not read `.env` keys on its own. Configure Groq and Voyage under Model providers. Ollama from the container: `http://host.docker.internal:11434` (never `127.0.0.1`).
+Stack: RAGFlow v0.26.4 + Infinity + MinerU `pipeline` + Groq `llama-3.3-70b-versatile` + Voyage. First-run knobs, `vm.max_map_count`, and provider fallbacks: [docs/cierre-academico.md](docs/cierre-academico.md) and [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md). Then `python scripts/push_claims.py` and a **new** chat.
 
-| Component | Default | Fallback |
-|-------|---------|----------|
-| UI + RAG | RAGFlow v0.26.4 :80 | — |
-| Document engine | Infinity | not Elasticsearch |
-| PDF parser | MinerU `pipeline` | Naive; DeepDoc; PaddleOCR (profile) |
-| Chat | Groq `llama-3.3-70b-versatile` | Ollama `qwen2.5:1.5b` |
-| Embeddings | Voyage `voyage-finance-2` | Gemini `gemini-embedding-001` |
+Infinity scores full-text with **BM25**. The `keyword` / `vector` / `hybrid` arms are RAGFlow knobs (`vector_similarity_weight` 0 / 1 / 0.3), not a custom Okapi library.
 
-### First run
-
-1. Local sign-up.
-2. Model providers: Groq + Voyage (+ MinerU via `MINERU_APISERVER`).
-3. Knowledge base **`demo_4`**: MinerU parser, Spanish, KG/RAPTOR off. Upload `docs/archivos_muestra/*.pdf`. Page size **128**. Parse one file at a time. Runbook: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
-4. Assistant **`chat_demo_4`**, Show Quote on, threshold **0.3**. Then `python scripts/push_claims.py` and a **new** chat.
-
-```text
-Claimprint
- ├── IDP   classify → extract → lookup → pytest
- └── RAG   RAGFlow → Infinity (BM25 + dense + hybrid) → Groq
-```
-
-Infinity scores full-text with **BM25**. The `keyword` / `vector` / `hybrid` arms are RAGFlow knobs (`vector_similarity_weight` 0 / 1 / 0.3), not a custom Okapi library. Pilot knobs (rerank off): similarity threshold `0.3`, vector weight `0.3`.
-
-Measured metrics (n=20 retrieval; n=10 chat):
+Pilot evaluation (n=20 retrieval; n=10 chat):
 
 | Arm | Recall@5 | Recall@10 | MRR |
 |-------|----------|-----------|-----|
@@ -131,8 +103,6 @@ Measured metrics (n=20 retrieval; n=10 chat):
 | hybrid | 0.25 | 0.25 | 0.125 |
 
 The three arms tie: this pilot does **not** show hybrid winning. Chat scores retrieval **0.7** / answer **0.6** / citation **0.7** / abstention **0.7** because `push_claims` injects IDP figures. Dumps live in `outputs/` (gitignored).
-
-Stop the stack:
 
 ```bash
 docker compose --env-file .env \
@@ -144,6 +114,6 @@ docker compose --env-file .env \
 
 ## License
 
-Active SDD: [`ledgerlens-rag-pilot`](openspec/changes/ledgerlens-rag-pilot/). UI/stack pin: [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/).
+Claimprint (this repository's own code) is **Apache-2.0**; see [`LICENSE`](LICENSE). Vendored RAGFlow `docker/` is redistributed unmodified under Apache-2.0. Cite as [`CITATION.cff`](CITATION.cff).
 
-Claimprint (this repository's own code) is **Apache-2.0**; see [`LICENSE`](LICENSE). Vendored RAGFlow `docker/` is redistributed unmodified under Apache-2.0.
+Design-history paths under [`openspec/`](openspec/) still use the internal IDs `ledgerlens-*`. The product name is Claimprint.

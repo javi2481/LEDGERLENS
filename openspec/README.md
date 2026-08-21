@@ -21,7 +21,7 @@ El nombre de producto es **Claimprint** (antes LedgerLens). Los IDs de change (`
 
 ## Checklist
 
-- [ ] README y este archivo nombran el **mismo** change activo (`ledgerlens-rag-pilot`)
+- [ ] Este archivo nombra el change activo (`ledgerlens-rag-pilot`). El README de producto no apunta a IDs `ledgerlens-*` (solo nota de IDs internos).
 - [ ] `ledger-lens-ragflow` sigue siendo el pin de UI/stack (sin trabajo IDP adentro)
 - [ ] `.env` y API keys **no** están en git
 

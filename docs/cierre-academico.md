@@ -6,6 +6,28 @@ Corpus cerrado: [`docs/archivos_muestra/`](archivos_muestra/) (10 PDF). Identida
 
 Pruebas: cuatro capas en [testing.md](testing.md) (archivos / identidad / inject mock / RAG vivo). Este archivo es el runbook de la **capa 4**. Un dump con `"skipped": true` no cuenta como piloto corrido.
 
+## Requisitos del stack (capa 4)
+
+| Requirement | Value |
+|-----------|--------|
+| Architecture | **x86_64** (not ARM64) |
+| RAM | **≥ 16 GB** (32 GB recommended) |
+| Disk | ≥ 50 GB |
+| Docker | ≥ 24.0.0, Compose ≥ v2.26.1 |
+| Kernel | `vm.max_map_count` ≥ 262144 |
+
+RAGFlow does not read `.env` keys on its own. Configure Groq and Voyage under Model providers. Ollama from the container: `http://host.docker.internal:11434` (never `127.0.0.1`).
+
+| Component | Default | Fallback |
+|-------|---------|----------|
+| UI + RAG | RAGFlow v0.26.4 :80 | — |
+| Document engine | Infinity | not Elasticsearch |
+| PDF parser | MinerU `pipeline` | Naive; DeepDoc; PaddleOCR (profile) |
+| Chat | Groq `llama-3.3-70b-versatile` | Ollama `qwen2.5:1.5b` |
+| Embeddings | Voyage `voyage-finance-2` | Gemini `gemini-embedding-001` |
+
+First run: local sign-up; Model providers Groq + Voyage (+ MinerU via `MINERU_APISERVER`); knowledge base **`demo_4`** (Spanish, KG/RAPTOR off, page size **128**, parse one file at a time — [mineru-pipeline.md](agenda/mineru-pipeline.md)); assistant **`chat_demo_4`**, Show Quote on, threshold **0.3**. Then `python scripts/push_claims.py` and a **new** chat. Pilot knobs (rerank off): similarity threshold `0.3`, vector weight `0.3`.
+
 ## En la notebook (ya)
 
 ```bash

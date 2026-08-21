@@ -27,3 +27,7 @@ Ningún test de identidad llama a RAGFlow.
 ## Chat (manual, ≥16 GB)
 
 `./scripts/up.sh`, dataset `demo_4`, `python scripts/push_claims.py`, chat **nuevo**: neto 1T26, controlante, empty YPF, Show Quote al PDF del EEFF.
+
+Retrieval: Infinity ya es **hybrid keyword + vector**. First-run: Similarity threshold `0.3`; Vector similarity weight `0.3` (keyword 0.7). Rerank `rerank-2.5-lite` opcional. KG/RAPTOR/Auto-keyword off. Eso no sustituye pytest de identidad. Detalle de escritorio: [cierre-academico.md](cierre-academico.md).
+
+HITL: `python scripts/review_pack.py`. Dossier: `python scripts/informe.py`. Un `reject` no sale en hechos publicados.

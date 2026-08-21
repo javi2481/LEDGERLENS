@@ -16,11 +16,13 @@ python scripts/idp_ask.py "¿Cuál es la fecha del comunicado de prensa 1T26?"
 # → 2026-05-08
 python scripts/idp_ask.py "¿Cuál es el EBITDA de la presentación 1T26?"
 # → 72128
+python scripts/review_pack.py   # outputs/review.html
+python scripts/informe.py       # outputs/dossier.html
 ```
 
-Siguiente: [plan-siguiente-idp.md](plan-siguiente-idp.md). Corpus = `docs/archivos_muestra/`. No otros dominios.
+Siguiente: [plan-siguiente-idp.md](plan-siguiente-idp.md). Corpus = `docs/archivos_muestra/`. No otros dominios. Cierre de planta: [cierre-academico.md](cierre-academico.md).
 
-OpenSpec activo: [`ledgerlens-results-presentation`](../openspec/changes/ledgerlens-results-presentation/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag. Pin UI/stack: [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/) — no inflar.
+OpenSpec activo: [`ledgerlens-academic-close`](../openspec/changes/ledgerlens-academic-close/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag, results-presentation. Pin UI/stack: [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/) — no inflar.
 
 ## Máquina
 
@@ -33,7 +35,7 @@ No commitear `.env`. El inject **no** va en `up.sh`. Identidad = `fixtures/miner
 
 ## Hecho
 
-Kernel extract + lookup, P&L vecino, claim-store, comunicado (fecha/período), presentación (EBITDA + margen LTM), parse MinerU, inject de claims al chat.
+Kernel extract + lookup, P&L vecino, claim-store, comunicado (fecha/período), presentación (EBITDA + margen LTM), parse MinerU, inject de claims al chat, HITL (`review_pack.py`), dossier HTML (`informe.py`), sonda de orientación opcional (`preprocess_probe.py`).
 
 Dominio: finanzas BYMA. `FinancialStatement` es el portero de los dos netos; las vecinas salen de `schemas/finance_lines.py`; el comunicado aporta fecha/período.
 
@@ -48,9 +50,10 @@ Dominio: finanzas BYMA. `FinancialStatement` es el portero de los dos netos; las
 
 ## Qué falta
 
-Un change OpenSpec **nuevo** por slice. No inflar kernel ni el pin RAGFlow.
+MVP académico **cerrado** salvo bugs. Un change OpenSpec **nuevo** solo si hace falta. No inflar kernel ni el pin RAGFlow.
 
-1. **No** extraer P&L de memorias. Transcripción después.
+1. **No** extraer P&L de memorias. Transcripción después (fuera de este cierre).
+2. En ≥16 GB: `push_claims` + chat nuevo + trampas + `preprocess_probe.py` si hay Paddle. Ver [cierre-academico.md](cierre-academico.md).
 
 ## Arranque
 

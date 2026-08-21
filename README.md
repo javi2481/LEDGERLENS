@@ -9,7 +9,7 @@ IDP **financiero** de punta a punta sobre [`docs/archivos_muestra/`](docs/archiv
 | **IDP** | `fixtures/mineru/*.md` → classify → extract → claims → [`scripts/idp_ask.py`](scripts/idp_ask.py) | `./scripts/check.sh` (cualquier PC; sin Docker) |
 | **RAG** | RAGFlow v0.26.4 + Infinity + Voyage + Groq; dataset `demo_4` | PC ≥16 GB, `./scripts/up.sh`. Eval de chat: manual |
 
-SDD activo: [`ledgerlens-results-presentation`](openspec/changes/ledgerlens-results-presentation/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag. Pin de UI/stack (no inflar con trabajo IDP): [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/).
+SDD activo: [`ledgerlens-academic-close`](openspec/changes/ledgerlens-academic-close/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag, results-presentation. Pin de UI/stack (no inflar con trabajo IDP): [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/).
 
 Contrato de identidad: `recipes/financial_statement.json` + `recipes/press_release.json` + `recipes/results_presentation.json` + [`evals/identity_v1.json`](evals/identity_v1.json) + [`evals/identity_v2.json`](evals/identity_v2.json) + [`evals/press_v1.json`](evals/press_v1.json) + [`evals/presentation_v1.json`](evals/presentation_v1.json). El chat no define cifras: `python scripts/push_claims.py` inyecta los claims del kernel en RAGFlow. **Después de un merge, corré el push en el host de la UI y abrí un chat nuevo.**
 
@@ -20,8 +20,10 @@ Contrato de identidad: `recipes/financial_statement.json` + `recipes/press_relea
 3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335`
 4. `python scripts/idp_ask.py "¿Cuál es la fecha del comunicado de prensa 1T26?"` → `2026-05-08`
 5. `python scripts/idp_ask.py "¿Cuál es el EBITDA de la presentación 1T26?"` → `72128`
+6. `python scripts/review_pack.py` → `outputs/review.html` (HITL; sin veredictos = todo accept)
+7. `python scripts/informe.py` → `outputs/dossier.html` (hechos + Q&A + abstenciones)
 
-Trampas: sin decir controlante → consolidado. Neto/impuesto **del comunicado** o **de la presentación** → abstain. EBITDA/margen LTM son de la presentación, no del EEFF. YPF / memoria → abstain. Detalle: [docs/testing.md](docs/testing.md).
+Trampas: sin decir controlante → consolidado. Neto/impuesto **del comunicado** o **de la presentación** → abstain. EBITDA/margen LTM son de la presentación, no del EEFF. YPF / memoria → abstain. Detalle: [docs/testing.md](docs/testing.md). Cierre de planta: [docs/cierre-academico.md](docs/cierre-academico.md).
 
 ## UI y stack (PC ≥16 GB, x86_64)
 
@@ -86,6 +88,21 @@ docker compose --env-file .env \
 3. Knowledge base **`demo_4`**: Configuración primero (PDF parser = **MinerU**; español; Knowledge graph y RAPTOR off). Después subir `docs/archivos_muestra/*.pdf`. En cada file, **Tamaño de la tarea por página = 128**. Parse de a uno. Runbook: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
 4. Asistente **`chat_demo_4`**, KB tildada, **Show Quote** on, umbral **0.3**, Empty response no vacío. Luego `python scripts/push_claims.py` y un chat nuevo.
 
+### Retrieval híbrido (Infinity, no un BM25 propio)
+
+Infinity (`DOC_ENGINE=infinity`) ya combina keyword + vector. Eso **no** es el contrato de identidad (identity = lookup léxico sobre claims). En tesina decí **hybrid keyword + vector**; no afirmes Okapi BM25: el path keyword de RAGFlow es TF-IDF propio.
+
+First-run en el chat / KB:
+
+| Knob | Valor | Nota |
+|------|--------|------|
+| Similarity threshold | `0.3` | Umbral de evidencia |
+| Vector similarity weight | `0.3` | Keyword pesa `0.7` |
+| Rerank | `rerank-2.5-lite` opcional | Si está ON, el híbrido efectivo es keyword + rerank |
+| Knowledge graph / RAPTOR / Auto-keyword | off | No duplicar el kernel |
+
+No hay Whoosh ni `rank_bm25` en este repo.
+
 Ollama en el host, si lo usás:
 
 ```bash
@@ -103,7 +120,10 @@ PaddleOCR opcional: `COMPOSE_PROFILES=infinity,cpu,paddleocr`. Naive/DeepDoc sol
 | `fixtures/mineru/` | Parse durable (texto de identidad) |
 | `scripts/export_mineru.py` | Export `demo_4` → fixtures (host con stack) |
 | `scripts/idp_ask.py` | Lookup; cache en `outputs/claims.json` |
-| `openspec/changes/ledgerlens-product-shape/` | SDD activo |
+| `scripts/review_pack.py` | HTML HITL (`outputs/review.html`) |
+| `scripts/informe.py` | Dossier académico (`outputs/dossier.html`) |
+| `scripts/preprocess_probe.py` | Orientación Paddle (escritorio; skip sin Paddle) |
+| `openspec/changes/ledgerlens-academic-close/` | SDD activo |
 | `vendor/ragflow-docker/` | Pin v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) |
 | `docker-compose.overlay.yml` / `docker/mineru/` | Sidecar MinerU |
 | `scripts/up.sh` | Arranque Compose |
@@ -113,7 +133,7 @@ PaddleOCR opcional: `COMPOSE_PROFILES=infinity,cpu,paddleocr`. Naive/DeepDoc sol
 | `docs/archivos_muestra/` | PDFs BYMA |
 | `docs/agenda/mineru-pipeline.md` | Runbook de parse |
 
-Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-results-presentation](openspec/changes/ledgerlens-results-presentation/)). El pin y `.env.example` solo si cambia el stack.
+Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-academic-close](openspec/changes/ledgerlens-academic-close/)). El pin y `.env.example` solo si cambia el stack.
 
 ## Licencia del vendor
 

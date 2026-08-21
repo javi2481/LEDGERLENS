@@ -1,6 +1,6 @@
 # Proposal: Results-presentation identity plugin
 
-> **Change activo (producto).** No inflar kernel, P&L, press, mineru-parse, product-shape, claims-to-rag, ni el pin RAGFlow.
+> **Shipped.** No inflar. El change activo es [`ledgerlens-academic-close`](../ledgerlens-academic-close/).
 
 ## Intent
 

@@ -158,6 +158,10 @@ pass "chat default is Groq llama-3.3-70b-versatile (no OpenRouter default)"
 PY=python3
 if [[ -x "$ROOT/.venv/bin/python" ]]; then
   PY="$ROOT/.venv/bin/python"
+elif [[ -x "$ROOT/.venv/Scripts/python.exe" ]]; then
+  PY="$ROOT/.venv/Scripts/python.exe"
+elif command -v python >/dev/null 2>&1; then
+  PY=python
 fi
 if ! "$PY" -c "import pytest, pydantic" >/dev/null 2>&1; then
   fail "pytest+pydantic required — uv venv && uv pip install -r requirements-dev.txt"

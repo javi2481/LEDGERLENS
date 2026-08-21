@@ -41,7 +41,9 @@ Delete this change folder, new evals/examples/scripts/schema, restore README poi
 
 ## Success Criteria
 
-- [ ] `./scripts/check.sh` green without RAGFlow
-- [ ] Bench/eval skip with `no_ragflow`
-- [ ] README does not publish invented Recall numbers
-- [ ] Identity pytest still does not import RAGFlow
+- [x] `./scripts/check.sh` green without RAGFlow
+- [x] Bench/eval skip with `no_ragflow`
+- [x] README does not publish invented Recall numbers
+- [x] Identity pytest still does not import RAGFlow
+
+Desktop run (measured, not invented): retrieval arms Recall@5/10 0.25 / MRR 0.125; chat scores 0.7 / 0.6 / 0.7 / 0.7.

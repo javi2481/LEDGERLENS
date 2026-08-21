@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -11,6 +12,34 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SKIP_NO_RAGFLOW = "no_ragflow"
 DEFAULT_API = "http://127.0.0.1/api/v1"
+MYSQL_CONTAINER = "ledgerlens-mysql-1"
+
+
+def token_from_mysql(container: str = MYSQL_CONTAINER) -> str:
+    """Read the first api_token from the Compose MySQL container."""
+    cmd = (
+        'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -N rag_flow '
+        '-e "SELECT token FROM api_token LIMIT 1;"'
+    )
+    out = subprocess.check_output(
+        ["docker", "exec", container, "sh", "-c", cmd],
+        stderr=subprocess.DEVNULL,
+    )
+    token = out.decode("utf-8", errors="replace").strip().splitlines()[-1].strip()
+    if not token:
+        raise SystemExit("error: no api_token in rag_flow")
+    return token
+
+
+def resolve_api_token() -> str | None:
+    """RAGFLOW_API_KEY, else MySQL fallback. None if neither works."""
+    env = os.environ.get("RAGFLOW_API_KEY")
+    if env:
+        return env
+    try:
+        return token_from_mysql()
+    except (OSError, subprocess.CalledProcessError, IndexError, SystemExit):
+        return None
 
 
 def load_env(path: Path | None = None) -> None:

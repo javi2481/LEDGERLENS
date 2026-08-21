@@ -2,7 +2,7 @@
 
 Repo: `https://github.com/javi2481/LEDGERLENS` · rama **`main`**. Engram: proyecto **`ledgerlens`**.
 
-Abrí este archivo primero. Un parse MinerU, dos capas (claims tipados y chat RAGFlow). El clone trae `fixtures/mineru/*.md`; **no** trae volúmenes Docker ni chunks de `demo_4`.
+Abrí este archivo primero. Publicación: **IDP primero** (ver [README](../README.md)); el chat RAGFlow es opcional. Un parse MinerU, dos capas (claims tipados y chat). El clone trae `fixtures/mineru/*.md`; **no** trae volúmenes Docker ni chunks de `demo_4`.
 
 ## Quick path
 
@@ -54,10 +54,10 @@ Dominio: finanzas BYMA. `FinancialStatement` es el portero de los dos netos; las
 
 ## Qué falta
 
-MVP académico **cerrado** salvo bugs. Un change OpenSpec **nuevo** solo si hace falta. No inflar kernel ni el pin RAGFlow.
+Piloto RAG de escritorio **corrido** (Recall/MRR y scores de chat pegados en el README). MVP académico cerrado salvo bugs. Un change OpenSpec **nuevo** solo si hace falta. No inflar kernel ni el pin RAGFlow.
 
 1. **No** extraer P&L de memorias. Transcripción después (fuera de este cierre).
-2. En ≥16 GB: `push_claims` + chat nuevo + trampas + `preprocess_probe.py` si hay Paddle + `retrieval_bench.py` + `rag_eval.py`. Pegar Recall/MRR en el README. Ver [cierre-academico.md](cierre-academico.md).
+2. Retrieval page-level quedó en Recall@5/10 **0.25** (n=20); chat answer **0.6** (n=10). Mejorar retrieval/página o inject de presentación es trabajo futuro, no del cierre.
 
 ## Arranque
 

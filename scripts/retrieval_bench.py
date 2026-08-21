@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -18,6 +17,7 @@ from schemas.ragflow_http import (
     chunk_to_hit,
     load_env,
     ragflow_reachable,
+    resolve_api_token,
     rows_of,
 )
 from schemas.retrieval_metrics import score_case, summarize_arm
@@ -25,10 +25,6 @@ from schemas.retrieval_metrics import score_case, summarize_arm
 GOLD = ROOT / "evals" / "retrieval_v1.json"
 OUT = ROOT / "outputs" / "retrieval_run.json"
 ARMS = (("keyword", 0.0), ("vector", 1.0), ("hybrid", 0.3))
-
-
-def _token() -> str | None:
-    return os.environ.get("RAGFLOW_API_KEY") or None
 
 
 def _dataset_id(token: str, wanted: str) -> str | None:
@@ -67,7 +63,7 @@ def main() -> int:
         report = {"skipped": True, "reason": SKIP_NO_RAGFLOW, "arms": {}, "cases": []}
         sys.stdout.write(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
         return 0
-    token = _token()
+    token = resolve_api_token()
     if not token:
         report = {"skipped": True, "reason": SKIP_NO_RAGFLOW, "arms": {}, "cases": []}
         sys.stdout.write(json.dumps(report, ensure_ascii=False, indent=2) + "\n")

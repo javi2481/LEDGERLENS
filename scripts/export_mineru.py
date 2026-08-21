@@ -21,37 +21,10 @@ SAMPLES = ROOT / "docs" / "archivos_muestra"
 sys.path.insert(0, str(ROOT))
 
 from schemas.parse_artifact import FIXTURES, artifact_path  # noqa: E402
+from schemas.ragflow_http import load_env, token_from_mysql  # noqa: E402
 
 API = os.environ.get("RAGFLOW_URL", "http://127.0.0.1/api/v1").rstrip("/")
 PAGE_POS = re.compile(r"page[^\d]{0,8}(\d+)", re.IGNORECASE)
-
-
-def load_env(path: Path) -> None:
-    if not path.is_file():
-        return
-    for raw in path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, value = line.split("=", 1)
-        key = key.strip()
-        if key and key not in os.environ:
-            os.environ[key] = value.strip().strip('"').strip("'")
-
-
-def token_from_mysql() -> str:
-    cmd = (
-        'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -N rag_flow '
-        '-e "SELECT token FROM api_token LIMIT 1;"'
-    )
-    out = subprocess.check_output(
-        ["docker", "exec", "ledgerlens-mysql-1", "sh", "-c", cmd],
-        stderr=subprocess.DEVNULL,
-    )
-    token = out.decode("utf-8", errors="replace").strip().splitlines()[-1].strip()
-    if not token:
-        raise SystemExit("error: no api_token in rag_flow")
-    return token
 
 
 def api(method: str, path: str, token: str) -> dict:

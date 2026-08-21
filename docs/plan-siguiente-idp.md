@@ -14,9 +14,9 @@ Handoff: [handoff-linux.md](handoff-linux.md). Cierre: [cierre-academico.md](cie
 
 HITL + dossier HTML + sonda de orientación (skip sin Paddle). Piloto RAG: 20 qrels + 10 chat (skip sin stack). Retrieval: Infinity keyword+vector (docs, no un BM25 propio).
 
-## Cerrado (salvo bugs + run piloto)
+## Cerrado (salvo bugs)
 
-El MVP académico de código está cerrado. En escritorio: `push_claims`, chat nuevo, trampas, probe Paddle, `retrieval_bench.py`, `rag_eval.py`, pegar métricas reales.
+El MVP académico de código está cerrado. Piloto de escritorio **corrido**: métricas en el README (retrieval Recall@5/10 0.25; chat answer 0.6).
 
 | Receta | PDFs | Nota |
 |--------|------|------|

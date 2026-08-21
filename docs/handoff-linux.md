@@ -38,7 +38,7 @@ No commitear `.env`. Overlay Graph **no** va en `up.sh`. No reparsear MinerU par
 | P&L vecino extract | `26c67de` | bruto / operativo / EBT / impuesto / no controlante |
 | P&L vecino lookup + v2 | `f63d954` | `evals/identity_v2.json` |
 | Cache CLI de claims | `48e9091` | `outputs/claims.json`; evals siguen extrayendo |
-| Un parse MinerU | (este change) | `fixtures/mineru/`; clasificar portada; no `pdftotext` de identidad |
+| Un parse MinerU | `b13f97f` | `fixtures/mineru/`; clasificar portada; no `pdftotext` de identidad |
 
 SDD hybrid. Dominio único: finanzas BYMA. `FinancialStatement` es el portero de los dos netos; las vecinas salen de `schemas/finance_lines.py`; el comunicado aporta fecha/período, no P&L.
 

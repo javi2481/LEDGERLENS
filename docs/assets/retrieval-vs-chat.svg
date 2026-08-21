@@ -2,10 +2,10 @@
   <title id="t">Retrieval empatado vs chat anclado</title>
   <desc id="d">Keyword, vector e hybrid: Recall@5 0.25. Chat answer 0.6 porque los claims se inyectan.</desc>
   <rect width="1200" height="630" fill="#f4f1ea"/>
-  <text x="60" y="58" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">El retrieval no discrimina. El claim sí.</text>
-  <text x="60" y="92" font-family="Segoe UI, Helvetica, sans-serif" font-size="16" fill="#5c574e">Piloto n=20 páginas · n=10 chat · rerank off</text>
+  <text x="60" y="58" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">El retrieval no discrimina. El claim s&#237;.</text>
+  <text x="60" y="92" font-family="Segoe UI, Helvetica, sans-serif" font-size="16" fill="#5c574e">Piloto n=20 p&#225;ginas &#183; n=10 chat &#183; rerank off</text>
 
-  <text x="60" y="150" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#5c574e">RETRIEVAL · Recall@5</text>
+  <text x="60" y="150" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#5c574e">RETRIEVAL &#183; Recall@5</text>
 
   <text x="60" y="200" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">keyword</text>
   <rect x="200" y="180" width="200" height="28" fill="#1a1a1a"/>
@@ -19,7 +19,7 @@
   <rect x="200" y="280" width="200" height="28" fill="#1a1a1a"/>
   <text x="416" y="300" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">0.25</text>
 
-  <text x="60" y="370" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#5c574e">CHAT · answer (después de push_claims)</text>
+  <text x="60" y="370" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#5c574e">CHAT &#183; answer (despu&#233;s de push_claims)</text>
   <text x="60" y="420" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">answer</text>
   <rect x="200" y="400" width="480" height="28" fill="#1a1a1a"/>
   <text x="696" y="420" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">0.60</text>
@@ -29,7 +29,7 @@
   <text x="776" y="470" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">0.70</text>
 
   <rect x="860" y="170" width="280" height="320" rx="6" fill="#fff" stroke="#2c2c2c" stroke-width="1.5"/>
-  <text x="1000" y="220" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#1a1a1a">Cómo leerlo</text>
+  <text x="1000" y="220" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#1a1a1a">C&#243;mo leerlo</text>
   <text x="890" y="268" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">Tres brazos, mismas cifras.</text>
   <text x="890" y="292" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">El piloto no prueba que</text>
   <text x="890" y="316" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">hybrid gane.</text>
@@ -39,5 +39,5 @@
   <text x="890" y="452" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">Los brazos son knobs</text>
   <text x="890" y="476" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">de RAGFlow, no Okapi propio.</text>
 
-  <text x="60" y="580" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#8a857c">MRR retrieval 0.125 en los tres brazos · Claimprint piloto RAG</text>
+  <text x="60" y="580" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#8a857c">MRR retrieval 0.125 en los tres brazos &#183; Claimprint piloto RAG</text>
 </svg>

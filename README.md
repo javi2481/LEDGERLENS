@@ -1,12 +1,12 @@
 # Claimprint
 
-Formerly **LedgerLens**.
-
 **Category:** Claims Intelligence  
 **Instance:** BYMA financial statements  
 **Rule:** no claim, no answer.
 
-The document produces verifiable claims. This repo ships the finance plugin over the BYMA corpus in [`docs/archivos_muestra/`](docs/archivos_muestra/). Recipes + [`evals/`](evals/) define the figures; the RAGFlow chat consumes them and is **not** the source of truth. Clone and run `idp_ask` with no Docker and no API keys. Retrieval Recall@5 is 0.25 (n=20); grounded chat answer is 0.6 (n=10).
+The document produces verifiable claims. This repository ships the finance plugin over the BYMA corpus in [`docs/archivos_muestra/`](docs/archivos_muestra/). Recipes and [`evals/`](evals/) define the figures; the RAGFlow chat consumes them and is **not** the source of truth.
+
+Identity lookup runs with no Docker and no API keys. Retrieval Recall@5 is 0.25 (n=20); grounded chat answer is 0.6 (n=10).
 
 ![De PDF a claim verificado](docs/assets/architecture.svg)
 
@@ -14,11 +14,9 @@ The document produces verifiable claims. This repo ships the finance plugin over
 
 ![Retrieval empatado vs chat anclado](docs/assets/retrieval-vs-chat.svg)
 
-**Al clonar** traés los PDF y el texto parseado en [`fixtures/mineru/`](fixtures/mineru/). Podés preguntar cifras con [`scripts/idp_ask.py`](scripts/idp_ask.py) **sin API keys y sin Docker**.
+Parsed BYMA text lives in [`fixtures/mineru/`](fixtures/mineru/). [`scripts/idp_ask.py`](scripts/idp_ask.py) answers identity questions from those fixtures. The RAGFlow UI is optional (≥16 GB RAM and local API keys). `.env` is gitignored.
 
-El chat en RAGFlow es una **demo de UI opcional** (PC ≥16 GB + **tus** keys). `.env` no está en git.
-
-## Quick path (lo que ofrezco al clonar)
+## Quick start
 
 ```bash
 git clone https://github.com/javi2481/claimprint.git
@@ -37,84 +35,84 @@ python scripts/review_pack.py   # outputs/review.html (HITL)
 python scripts/informe.py       # outputs/dossier.html
 ```
 
-En Windows usá Git Bash o WSL para `./scripts/check.sh`.
+On Windows, run `./scripts/check.sh` from Git Bash or WSL.
 
-## Qué trae el clone / qué no
+## Scope
 
-| Trae | No trae |
+| Included | Excluded |
 |------|---------|
-| PDF en `docs/archivos_muestra/` | Volúmenes Docker |
-| Texto parseado en `fixtures/mineru/` | Dataset `demo_4` indexado |
-| recipes, `evals/`, pytest | API keys (Groq, Voyage, …) |
-| `scripts/idp_ask.py`, HITL, dossier | Chunks / chat listo en la UI |
+| PDFs in `docs/archivos_muestra/` | Docker volumes |
+| Parsed text in `fixtures/mineru/` | Indexed `demo_4` dataset |
+| Recipes, `evals/`, pytest | API keys (Groq, Voyage, …) |
+| `scripts/idp_ask.py`, HITL, dossier | Pre-built RAG chunks or chat |
 
-## Capas y pruebas
+## Architecture
 
-| Capa | Qué es | Cómo se prueba |
+| Layer | Role | Verification |
 |------|--------|----------------|
-| **IDP** | fixtures → classify → extract → claims → `idp_ask` | `./scripts/check.sh` (cualquier PC) |
-| **RAG** | RAGFlow + Infinity + Voyage + Groq; `demo_4` | Opcional, ≥16 GB (apéndice abajo) |
+| **IDP** | fixtures → classify → extract → claims → `idp_ask` | `./scripts/check.sh` |
+| **RAG** | RAGFlow + Infinity + Voyage + Groq (`demo_4`) | Optional, ≥16 GB (section below) |
 
-Contrato: `recipes/financial_statement.json` + `press_release.json` + `results_presentation.json` + [`evals/identity_v1.json`](evals/identity_v1.json) + [`identity_v2.json`](evals/identity_v2.json) + [`press_v1.json`](evals/press_v1.json) + [`presentation_v1.json`](evals/presentation_v1.json).
+Contracts: `recipes/financial_statement.json`, `press_release.json`, `results_presentation.json`, plus [`evals/identity_v1.json`](evals/identity_v1.json), [`identity_v2.json`](evals/identity_v2.json), [`press_v1.json`](evals/press_v1.json), and [`presentation_v1.json`](evals/presentation_v1.json).
 
-Trampas: sin decir controlante → consolidado. Neto/impuesto **del comunicado** o **de la presentación** → abstain. EBITDA en millones es de la **presentación**; margen LTM `76`/`75` está en **comunicado y presentación**. YPF / memoria → abstain.
+Identity traps: an unspecified controlling interest defaults to consolidated. Net income or tax **from the press release** or **from the presentation** abstains. EBITDA in millions comes from the **presentation**; LTM margin `76`/`75` appears in **press release and presentation**. YPF / annual report abstains.
 
-Catálogo: **cuatro capas** (archivos → identidad → inject mock → RAG vivo). Detalle: [docs/testing.md](docs/testing.md). Cierre de planta: [docs/cierre-academico.md](docs/cierre-academico.md). Handoff: [docs/handoff-linux.md](docs/handoff-linux.md).
+Evaluation catalog: four layers (files → identity → inject mock → live RAG). See [docs/testing.md](docs/testing.md), [docs/cierre-academico.md](docs/cierre-academico.md), and [docs/handoff-linux.md](docs/handoff-linux.md).
 
-## Repo
+## Layout
 
-| Path | Rol |
+| Path | Role |
 |------|-----|
-| `schemas/` / `recipes/` / `evals/` | Identidad tipada |
-| `fixtures/mineru/` | Parse durable (texto de identidad) |
-| `scripts/idp_ask.py` | Lookup; cache en `outputs/claims.json` |
-| `scripts/check.sh` | Contratos + pytest |
-| `scripts/review_pack.py` / `informe.py` | HITL y dossier académico |
-| `docs/archivos_muestra/` | PDFs BYMA |
-| `scripts/up.sh` / `push_claims.py` | Solo si armás el stack RAG |
-| `vendor/ragflow-docker/` | Pin RAGFlow v0.26.4 (no editar) |
-| `docs/assets/` | Diagramas del README / LinkedIn |
+| `schemas/` / `recipes/` / `evals/` | Typed identity |
+| `fixtures/mineru/` | Durable parse (identity text) |
+| `scripts/idp_ask.py` | Lookup; cache in `outputs/claims.json` |
+| `scripts/check.sh` | Contracts + pytest |
+| `scripts/review_pack.py` / `informe.py` | HITL and academic dossier |
+| `docs/archivos_muestra/` | BYMA PDFs |
+| `scripts/up.sh` / `push_claims.py` | Optional RAG stack |
+| `vendor/ragflow-docker/` | RAGFlow v0.26.4 pin (do not edit) |
+| `docs/assets/` | README / LinkedIn diagrams |
 
 ---
 
-## Apéndice: UI RAGFlow (opcional, ≥16 GB)
+## Optional RAGFlow UI
 
-**No es el first-run.** Sirve para ver el chat sobre el mismo corpus. Necesitás Docker, Compose y **tus propias** keys (Groq + Voyage). El clone no trae `demo_4` indexado.
+This stack is not required for identity lookup. It is a grounded-chat demo over the same corpus. It needs Docker Compose and local API keys (Groq + Voyage). The clone does not include an indexed `demo_4`.
 
-Stack: **RAGFlow** v0.26.4 + Infinity. Parser **MinerU** `pipeline`. Chat **Groq** `llama-3.3-70b-versatile` (Ollama fallback). Embed **Voyage**. PaddleOCR apagado por defecto.
+Stack: **RAGFlow** v0.26.4 + Infinity. Parser **MinerU** `pipeline`. Chat **Groq** `llama-3.3-70b-versatile` (Ollama fallback). Embed **Voyage**. PaddleOCR is off by default.
 
-### Requisitos
+### Requirements
 
-| Requisito | Valor |
+| Requirement | Value |
 |-----------|--------|
-| Arquitectura | **x86_64** (no ARM64) |
-| RAM | **≥ 16 GB** (32 GB recomendado) |
-| Disco | ≥ 50 GB |
+| Architecture | **x86_64** (not ARM64) |
+| RAM | **≥ 16 GB** (32 GB recommended) |
+| Disk | ≥ 50 GB |
 | Docker | ≥ 24.0.0, Compose ≥ v2.26.1 |
 | Kernel | `vm.max_map_count` ≥ 262144 |
 
 ```bash
-cp .env.example .env   # pegá keys; .env no está en git
+cp .env.example .env   # add keys; .env is not in git
 ./scripts/check.sh
 ./scripts/up.sh        # UI: http://localhost
 ```
 
-RAGFlow **no** lee las keys solo: pegá Groq y Voyage en Model providers. Ollama: `http://host.docker.internal:11434` (**nunca** `127.0.0.1` desde el contenedor).
+RAGFlow does not read `.env` keys on its own. Configure Groq and Voyage under Model providers. Ollama from the container: `http://host.docker.internal:11434` (never `127.0.0.1`).
 
-| Pieza | Default | Fallback |
+| Component | Default | Fallback |
 |-------|---------|----------|
 | UI + RAG | RAGFlow v0.26.4 :80 | — |
-| Motor docs | Infinity | no Elasticsearch |
-| Parser PDF | MinerU `pipeline` | Naive; DeepDoc; PaddleOCR (profile) |
+| Document engine | Infinity | not Elasticsearch |
+| PDF parser | MinerU `pipeline` | Naive; DeepDoc; PaddleOCR (profile) |
 | Chat | Groq `llama-3.3-70b-versatile` | Ollama `qwen2.5:1.5b` |
 | Embeddings | Voyage `voyage-finance-2` | Gemini `gemini-embedding-001` |
 
-### Primera vez en la UI
+### First run
 
-1. Registro local.
-2. Model providers: Groq + Voyage (+ MinerU vía `MINERU_APISERVER`).
-3. Knowledge base **`demo_4`**: parser MinerU, español, KG/RAPTOR off. Subir `docs/archivos_muestra/*.pdf`. Page size **128**. Parse de a uno. Runbook: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
-4. Asistente **`chat_demo_4`**, Show Quote on, umbral **0.3**. Luego `python scripts/push_claims.py` y un **chat nuevo**.
+1. Local sign-up.
+2. Model providers: Groq + Voyage (+ MinerU via `MINERU_APISERVER`).
+3. Knowledge base **`demo_4`**: MinerU parser, Spanish, KG/RAPTOR off. Upload `docs/archivos_muestra/*.pdf`. Page size **128**. Parse one file at a time. Runbook: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
+4. Assistant **`chat_demo_4`**, Show Quote on, threshold **0.3**. Then `python scripts/push_claims.py` and a **new** chat.
 
 ```text
 Claimprint
@@ -122,19 +120,19 @@ Claimprint
  └── RAG   RAGFlow → Infinity (BM25 + dense + hybrid) → Groq
 ```
 
-Infinity puntúa full-text con **BM25**. Los brazos `keyword` / `vector` / `hybrid` son knobs de RAGFlow (`vector_similarity_weight` 0 / 1 / 0.3), no una librería Okapi propia. Knobs del piloto (rerank off): similarity threshold `0.3`, vector weight `0.3`.
+Infinity scores full-text with **BM25**. The `keyword` / `vector` / `hybrid` arms are RAGFlow knobs (`vector_similarity_weight` 0 / 1 / 0.3), not a custom Okapi library. Pilot knobs (rerank off): similarity threshold `0.3`, vector weight `0.3`.
 
-Métricas medidas (n=20 retrieval; n=10 chat). **No** inventar Recall.
+Measured metrics (n=20 retrieval; n=10 chat):
 
-| Brazo | Recall@5 | Recall@10 | MRR |
+| Arm | Recall@5 | Recall@10 | MRR |
 |-------|----------|-----------|-----|
 | keyword | 0.25 | 0.25 | 0.125 |
 | vector | 0.25 | 0.25 | 0.125 |
 | hybrid | 0.25 | 0.25 | 0.125 |
 
-Los tres brazos empatan: el piloto **no** demuestra que hybrid gane. El chat da retrieval **0.7** / answer **0.6** / citation **0.7** / abstention **0.7** porque `push_claims` ancla las cifras del IDP. Dumps en `outputs/` (gitignored).
+The three arms tie: this pilot does **not** show hybrid winning. Chat scores retrieval **0.7** / answer **0.6** / citation **0.7** / abstention **0.7** because `push_claims` injects IDP figures. Dumps live in `outputs/` (gitignored).
 
-Parar el stack:
+Stop the stack:
 
 ```bash
 docker compose --env-file .env \
@@ -144,8 +142,8 @@ docker compose --env-file .env \
 
 ---
 
-## OpenSpec y licencia
+## License
 
-SDD activo: [`ledgerlens-rag-pilot`](openspec/changes/ledgerlens-rag-pilot/). Pin de UI/stack (no inflar con IDP): [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/).
+Active SDD: [`ledgerlens-rag-pilot`](openspec/changes/ledgerlens-rag-pilot/). UI/stack pin: [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/).
 
-Claimprint (código propio) es **Apache-2.0**; ver [`LICENSE`](LICENSE). RAGFlow `docker/` se redistribuye bajo Apache-2.0. Claimprint no modifica esos archivos.
+Claimprint (this repository's own code) is **Apache-2.0**; see [`LICENSE`](LICENSE). Vendored RAGFlow `docker/` is redistributed unmodified under Apache-2.0.

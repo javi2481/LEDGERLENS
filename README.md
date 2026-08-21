@@ -2,23 +2,33 @@
 
 [![CI](https://github.com/javi2481/claimprint/actions/workflows/ci.yml/badge.svg)](https://github.com/javi2481/claimprint/actions/workflows/ci.yml)
 
-**Category:** Claims Intelligence  
-**Instance:** BYMA financial statements  
+**Kernel:** claims intelligence  
+**First instance:** finance / BYMA  
 **Rule:** no claim, no answer.
 
-Claimprint explores a verification-first approach to document AI: structured claims are extracted and evaluated before retrieval-augmented generation is allowed to answer.
+Claimprint extracts and evaluates structured claims before retrieval-augmented generation is allowed to answer. This repository ships the **first instance**: finance, over BYMA statements in [`docs/archivos_muestra/`](docs/archivos_muestra/). Other verticals would add recipes and projectors; they are not in this tree.
 
-This repository ships the finance plugin over the BYMA corpus in [`docs/archivos_muestra/`](docs/archivos_muestra/). Recipes and [`evals/`](evals/) define the figures; the RAGFlow chat consumes them and is **not** the source of truth.
+Recipes and [`evals/`](evals/) define the figures. The RAGFlow chat consumes them and is **not** the source of truth.
 
-Identity lookup runs with no Docker and no API keys. Pilot evaluation: retrieval Recall@5 is 0.25 (n=20); grounded chat answer is 0.6 (n=10).
+## The problem
 
-![De PDF a claim verificado](docs/assets/architecture.svg)
+Unspecified “net income 1T26” has two neighboring P&L rows. Retrieval can return the controlling interest. The kernel does not.
+
+| | Value |
+|--|--|
+| Question | ¿Cuál es el resultado neto del período 1T26? |
+| Wrong neighbor (controlante) | 21259769 |
+| Claimprint (consolidado) | **21262335** |
 
 ![Trampa consolidado vs controlante 1T26](docs/assets/identity-trap.svg)
 
+Identity lookup: no Docker, no API keys. Pilot evaluation: retrieval Recall@5 0.25 (n=20); grounded chat answer 0.6 (n=10).
+
+![De PDF a claim verificado](docs/assets/architecture.svg)
+
 ![Retrieval empatado vs chat anclado](docs/assets/retrieval-vs-chat.svg)
 
-Parsed BYMA text lives in [`fixtures/mineru/`](fixtures/mineru/). [`scripts/idp_ask.py`](scripts/idp_ask.py) answers identity questions from those fixtures. The RAGFlow UI is optional (≥16 GB RAM and local API keys). `.env` is gitignored.
+Parsed BYMA text lives in [`fixtures/mineru/`](fixtures/mineru/). [`scripts/idp_ask.py`](scripts/idp_ask.py) answers that question from those fixtures. The RAGFlow UI is optional (≥16 GB RAM and local API keys). `.env` is gitignored.
 
 ## Quick start
 
@@ -45,7 +55,7 @@ On Windows, run `./scripts/check.sh` from Git Bash or WSL.
 
 | Included | Excluded |
 |------|---------|
-| PDFs in `docs/archivos_muestra/` | Docker volumes |
+| First instance: BYMA PDFs in `docs/archivos_muestra/` | Docker volumes |
 | Parsed text in `fixtures/mineru/` | Indexed `demo_4` dataset |
 | Recipes, `evals/`, pytest | API keys (Groq, Voyage, …) |
 | `scripts/idp_ask.py`, HITL, dossier | Pre-built RAG chunks or chat |

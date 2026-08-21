@@ -51,6 +51,6 @@ python scripts/informe.py
 
 ### Estado del run (escritorio)
 
-Corrido: `push_claims`, trampas (neto/controlante/YPF/Show Quote OK; EBITDA deck abstain), `preprocess_probe` → `no_paddle`, bench + `rag_eval`. README actualizado con métricas reales. Retrieval keyword/vector/hybrid: Recall@5/10 **0.25**, MRR **0.125** (n=20). Chat: retrieval **0.7** / answer **0.6** / citation **0.7** / abstention **0.7** (n=10).
+Corrido: `push_claims`, trampas (neto/controlante/YPF/Show Quote OK; EBITDA deck abstain), `preprocess_probe` → `no_paddle`, bench + `rag_eval`. README actualizado con métricas reales. Retrieval keyword/vector/hybrid: Recall@5/10 **0.25**, MRR **0.125** (n=20) — hallazgo del cierre: el retrieval solo no resuelve la trampa de identidad. Chat **después** de `push_claims`: retrieval **0.7** / answer **0.6** / citation **0.7** / abstention **0.7** (n=10); el salto 0.25 → 0.6 es por inject de claims del IDP, no un win del retrieval. No promediar ambas capas.
 
 Rerank `rerank-2.5-lite` queda apagado durante el piloto de tres brazos. UVDoc fuera. Transcripción y memorias siguen sin extraer P&L.

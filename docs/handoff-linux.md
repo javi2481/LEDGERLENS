@@ -57,7 +57,7 @@ Dominio: finanzas BYMA. `FinancialStatement` es el portero de los dos netos; las
 Piloto RAG de escritorio **corrido** (Recall/MRR y scores de chat pegados en el README). MVP académico cerrado salvo bugs. Un change OpenSpec **nuevo** solo si hace falta. No inflar kernel ni el pin RAGFlow.
 
 1. **No** extraer P&L de memorias. Transcripción después (fuera de este cierre).
-2. Retrieval page-level quedó en Recall@5/10 **0.25** (n=20); chat answer **0.6** (n=10). Mejorar retrieval/página o inject de presentación es trabajo futuro, no del cierre.
+2. Retrieval page-level quedó en Recall@5/10 **0.25** (n=20): evidencia del cierre (retrieval solo no limpia la trampa). Chat answer **0.6** (n=10) es post-`push_claims`. Subir Recall es trabajo futuro **opcional**; no es un hueco del freeze.
 
 ## Arranque
 

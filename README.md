@@ -22,7 +22,7 @@ Unspecified “net income 1T26” has two neighboring P&L rows. Retrieval can re
 
 ![Trampa consolidado vs controlante 1T26](docs/assets/identity-trap.svg)
 
-Identity lookup: no Docker, no API keys. Pilot evaluation: retrieval Recall@5 0.25 (n=20); grounded chat answer 0.6 (n=10).
+Identity lookup: no Docker, no API keys. Pilot retrieval alone (PDF+page, no claim inject) scores Recall@5 **0.25** (n=20): the three arms tie and do **not** show that retrieval resolves the identity trap. Grounded chat answer **0.6** (n=10) is measured **after** `push_claims` injects IDP figures—not a retrieval win.
 
 ![De PDF a claim verificado](docs/assets/architecture.svg)
 
@@ -112,7 +112,14 @@ Pilot evaluation (n=20 retrieval; n=10 chat):
 | vector | 0.25 | 0.25 | 0.125 |
 | hybrid | 0.25 | 0.25 | 0.125 |
 
-The three arms tie: this pilot does **not** show hybrid winning. Chat scores retrieval **0.7** / answer **0.6** / citation **0.7** / abstention **0.7** because `push_claims` injects IDP figures. Dumps live in `outputs/` (gitignored).
+The three arms tie: this pilot does **not** show hybrid winning. That tie is evidence for claims-first: page-level retrieval alone does not clear the consolidado / controlante trap.
+
+| Layer | What it measures | Score |
+|-------|------------------|-------|
+| Retrieval only | PDF+page, no claim inject | Recall@5 0.25 (n=20) |
+| Chat after `push_claims` | Answer grounded on injected IDP claims | answer 0.6 (n=10) |
+
+The jump from 0.25 to 0.6 is the claims-first argument, not a number to hide. Chat also scores retrieval **0.7** / citation **0.7** / abstention **0.7** on the same post-inject run. Dumps live in `outputs/` (gitignored).
 
 ```bash
 docker compose --env-file .env \

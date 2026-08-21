@@ -9,6 +9,10 @@ from schemas.extract import extract_financial_statement
 from schemas.finance_lines import claims_from_pnl_lines
 from schemas.parse_artifact import load_parse, page_text
 from schemas.press_release import claims_from_press_release, extract_press_release
+from schemas.results_presentation import (
+    claims_from_results_presentation,
+    extract_results_presentation,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLES = ROOT / "docs" / "archivos_muestra"
@@ -30,4 +34,8 @@ def extract_claims_from_dir(directory: Path | None = None) -> tuple[Claim, ...]:
         press = extract_press_release(pdf)
         if press is not None:
             out.extend(claims_from_press_release(press))
+            continue
+        deck = extract_results_presentation(pdf)
+        if deck is not None:
+            out.extend(claims_from_results_presentation(deck))
     return tuple(out)

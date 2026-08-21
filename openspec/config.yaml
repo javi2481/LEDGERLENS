@@ -5,12 +5,12 @@ persistence: hybrid
 strict_tdd: false
 
 context: |
-  Product: LedgerLens is a finance IDP over docs/archivos_muestra/ (BYMA EEFF, press releases, decks, transcripts, annual reports). Not a multi-domain product; unused catalog stubs (e.g. legal_contract) stay extract:false. Active OpenSpec change: ledgerlens-mineru-parse. Identity contract is evals/identity_v1.json + identity_v2.json + press_v1.json + recipes; exact-match, no embeddings. Parse SoT is fixtures/mineru/*.md (MinerU). Classify after parse (cover text). CLI caches claims in outputs/claims.json; evals still extract from artifacts, not pdftotext.
-  Demo track (frozen, not product SoT): RAGFlow v0.26.4 + Infinity + MinerU pipeline sidecar + Groq llama-3.3-70b-versatile + Voyage. OpenSpec change ledger-lens-ragflow is the demo pin — do not inflate it with IDP work. Overlay Graph (docs/hechos_eeff.json + push_hechos.py) is demo-only gold; do not merge with identity evals.
-  Runtime kernel: ./scripts/check.sh (pytest) on any host with MinerU fixtures. Runtime demo: Docker Compose, x86_64, ≥16 GB. Do not introduce a custom product UI; the demo UI is pinned RAGFlow.
+  Product: LedgerLens is an end-to-end finance IDP over docs/archivos_muestra/ (BYMA). MinerU parse feeds typed claims and RAGFlow chat. Active OpenSpec change: ledgerlens-results-presentation. Identity contract is evals/identity_v1.json + identity_v2.json + press_v1.json + presentation_v1.json + recipes; exact-match, no embeddings. Parse SoT is fixtures/mineru/*.md. Classify after parse (cover text). CLI caches claims in outputs/claims.json; evals extract from artifacts, not pdftotext. Identity contract is evals/identity_v1.json + identity_v2.json + press_v1.json + recipes; exact-match, no embeddings. Parse SoT is fixtures/mineru/*.md. Classify after parse (cover text). CLI caches claims in outputs/claims.json; evals extract from artifacts, not pdftotext.
+  UI/stack pin (do not inflate with IDP work): RAGFlow v0.26.4 + Infinity + MinerU pipeline sidecar + Groq llama-3.3-70b-versatile + Voyage (openspec change ledger-lens-ragflow). Chat inject is scripts/push_claims.py from kernel claims — not a second gold JSON.
+  Runtime IDP: ./scripts/check.sh (pytest) on any host with MinerU fixtures. Runtime UI: Docker Compose, x86_64, ≥16 GB. Do not introduce a custom product UI; the UI is pinned RAGFlow.
   Persistence: hybrid (openspec files + Engram observations, project ledgerlens).
-  Docs: product changes update README.md + the open change in the same work unit. Demo pin / Compose / .env.example stay on the demo track.
-  Testing: ./scripts/check.sh runs file contracts + pytest capa 1-2. RAG E2E is manual on ≥16 GB and is not the IDP DoD. strict_tdd stays false.
+  Docs: product changes update README.md + the open change in the same work unit. Pin / Compose / .env.example stay on the stack track.
+  Testing: ./scripts/check.sh runs file contracts + pytest identity. RAG E2E is manual on ≥16 GB and is not the IDP DoD. strict_tdd stays false.
 
 testing:
   strict_tdd: false
@@ -33,7 +33,7 @@ testing:
 rules:
   proposal:
     - Include rollback plan for risky changes
-    - Do not propose a custom product UI; the demo is pinned RAGFlow over BYMA samples
+    - Do not propose a custom product UI; the UI is pinned RAGFlow over BYMA samples
     - Keep the product as a finance IDP on docs/archivos_muestra/
   specs:
     - Use Given/When/Then for scenarios

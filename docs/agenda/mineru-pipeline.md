@@ -4,7 +4,7 @@ Parser default de LedgerLens para PDFs con tablas y layout (EEFF, filings). Back
 
 RAGFlow v0.26.4 es cliente remoto: `MINERU_APISERVER=http://mineru-api:8000` → `POST /file_parse`. `MINERU_BACKEND=pipeline`.
 
-[Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser). [FAQ MinerU](https://ragflow.io/docs/faq#how-to-use-mineru-to-parse-pdf-documents). Dumps: `research/search-mineru-ragflow.json`, `research/search-mineru-hybrid.json`.
+[Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser). [FAQ MinerU](https://ragflow.io/docs/faq#how-to-use-mineru-to-parse-pdf-documents).
 
 ## Runbook UI (`demo_4`)
 

@@ -111,4 +111,4 @@ def test_classify_dedicated_eeff() -> None:
     assert classify_pdf(PDF_2T26) == "financial_statement"
     assert classify_pdf(PDF_MEMORIA) == UNKNOWN
     assert classify_pdf(PDF_COMUNICADO) == "press_release"
-    assert classify_pdf(SAMPLES / "Presentacion_de_resultados_BYMA-2T26.pdf") == UNKNOWN
+    assert classify_pdf(SAMPLES / "Presentacion_de_resultados_BYMA-2T26.pdf") == "results_presentation"

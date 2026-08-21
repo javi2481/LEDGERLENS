@@ -30,9 +30,12 @@ def test_cover_memoria_is_unknown() -> None:
     assert classify_pdf(SAMPLES / "BYMA-MEMORIA_2025.pdf") == UNKNOWN
 
 
-def test_cover_deck_and_transcript_are_unknown() -> None:
-    assert classify_text("Presentación de Resultados 2° TRIMESTRE 2026") == UNKNOWN
-    assert classify_pdf(PDF_DECK) == UNKNOWN
+def test_cover_deck_is_results_presentation() -> None:
+    assert classify_text("Presentación de Resultados 2° TRIMESTRE 2026") == "results_presentation"
+    assert classify_pdf(PDF_DECK) == "results_presentation"
+
+
+def test_cover_transcript_is_unknown() -> None:
     assert classify_pdf(PDF_TRANSCRIPT) == UNKNOWN
 
 

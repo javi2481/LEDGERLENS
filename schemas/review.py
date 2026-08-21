@@ -92,7 +92,7 @@ def render_review_html(
     body = "\n".join(rows) if rows else "<tr><td colspan='5'>Sin claims</td></tr>"
     return (
         "<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'>"
-        "<title>Revisión HITL LedgerLens</title>"
+        "<title>Revisión HITL Claimprint</title>"
         "<style>body{font-family:sans-serif;margin:24px}table{border-collapse:collapse;width:100%}"
         "th,td{border:1px solid #ccc;padding:6px;text-align:left;font-size:14px}"
         "th{background:#f4f4f4}</style></head><body>"

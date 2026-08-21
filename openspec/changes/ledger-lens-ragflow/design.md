@@ -1,4 +1,4 @@
-# Design: LedgerLens RAGFlow local stack
+# Design: Claimprint RAGFlow local stack
 
 Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **MinerU** `pipeline` (sidecar CPU `mineru-api:8000`). Naive/DeepDoc fallback. Optional PaddleOCR overlay (Compose profile `paddleocr`). Default chat: **Groq** `llama-3.3-70b-versatile`. Embed: **Voyage**. Host Ollama is last fallback. Infinity for lower RAM. No `app.py`, `ledger_lens/`, Gradio, HF Space.
 

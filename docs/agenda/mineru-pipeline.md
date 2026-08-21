@@ -1,6 +1,6 @@
 # MinerU pipeline — parser default (aplicado)
 
-Parser default de LedgerLens para PDFs con tablas y layout (EEFF, filings). Backend **`pipeline`** (CPU). No es hybrid ni VLM.
+Parser default de Claimprint para PDFs con tablas y layout (EEFF, filings). Backend **`pipeline`** (CPU). No es hybrid ni VLM.
 
 RAGFlow v0.26.4 es cliente remoto: `MINERU_APISERVER=http://mineru-api:8000` → `POST /file_parse`. `MINERU_BACKEND=pipeline`.
 

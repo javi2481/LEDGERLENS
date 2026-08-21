@@ -1,6 +1,8 @@
 # OpenSpec / Gentle AI (hybrid)
 
-LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`project: ledgerlens`).
+Claimprint usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`project: ledgerlens`).
+
+El nombre de producto es **Claimprint** (antes LedgerLens). Los IDs de change (`ledgerlens-*`, `ledger-lens-ragflow`) y el proyecto Engram no se renombran: son rutas.
 
 ## Quick path
 
@@ -12,7 +14,7 @@ LedgerLens usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 
 | Tema | Valor |
 |------|--------|
-| Producto | IDP financiero de punta a punta; corpus = `docs/archivos_muestra/` (BYMA) |
+| Producto | Claimprint — claims intelligence; instancia BYMA (`docs/archivos_muestra/`) |
 | UI | RAGFlow v0.26.4 + Infinity + MinerU + Voyage + Groq |
 | Tests | `./scripts/check.sh` (pytest identidad). Chat live no es el DoD del IDP |
 | Persistencia | `openspec/config.yaml` → `persistence: hybrid` |

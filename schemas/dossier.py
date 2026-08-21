@@ -149,7 +149,7 @@ def render_dossier(
     )
     return (
         "<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'>"
-        "<title>Dossier LedgerLens BYMA</title>"
+        "<title>Dossier Claimprint BYMA</title>"
         f"<style>{css}</style></head><body>"
         "<h1>Dossier de hechos BYMA</h1>"
         "<p>Cifras del IDP (claims aceptados). El chat RAGFlow no es la fuente de verdad. "

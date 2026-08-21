@@ -4,7 +4,7 @@
 
 ## Intent
 
-Chat overlay gold (`hechos_eeff.json` + Docling Graph) duplicates kernel claims. LedgerLens MUST inject those claims into RAGFlow and delete Graph. Identity SoT stays `evals/` + recipes.
+Chat overlay gold (`hechos_eeff.json` + Docling Graph) duplicates kernel claims. Claimprint MUST inject those claims into RAGFlow and delete Graph. Identity SoT stays `evals/` + recipes.
 
 ## Scope
 

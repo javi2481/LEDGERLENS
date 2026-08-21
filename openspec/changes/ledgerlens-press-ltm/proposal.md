@@ -4,7 +4,7 @@
 
 ## Intent
 
-The deck already has typed LTM margin (`76` / `75`). The comunicado states the same percentage in prose. LedgerLens MUST extract that line as a press claim so identity can cite two documents — without embeddings, without deck P&L, and without fattening `push_claims.py`.
+The deck already has typed LTM margin (`76` / `75`). The comunicado states the same percentage in prose. Claimprint MUST extract that line as a press claim so identity can cite two documents — without embeddings, without deck P&L, and without fattening `push_claims.py`.
 
 ## Scope
 

@@ -24,6 +24,6 @@ Missing or low-similarity evidence MUST yield the configured Spanish Empty respo
 
 #### Scenario: Blank Empty response forbidden
 
-- GIVEN a LedgerLens demo chat assistant
+- GIVEN a Claimprint demo chat assistant
 - WHEN Empty response is inspected
 - THEN it MUST be a Spanish no-evidence sentence and MUST NOT be blank

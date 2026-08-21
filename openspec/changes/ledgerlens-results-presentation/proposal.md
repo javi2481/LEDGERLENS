@@ -4,7 +4,7 @@
 
 ## Intent
 
-Decks still skip extract. LedgerLens MUST add a third finance plugin: EBITDA + LTM margin from highlights — not slide-2 P&L (millions, inflation view, 2T26 quarterly vs EEFF YTD).
+Decks still skip extract. Claimprint MUST add a third finance plugin: EBITDA + LTM margin from highlights — not slide-2 P&L (millions, inflation view, 2T26 quarterly vs EEFF YTD).
 
 ## Scope
 

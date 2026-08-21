@@ -4,7 +4,7 @@
 
 ## Intent
 
-Docs still narrate two products (kernel vs frozen demo) and keep pivot debris (`research/`, legal stub, `pdftotext` identity helper). LedgerLens MUST read as one end-to-end finance IDP: RAGFlow UI, MinerU parse, Infinity/Voyage/Groq, typed claims. Graph overlay stays until a later inject change.
+Docs still narrate two products (kernel vs frozen demo) and keep pivot debris (`research/`, legal stub, `pdftotext` identity helper). Claimprint MUST read as one end-to-end finance IDP: RAGFlow UI, MinerU parse, Infinity/Voyage/Groq, typed claims. Graph overlay stays until a later inject change.
 
 ## Scope
 

@@ -1,4 +1,4 @@
-# Tasks: LedgerLens IDP kernel (extract + identity)
+# Tasks: Claimprint IDP kernel (extract + identity)
 
 ## Review Workload Forecast
 

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="t d">
+  <title id="t">Claimprint  de PDF a claim verificado</title>
+  <desc id="d">PDF BYMA, MinerU, classify y extract, claim tipado, lookup exacto o chat RAG anclado.</desc>
+  <rect width="1200" height="630" fill="#f4f1ea"/>
+  <text x="60" y="58" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">Claimprint</text>
+  <text x="60" y="92" font-family="Segoe UI, Helvetica, sans-serif" font-size="16" fill="#5c574e">El documento produce claims. El chat no es la fuente de verdad.</text>
+
+  <rect x="48" y="140" width="160" height="88" rx="6" fill="#fff" stroke="#2c2c2c" stroke-width="1.5"/>
+  <text x="128" y="178" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="15" font-weight="600" fill="#1a1a1a">PDF BYMA</text>
+  <text x="128" y="202" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="12" fill="#5c574e">filing</text>
+
+  <path d="M218 184 H268" stroke="#2c2c2c" stroke-width="1.5"/>
+  <polygon points="268,178 280,184 268,190" fill="#2c2c2c"/>
+
+  <rect x="288" y="140" width="160" height="88" rx="6" fill="#fff" stroke="#2c2c2c" stroke-width="1.5"/>
+  <text x="368" y="178" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="15" font-weight="600" fill="#1a1a1a">MinerU</text>
+  <text x="368" y="202" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="12" fill="#5c574e">parse durable</text>
+
+  <path d="M458 184 H508" stroke="#2c2c2c" stroke-width="1.5"/>
+  <polygon points="508,178 520,184 508,190" fill="#2c2c2c"/>
+
+  <rect x="528" y="140" width="200" height="88" rx="6" fill="#fff" stroke="#2c2c2c" stroke-width="1.5"/>
+  <text x="628" y="178" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="15" font-weight="600" fill="#1a1a1a">classify ’ extract</text>
+  <text x="628" y="202" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="12" fill="#5c574e">recipe + schema</text>
+
+  <path d="M738 184 H788" stroke="#2c2c2c" stroke-width="1.5"/>
+  <polygon points="788,178 800,184 788,190" fill="#2c2c2c"/>
+
+  <rect x="808" y="140" width="340" height="88" rx="6" fill="#1a1a1a"/>
+  <text x="978" y="178" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="15" font-weight="600" fill="#f4f1ea">Claim</text>
+  <text x="978" y="202" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="12" fill="#c8c2b4">identity · value · provenance</text>
+
+  <path d="M978 228 V280" stroke="#2c2c2c" stroke-width="1.5"/>
+  <path d="M240 280 H978" stroke="#2c2c2c" stroke-width="1.5" fill="none"/>
+  <path d="M240 280 V320" stroke="#2c2c2c" stroke-width="1.5"/>
+  <path d="M978 280 V320" stroke="#2c2c2c" stroke-width="1.5"/>
+
+  <rect x="60" y="328" width="420" height="200" rx="6" fill="#fff" stroke="#2c2c2c" stroke-width="1.5"/>
+  <text x="270" y="372" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#1a1a1a">Lookup exacto</text>
+  <text x="270" y="408" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#5c574e">idp_ask · sin Docker · sin keys</text>
+  <text x="270" y="448" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">Dato verificado</text>
+  <text x="270" y="478" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">o abstención (no claim, no answer)</text>
+
+  <rect x="720" y="328" width="420" height="200" rx="6" fill="#fff" stroke="#2c2c2c" stroke-width="1.5"/>
+  <text x="930" y="372" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#1a1a1a">RAG anclado</text>
+  <text x="930" y="408" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#5c574e">Infinity BM25 + dense + hybrid</text>
+  <text x="930" y="448" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">Respuesta grounded</text>
+  <text x="930" y="478" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">opcional · consume el claim</text>
+
+  <text x="60" y="580" font-family="Segoe UI, Helvetica, sans-serif" font-size="12" fill="#8a857c">Category: Claims Intelligence · Instance: BYMA · Rule: no claim, no answer</text>
+</svg>

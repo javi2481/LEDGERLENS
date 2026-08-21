@@ -1,6 +1,6 @@
 # Handoff — retomar en otra PC
 
-Repo: `https://github.com/javi2481/LEDGERLENS` · rama **`main`**. Engram: proyecto **`ledgerlens`**.
+Producto: **Claimprint** (antes LedgerLens). Repo: `https://github.com/javi2481/claimprint` · rama **`main`**. Engram: proyecto **`ledgerlens`** (ID interno, no se renombra).
 
 Abrí este archivo primero. Publicación: **IDP primero** (ver [README](../README.md)); el chat RAGFlow es opcional. Un parse MinerU, dos capas (claims tipados y chat). El clone trae `fixtures/mineru/*.md`; **no** trae volúmenes Docker ni chunks de `demo_4`.
 
@@ -62,8 +62,8 @@ Piloto RAG de escritorio **corrido** (Recall/MRR y scores de chat pegados en el 
 ## Arranque
 
 ```bash
-git clone https://github.com/javi2481/LEDGERLENS.git
-cd LEDGERLENS
+git clone https://github.com/javi2481/claimprint.git
+cd claimprint
 git pull origin main
 ```
 

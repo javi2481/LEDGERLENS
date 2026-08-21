@@ -1,10 +1,10 @@
-# Proposal: LedgerLens IDP kernel (extract + identity)
+# Proposal: Claimprint IDP kernel (extract + identity)
 
 > **Shipped.** El change activo de producto es [`ledgerlens-finance-pnl-claims`](../ledgerlens-finance-pnl-claims/). El pin del demo RAGFlow está congelado en [`ledger-lens-ragflow`](../ledger-lens-ragflow/).
 
 ## Intent
 
-RAG over chunks picks the wrong neighboring P&L row (consolidado vs controlante) even when MinerU extracted both figures. LedgerLens MUST resolve identity from typed claims, not embedding similarity. Finance is the first domain plugin; the kernel MUST stay domain-agnostic.
+RAG over chunks picks the wrong neighboring P&L row (consolidado vs controlante) even when MinerU extracted both figures. Claimprint MUST resolve identity from typed claims, not embedding similarity. Finance is the first domain plugin; the kernel MUST stay domain-agnostic.
 
 ## Scope
 

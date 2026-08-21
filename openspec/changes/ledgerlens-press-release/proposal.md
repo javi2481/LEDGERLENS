@@ -4,7 +4,7 @@
 
 ## Intent
 
-The kernel only extracts dedicated EEFF. Comunicados exist in the corpus but classify as `UNKNOWN`. LedgerLens MUST prove a second plugin: typed claims from the press release that are **not** P&L rows.
+The kernel only extracts dedicated EEFF. Comunicados exist in the corpus but classify as `UNKNOWN`. Claimprint MUST prove a second plugin: typed claims from the press release that are **not** P&L rows.
 
 ## Scope
 

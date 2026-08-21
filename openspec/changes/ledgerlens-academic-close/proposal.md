@@ -4,7 +4,7 @@
 
 ## Intent
 
-The finance IDP extracts typed claims and feeds RAGFlow, but the academic plant still lacks a human review pack, a citable Q&A export, and a document-orientation preprocess probe. LedgerLens MUST close the MVP with those three pieces plus docs for Infinity hybrid retrieval — without a second BM25 library, custom UI, or new extract plugins.
+The finance IDP extracts typed claims and feeds RAGFlow, but the academic plant still lacks a human review pack, a citable Q&A export, and a document-orientation preprocess probe. Claimprint MUST close the MVP with those three pieces plus docs for Infinity hybrid retrieval — without a second BM25 library, custom UI, or new extract plugins.
 
 ## Scope
 

@@ -10,9 +10,10 @@ pass() { echo "PASS: $*"; }
 skip() { echo "SKIP: $*"; }
 info() { echo "INFO: $*"; }
 
-echo "== LedgerLens check (no RAGFlow runtime) =="
+echo "== Claimprint check (no RAGFlow runtime) =="
 
 # --- file contracts ---
+[[ -f LICENSE ]] || fail "missing LICENSE"
 [[ -f vendor/PIN.md ]] || fail "missing vendor/PIN.md"
 grep -q 'v0.26.4' vendor/PIN.md || fail "vendor/PIN.md must pin v0.26.4"
 [[ -f vendor/ragflow-docker/docker-compose.yml ]] || fail "missing vendor compose"

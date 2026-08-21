@@ -1,6 +1,6 @@
-# Pruebas LedgerLens
+# Pruebas Claimprint
 
-LedgerLens no tiene once suites paralelas. Tiene **cuatro capas**. La taxonomía QA (unit, E2E, security, load, ML, etc.) se mapea a esas capas; no se inventan carpetas `tests/unit|e2e|security|load`.
+Claimprint no tiene once suites paralelas. Tiene **cuatro capas**. La taxonomía QA (unit, E2E, security, load, ML, etc.) se mapea a esas capas; no se inventan carpetas `tests/unit|e2e|security|load`.
 
 El contrato de identidad es extract + lookup, exact-match, sin embeddings. El chat RAGFlow **no** sustituye al IDP. First-run del repo: capas 1–2 vía `./scripts/check.sh` e `idp_ask` (sin keys); capa 4 es el apéndice RAG del [README](../README.md).
 
@@ -60,6 +60,6 @@ Ningún test de identidad llama a RAGFlow.
 
 `./scripts/up.sh`, dataset `demo_4`, `python scripts/push_claims.py`, chat **nuevo**: neto 1T26, controlante, empty YPF, Show Quote al PDF del EEFF.
 
-Retrieval: Infinity es **hybrid keyword + vector** (no Okapi BM25). Piloto: [`evals/retrieval_v1.json`](../evals/retrieval_v1.json) (20 qrels de PDF+página) y [`evals/rag_chat_v1.json`](../evals/rag_chat_v1.json) (10 preguntas). `python scripts/retrieval_bench.py` y `python scripts/rag_eval.py` hacen skip sin stack (exit 0). Ese skip **no** es el DoD del piloto: Recall@k se pega en el README **después** del run medido; no inventar números. Detalle: [cierre-academico.md](cierre-academico.md).
+Retrieval: Infinity hace **full-text BM25 + dense + hybrid**. No hay una segunda librería Okapi en Python; los brazos del piloto son knobs de RAGFlow (`vector_similarity_weight` 0 / 1 / 0.3). Piloto: [`evals/retrieval_v1.json`](../evals/retrieval_v1.json) (20 qrels de PDF+página) y [`evals/rag_chat_v1.json`](../evals/rag_chat_v1.json) (10 preguntas). `python scripts/retrieval_bench.py` y `python scripts/rag_eval.py` hacen skip sin stack (exit 0). Ese skip **no** es el DoD del piloto: Recall@k se pega en el README **después** del run medido; no inventar números. Detalle: [cierre-academico.md](cierre-academico.md).
 
 HITL: `python scripts/review_pack.py`. Dossier: `python scripts/informe.py`. Un `reject` no sale en hechos publicados.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start LedgerLens: official RAGFlow v0.26.4 (Infinity). UI parser default: MinerU (pipeline CPU).
+# Start Claimprint: official RAGFlow v0.26.4 (Infinity). UI parser default: MinerU (pipeline CPU).
 # Chat default is Groq llama-3.3-70b-versatile in the UI. Host Ollama is last fallback.
 # Optional: COMPOSE_PROFILES=infinity,cpu,paddleocr to also start PaddleOCR.
 set -euo pipefail

@@ -4,7 +4,7 @@
 
 ## Intent
 
-Identity today classifies by filename and extracts with `pdftotext`. The demo already parsed the same PDFs with MinerU. LedgerLens MUST use that parse as the only text path: ingest → MinerU artifact → classify by cover → extract typed claims. RAG remains narrative, not identity SoT (Unify: one FileManager parse, typed Knowledge, no stuffing rows back into recoverable chunks).
+Identity today classifies by filename and extracts with `pdftotext`. The demo already parsed the same PDFs with MinerU. Claimprint MUST use that parse as the only text path: ingest → MinerU artifact → classify by cover → extract typed claims. RAG remains narrative, not identity SoT (Unify: one FileManager parse, typed Knowledge, no stuffing rows back into recoverable chunks).
 
 ## Scope
 

@@ -4,7 +4,7 @@
 
 ## Intent
 
-The finance plugin only distinguishes net income consolidado vs controlante. Neighboring P&L rows (bruto, operativo, EBT, impuesto, no controlante) are still easy to mix. LedgerLens MUST project those rows as distinct claims from the same page-4 extract, without embeddings.
+The finance plugin only distinguishes net income consolidado vs controlante. Neighboring P&L rows (bruto, operativo, EBT, impuesto, no controlante) are still easy to mix. Claimprint MUST project those rows as distinct claims from the same page-4 extract, without embeddings.
 
 ## Scope
 

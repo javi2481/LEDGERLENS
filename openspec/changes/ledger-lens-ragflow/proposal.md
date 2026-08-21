@@ -1,4 +1,4 @@
-# Proposal: LedgerLens RAGFlow local stack
+# Proposal: Claimprint RAGFlow local stack
 
 > **Congelado (pin del demo).** No es el SDD de producto. El change activo es [`ledgerlens-idp-kernel`](../ledgerlens-idp-kernel/). No inflar este change con extract/lookup/evals.
 

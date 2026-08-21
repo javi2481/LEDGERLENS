@@ -4,7 +4,7 @@
 
 ## Intent
 
-Identity evals already prove exact-match claims. The chat stack (Infinity + Voyage + Groq) has no committed retrieval gold. LedgerLens MUST add a small pilot: 20 page-qrels, 10 chat cases, metric helpers, and scripts that skip without RAGFlow — so the thesis can measure keyword vs vector vs hybrid **after** a desktop run, without inventing Recall numbers in CI.
+Identity evals already prove exact-match claims. The chat stack (Infinity + Voyage + Groq) has no committed retrieval gold. Claimprint MUST add a small pilot: 20 page-qrels, 10 chat cases, metric helpers, and scripts that skip without RAGFlow — so the thesis can measure keyword vs vector vs hybrid **after** a desktop run, without inventing Recall numbers in CI.
 
 ## Scope
 

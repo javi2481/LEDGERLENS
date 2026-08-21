@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="t d">
+  <title id="t">Trampa 1T26: consolidado vs controlante</title>
+  <desc id="d">El resultado neto consolidado 21.262.335 no es el atribuible a la controlante 21.259.769.</desc>
+  <rect width="1200" height="630" fill="#f4f1ea"/>
+  <text x="60" y="58" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">La fila de al lado no es el neto</text>
+  <text x="60" y="92" font-family="Segoe UI, Helvetica, sans-serif" font-size="16" fill="#5c574e">EEFF BYMA 1T26 · página 4 · sin decir controlante ’ consolidado</text>
+
+  <rect x="60" y="140" width="520" height="360" rx="6" fill="#1a1a1a"/>
+  <text x="320" y="200" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#c8c2b4">CONSOLIDADO</text>
+  <text x="320" y="248" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="18" fill="#f4f1ea">RESULTADO NETO DEL PERÍODO</text>
+  <text x="320" y="340" text-anchor="middle" font-family="Georgia, serif" font-size="48" fill="#f4f1ea">21.262.335</text>
+  <text x="320" y="400" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#c8c2b4">identity: BYMA | 2026-03-31 | consolidado | resultado_neto</text>
+  <text x="320" y="450" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#9dce8a">respuesta por defecto</text>
+
+  <rect x="620" y="140" width="520" height="360" rx="6" fill="#fff" stroke="#2c2c2c" stroke-width="1.5"/>
+  <text x="880" y="200" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#5c574e">CONTROLANTE</text>
+  <text x="880" y="248" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="18" fill="#1a1a1a">atribuible a la participación</text>
+  <text x="880" y="340" text-anchor="middle" font-family="Georgia, serif" font-size="48" fill="#1a1a1a">21.259.769</text>
+  <text x="880" y="400" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#5c574e">identity: BYMA | 2026-03-31 | controlante | atribuible</text>
+  <text x="880" y="450" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#8a4a3a">solo si la pregunta lo pide</text>
+
+  <text x="60" y="560" font-family="Segoe UI, Helvetica, sans-serif" font-size="16" fill="#1a1a1a">Un RAG de chunks mezcla las dos filas. El claim las separa.</text>
+  <text x="60" y="590" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#8a857c">Claimprint · evals/identity_v1.json · trampa 1T26</text>
+</svg>

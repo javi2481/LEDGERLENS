@@ -1,4 +1,4 @@
-# Design: LedgerLens IDP kernel (extract + identity)
+# Design: Claimprint IDP kernel (extract + identity)
 
 ## Technical Approach
 

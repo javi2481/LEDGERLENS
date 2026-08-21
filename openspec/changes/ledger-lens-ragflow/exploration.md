@@ -2,7 +2,7 @@
 
 > Histórico del bootstrap (árbol vacío + fixtures sintéticos). El change **aplicado** es MinerU `pipeline` + corpus BYMA en `docs/archivos_muestra/` + chat Groq `llama-3.3-70b-versatile`. No usar este archivo como fuente de verdad del demo.
 
-Local Docker Compose stack for LedgerLens: Spanish Q&A over synthetic financial PDFs with citations, using official self-hosted RAGFlow + self-hosted PaddleOCR serving + Ollama. Empty/no-evidence reply instead of inventing. No Gradio, no Hugging Face Space, no custom Python RAG package.
+Local Docker Compose stack for Claimprint: Spanish Q&A over synthetic financial PDFs with citations, using official self-hosted RAGFlow + self-hosted PaddleOCR serving + Ollama. Empty/no-evidence reply instead of inventing. No Gradio, no Hugging Face Space, no custom Python RAG package.
 
 ### Current State
 

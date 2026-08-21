@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Living product docs MUST describe LedgerLens as one finance IDP: MinerU parse, typed identity, RAGFlow UI. Pivot rails and unused catalog stubs MUST NOT appear as current product.
+Living product docs MUST describe Claimprint as one finance IDP: MinerU parse, typed identity, RAGFlow UI. Pivot rails and unused catalog stubs MUST NOT appear as current product.
 
 ## ADDED Requirements
 

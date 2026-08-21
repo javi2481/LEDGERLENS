@@ -1,6 +1,18 @@
-# LedgerLens
+# Claimprint
 
-IDP **financiero** sobre el corpus BYMA en [`docs/archivos_muestra/`](docs/archivos_muestra/). Las cifras las definen recipes + [`evals/`](evals/); el chat RAGFlow las consume y **no** es la fuente de verdad.
+Formerly **LedgerLens**.
+
+**Category:** Claims Intelligence  
+**Instance:** BYMA financial statements  
+**Rule:** no claim, no answer.
+
+The document produces verifiable claims. This repo ships the finance plugin over the BYMA corpus in [`docs/archivos_muestra/`](docs/archivos_muestra/). Recipes + [`evals/`](evals/) define the figures; the RAGFlow chat consumes them and is **not** the source of truth. Clone and run `idp_ask` with no Docker and no API keys. Retrieval Recall@5 is 0.25 (n=20); grounded chat answer is 0.6 (n=10).
+
+![De PDF a claim verificado](docs/assets/architecture.svg)
+
+![Trampa consolidado vs controlante 1T26](docs/assets/identity-trap.svg)
+
+![Retrieval empatado vs chat anclado](docs/assets/retrieval-vs-chat.svg)
 
 **Al clonar** traés los PDF y el texto parseado en [`fixtures/mineru/`](fixtures/mineru/). Podés preguntar cifras con [`scripts/idp_ask.py`](scripts/idp_ask.py) **sin API keys y sin Docker**.
 
@@ -9,8 +21,8 @@ El chat en RAGFlow es una **demo de UI opcional** (PC ≥16 GB + **tus** keys). 
 ## Quick path (lo que ofrezco al clonar)
 
 ```bash
-git clone https://github.com/javi2481/LEDGERLENS.git
-cd LEDGERLENS
+git clone https://github.com/javi2481/claimprint.git
+cd claimprint
 uv venv && uv pip install -r requirements-dev.txt
 ./scripts/check.sh
 python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"
@@ -61,6 +73,7 @@ Catálogo: **cuatro capas** (archivos → identidad → inject mock → RAG vivo
 | `docs/archivos_muestra/` | PDFs BYMA |
 | `scripts/up.sh` / `push_claims.py` | Solo si armás el stack RAG |
 | `vendor/ragflow-docker/` | Pin RAGFlow v0.26.4 (no editar) |
+| `docs/assets/` | Diagramas del README / LinkedIn |
 
 ---
 
@@ -104,12 +117,12 @@ RAGFlow **no** lee las keys solo: pegá Groq y Voyage en Model providers. Ollama
 4. Asistente **`chat_demo_4`**, Show Quote on, umbral **0.3**. Luego `python scripts/push_claims.py` y un **chat nuevo**.
 
 ```text
-MinerU
+Claimprint
  ├── IDP   classify → extract → lookup → pytest
- └── RAG   Infinity keyword|vector|hybrid → Groq + Show Quote
+ └── RAG   RAGFlow → Infinity (BM25 + dense + hybrid) → Groq
 ```
 
-Knobs del piloto (rerank off): similarity threshold `0.3`, vector weight `0.3`.
+Infinity puntúa full-text con **BM25**. Los brazos `keyword` / `vector` / `hybrid` son knobs de RAGFlow (`vector_similarity_weight` 0 / 1 / 0.3), no una librería Okapi propia. Knobs del piloto (rerank off): similarity threshold `0.3`, vector weight `0.3`.
 
 Métricas medidas (n=20 retrieval; n=10 chat). **No** inventar Recall.
 
@@ -119,7 +132,7 @@ Métricas medidas (n=20 retrieval; n=10 chat). **No** inventar Recall.
 | vector | 0.25 | 0.25 | 0.125 |
 | hybrid | 0.25 | 0.25 | 0.125 |
 
-Chat: retrieval **0.7** / answer **0.6** / citation **0.7** / abstention **0.7**. Dumps en `outputs/` (gitignored).
+Los tres brazos empatan: el piloto **no** demuestra que hybrid gane. El chat da retrieval **0.7** / answer **0.6** / citation **0.7** / abstention **0.7** porque `push_claims` ancla las cifras del IDP. Dumps en `outputs/` (gitignored).
 
 Parar el stack:
 
@@ -135,4 +148,4 @@ docker compose --env-file .env \
 
 SDD activo: [`ledgerlens-rag-pilot`](openspec/changes/ledgerlens-rag-pilot/). Pin de UI/stack (no inflar con IDP): [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/).
 
-RAGFlow `docker/` se redistribuye bajo Apache-2.0. LedgerLens no modifica esos archivos.
+Claimprint (código propio) es **Apache-2.0**; ver [`LICENSE`](LICENSE). RAGFlow `docker/` se redistribuye bajo Apache-2.0. Claimprint no modifica esos archivos.

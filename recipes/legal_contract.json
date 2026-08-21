@@ -1,8 +1,0 @@
-{
-  "id": "legal_contract",
-  "extract": false,
-  "schema": null,
-  "threshold": 0.85,
-  "page_select_keywords": [],
-  "description": "Contrato o acuerdo legal. Receta de clasificador solamente (`extract: false`). El corpus de producto es docs/archivos_muestra/; no se agregan PDFs de contrato."
-}

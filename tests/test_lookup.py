@@ -87,6 +87,21 @@ def test_press_date_not_pnl(claims) -> None:
     assert row.value != "21262335"
 
 
+def test_presentation_ebitda_not_pnl(claims) -> None:
+    result = lookup("¿Cuál es el EBITDA de la presentación 1T26?", claims)
+    assert result.route == "identity"
+    row = result.claims[0]
+    assert row.metric == "presentation_ebitda"
+    assert row.value == "72128"
+    assert row.value != "21262335"
+
+
+def test_eeff_metric_on_presentation_abstains(claims) -> None:
+    result = lookup("¿Cuál es el resultado neto consolidado de la presentación de resultados?", claims)
+    assert result.route == "abstain"
+    assert result.claims == ()
+
+
 def test_eeff_metric_on_comunicado_still_abstains(claims) -> None:
     result = lookup("¿Cuál es el resultado neto consolidado del comunicado de prensa?", claims)
     assert result.route == "abstain"

@@ -23,17 +23,19 @@ def test_catalog_covers_sample_types() -> None:
         "results_presentation",
         "earnings_transcript",
         "annual_report",
-        "legal_contract",
     }
+    assert "legal_contract" not in recipes
     assert recipes["financial_statement"].extract is True
     assert recipes["financial_statement"].schema_cls() is FinancialStatement
     assert recipes["press_release"].extract is True
     assert recipes["press_release"].schema_cls() is PressRelease
+    from schemas.results_presentation import ResultsPresentation
+
+    assert recipes["results_presentation"].extract is True
+    assert recipes["results_presentation"].schema_cls() is ResultsPresentation
     for rid in (
-        "results_presentation",
         "earnings_transcript",
         "annual_report",
-        "legal_contract",
     ):
         assert recipes[rid].extract is False
         assert recipes[rid].schema_cls() is None

@@ -12,10 +12,13 @@ from schemas.claim import (
     METRIC_NCI,
     METRIC_NETO,
     METRIC_OPERATIVO,
+    METRIC_PRESENTATION_EBITDA,
+    METRIC_PRESENTATION_EBITDA_MARGIN_LTM,
     METRIC_PRESS_AS_OF,
     METRIC_PRESS_PERIOD,
     SCOPE_CONSOLIDADO,
     SCOPE_CONTROLANTE,
+    SCOPE_PRESENTATION,
     SCOPE_PRESS,
     Claim,
     Route,
@@ -74,6 +77,40 @@ def understand(question: str) -> Intent:
         elif has_2t and not has_1t:
             period = PERIOD_2T26
         return Intent("identity", SCOPE_PRESS, METRIC_PRESS_PERIOD, period, has_1t and has_2t, None)
+    deck = any(
+        token in q
+        for token in ("presentacion", "presentación", "slides", "deck")
+    )
+    if deck and any(
+        token in q
+        for token in (
+            "resultado neto",
+            "consolidado",
+            "controlante",
+            "resultado bruto",
+            "resultado operativo",
+            "impuesto",
+        )
+    ):
+        return Intent("abstain", None, None, None, False, "recipe_no_extract")
+    if deck and "ebitda" in q:
+        period = None
+        has_1t = any(token in q for token in ("1t26", "1t 26", "marzo", "primer trimestre"))
+        has_2t = any(token in q for token in ("2t26", "2t 26", "junio", "segundo trimestre"))
+        if has_1t and not has_2t:
+            period = PERIOD_1T26
+        elif has_2t and not has_1t:
+            period = PERIOD_2T26
+        if any(token in q for token in ("margen", "ltm", "12 meses", "ultimos 12", "últimos 12")):
+            return Intent(
+                "identity",
+                SCOPE_PRESENTATION,
+                METRIC_PRESENTATION_EBITDA_MARGIN_LTM,
+                period,
+                False,
+                None,
+            )
+        return Intent("identity", SCOPE_PRESENTATION, METRIC_PRESENTATION_EBITDA, period, False, None)
     if any(token in q for token in ("contrato", "clausula", "cláusula")):
         return Intent("abstain", None, None, None, False, "recipe_no_extract")
     narrative_hits = (
@@ -81,11 +118,9 @@ def understand(question: str) -> Intent:
         "explica",
         "politica contable",
         "highlights",
-        "presentacion de resultados",
         "hechos relevantes",
         "webcast",
         "conference call",
-        "slides",
     )
     if any(token in q for token in narrative_hits) and "resultado neto" not in q:
         return Intent("narrative", None, None, None, False, None)

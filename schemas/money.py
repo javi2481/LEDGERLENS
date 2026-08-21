@@ -20,6 +20,23 @@ def digits_ars(value: Any) -> str | None:
     return digits or None
 
 
+def format_display_ars(value: Any) -> str:
+    """21262335 → 21.262.335. Keeps a leading minus."""
+    text = str(value).strip()
+    sign = ""
+    if text.startswith("-"):
+        sign = "-"
+        text = text[1:]
+    digits = "".join(ch for ch in text if ch.isdigit())
+    if not digits:
+        return str(value)
+    parts: list[str] = []
+    while digits:
+        parts.append(digits[-3:])
+        digits = digits[:-3]
+    return sign + ".".join(reversed(parts))
+
+
 def signed_ars(value: Any) -> str | None:
     """Parentheses mean negative. (14.950.948) → -14950948."""
     if value is None:

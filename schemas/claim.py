@@ -19,6 +19,9 @@ METRIC_NCI = "resultado_no_controlante"
 SCOPE_PRESS = "comunicado"
 METRIC_PRESS_AS_OF = "press_as_of_date"
 METRIC_PRESS_PERIOD = "press_period"
+SCOPE_PRESENTATION = "presentacion"
+METRIC_PRESENTATION_EBITDA = "presentation_ebitda"
+METRIC_PRESENTATION_EBITDA_MARGIN_LTM = "presentation_ebitda_margin_ltm"
 
 
 def identity_key(issuer: str, period: str, scope: str, metric: str) -> str:

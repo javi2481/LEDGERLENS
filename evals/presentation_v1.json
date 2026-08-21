@@ -1,0 +1,88 @@
+{
+  "version": "presentation_v1",
+  "gold_ref": "recipes/results_presentation.json",
+  "notes": "Presentation EBITDA and LTM margin only. Not P&L. identity_v1/v2/press_v1 still abstain on EEFF metrics attributed to the deck and P&L attributed to a memoria.",
+  "cases": [
+    {
+      "id": "deck-id-01",
+      "partition": "identity",
+      "route": "identity",
+      "question": "¿Cuál es el EBITDA de la presentación 1T26?",
+      "expected_identity": "BYMA|2026-03-31|presentacion|presentation_ebitda",
+      "expected_value": "72128",
+      "expected_period": "2026-03-31",
+      "expected_source_page": 12,
+      "expected_provenance": "EBITDA",
+      "expected_abstain": null
+    },
+    {
+      "id": "deck-id-02",
+      "partition": "identity",
+      "route": "identity",
+      "question": "¿Cuál es el EBITDA de la presentación 2T26?",
+      "expected_identity": "BYMA|2026-06-30|presentacion|presentation_ebitda",
+      "expected_value": "71697",
+      "expected_period": "2026-06-30",
+      "expected_source_page": 12,
+      "expected_provenance": "EBITDA",
+      "expected_abstain": null
+    },
+    {
+      "id": "deck-id-03",
+      "partition": "identity",
+      "route": "identity",
+      "question": "¿Cuál es el margen EBITDA de los últimos 12 meses de la presentación 1T26?",
+      "expected_identity": "BYMA|2026-03-31|presentacion|presentation_ebitda_margin_ltm",
+      "expected_value": "76",
+      "expected_period": "2026-03-31",
+      "expected_source_page": 12,
+      "expected_provenance": "12 meses",
+      "expected_abstain": null
+    },
+    {
+      "id": "deck-id-04",
+      "partition": "identity",
+      "route": "identity",
+      "question": "margen EBITDA LTM de la presentación 2T26",
+      "expected_identity": "BYMA|2026-06-30|presentacion|presentation_ebitda_margin_ltm",
+      "expected_value": "75",
+      "expected_period": "2026-06-30",
+      "expected_source_page": 12,
+      "expected_provenance": "12 meses",
+      "expected_abstain": null
+    },
+    {
+      "id": "deck-ab-01",
+      "partition": "abstention",
+      "route": "abstain",
+      "question": "¿Cuál es el resultado neto consolidado de la presentación de resultados?",
+      "expected_identity": null,
+      "expected_value": null,
+      "expected_period": null,
+      "expected_source_page": null,
+      "expected_abstain": true
+    },
+    {
+      "id": "deck-ab-02",
+      "partition": "abstention",
+      "route": "abstain",
+      "question": "¿Cuál es el impuesto a las ganancias de la presentación?",
+      "expected_identity": null,
+      "expected_value": null,
+      "expected_period": null,
+      "expected_source_page": null,
+      "expected_abstain": true
+    },
+    {
+      "id": "deck-ab-03",
+      "partition": "abstention",
+      "route": "abstain",
+      "question": "¿Cuál es el resultado neto de la memoria?",
+      "expected_identity": null,
+      "expected_value": null,
+      "expected_period": null,
+      "expected_source_page": null,
+      "expected_abstain": true
+    }
+  ]
+}

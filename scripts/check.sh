@@ -55,8 +55,10 @@ git check-ignore -q .env || fail ".env must be gitignored"
 [[ -f evals/identity_v1.json ]] || fail "missing evals/identity_v1.json"
 [[ -f evals/identity_v2.json ]] || fail "missing evals/identity_v2.json"
 [[ -f evals/press_v1.json ]] || fail "missing evals/press_v1.json"
-[[ -f schemas/finance_lines.py ]] || fail "missing schemas/finance_lines.py"
+[[ -f evals/presentation_v1.json ]] || fail "missing evals/presentation_v1.json"
 [[ -f schemas/press_release.py ]] || fail "missing schemas/press_release.py"
+[[ -f schemas/results_presentation.py ]] || fail "missing schemas/results_presentation.py"
+[[ -f schemas/finance_lines.py ]] || fail "missing schemas/finance_lines.py"
 [[ -f schemas/store.py ]] || fail "missing schemas/store.py"
 [[ -f scripts/idp_ask.py ]] || fail "missing scripts/idp_ask.py"
 if [[ -e recipes/UNKNOWN.json ]] || [[ -e recipes/unknown.json ]]; then
@@ -99,7 +101,7 @@ if [[ -r /proc/meminfo ]]; then
   mem_gb=$((mem_kb / 1024 / 1024))
   info "MemTotal≈${mem_gb} GiB (RAGFlow wants ≥16)"
   if (( mem_gb < 16 )); then
-    skip "compose/E2E: RAM < 16 GiB — see docs/agenda/descartado.md"
+    skip "compose/E2E: RAM < 16 GiB — UI stack needs ≥16 GB"
   fi
 fi
 

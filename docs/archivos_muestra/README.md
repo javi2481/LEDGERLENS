@@ -1,6 +1,6 @@
 # Archivos de muestra (BYMA)
 
-PDFs reales de BYMA. **Un parse MinerU**, dos consumidores: el kernel IDP lee `fixtures/mineru/<stem>.md`; el demo RAGFlow usa el dataset UI **`demo_4`**.
+PDFs reales de BYMA. **Un parse MinerU**, dos capas: el IDP lee `fixtures/mineru/<stem>.md`; RAGFlow usa el dataset UI **`demo_4`**.
 
 El clone de git trae los artefactos. Un clone **no** trae volúmenes Docker.
 

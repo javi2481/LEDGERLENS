@@ -1,34 +1,13 @@
-# Agenda (retomar luego)
+# Agenda
 
-Ítems del **riel demo** (RAGFlow / UI / GPU). El producto IDP no vive acá: [handoff](../handoff-linux.md) y [plan siguiente](../plan-siguiente-idp.md).
-
-Consultá un archivo, no todos. Cerrados: [descartado.md](descartado.md).
+Runbook de parse. Handoff: [handoff-linux.md](../handoff-linux.md).
 
 ## Quick path
 
-1. Confirmá que el ítem es del demo, no del kernel.
-2. Confirmá el disparador (GPU, chrome UI, LinkedIn).
-3. Seguí el checklist. No implementar sin disparador.
-
-## Activo (demo)
-
-| Ítem | Cuándo retomarlo |
-|------|------------------|
-| [vLLM](vllm.md) | GPU NVIDIA: chat local o MinerU hybrid. |
-| [Posicionamiento LinkedIn](posicionamiento-linkedin.md) | Publicar tesis IDP 2026 sin vender hybrid/KG no shipped. |
-| [Branding cosmético UI](branding-cosmetic.md) | Chrome LedgerLens sin fork. |
-| [Gancho nativo Graph](graph-nativo.md) | Solo el overlay del chat. No es el siguiente paso de producto. |
-
-## Ya hecho (no es agenda)
-
-| Tema | Riel | Estado |
-|------|------|--------|
-| Kernel IDP capa 1–2 + P&L vecino | producto | `evals/identity_v1.json` + `v2`; ver [handoff](../handoff-linux.md) |
-| Overlay **Docling Graph** | demo | no en `up.sh` ([nota](docling-graph.md)) |
-| Parser **MinerU** `pipeline` | demo | sidecar `mineru-api:8000` |
-| Chat **Groq** / Voyage / Infinity | demo | pin v0.26.4 |
-| Tests kernel | producto | `./scripts/check.sh` |
+1. Dataset `demo_4`: parser MinerU **antes** de subir PDFs.
+2. Seguí [mineru-pipeline.md](mineru-pipeline.md).
+3. Claims al chat: `python scripts/push_claims.py` (host con stack; chat nuevo).
 
 ## Next step
 
-Handoff: [handoff-linux.md](../handoff-linux.md). Producto activo: [mineru-parse](../../openspec/changes/ledgerlens-mineru-parse/). Demo diferido = branding o LinkedIn. Gancho Graph **no** es el rumbo. No Compose en Linux ~7 GB.
+Handoff: [handoff-linux.md](../handoff-linux.md).

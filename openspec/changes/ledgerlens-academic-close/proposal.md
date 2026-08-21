@@ -1,6 +1,6 @@
 # Proposal: Academic close (HITL, dossier, orientation probe)
 
-> **Change activo (producto).** No inflar kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag, results-presentation, ni el pin [`ledger-lens-ragflow`](../ledger-lens-ragflow/).
+> **Shipped.** No inflar. El change activo es [`ledgerlens-rag-pilot`](../ledgerlens-rag-pilot/).
 
 ## Intent
 

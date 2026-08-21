@@ -9,21 +9,21 @@ Handoff: [handoff-linux.md](handoff-linux.md). Cierre: [cierre-academico.md](cie
 | Receta | PDFs | Qué extrae |
 |--------|------|------------|
 | `financial_statement` | EEFF 1T26 / 2T26 | P&L tipado |
-| `press_release` | comunicados 1T26 / 2T26 | fecha + período |
+| `press_release` | comunicados 1T26 / 2T26 | fecha + período + margen EBITDA LTM |
 | `results_presentation` | presentaciones 1T26 / 2T26 | EBITDA + margen LTM |
 
-HITL + dossier HTML + sonda de orientación (skip sin Paddle). Retrieval híbrido: Infinity (docs, no un BM25 propio).
+HITL + dossier HTML + sonda de orientación (skip sin Paddle). Piloto RAG: 20 qrels + 10 chat (skip sin stack). Retrieval: Infinity keyword+vector (docs, no un BM25 propio).
 
-## Cerrado (salvo bugs)
+## Cerrado (salvo bugs + run piloto)
 
-El MVP académico está cerrado. Lo que sigue es prueba manual en escritorio (`push_claims`, chat nuevo, trampas, probe Paddle si está instalado).
+El MVP académico de código está cerrado. En escritorio: `push_claims`, chat nuevo, trampas, probe Paddle, `retrieval_bench.py`, `rag_eval.py`, pegar métricas reales.
 
 | Receta | PDFs | Nota |
 |--------|------|------|
 | `earnings_transcript` | transcripción 2T26 | **No extract** en este cierre |
 | `annual_report` | memorias | **No** extraer P&L |
 
-Change activo: [`ledgerlens-academic-close`](../openspec/changes/ledgerlens-academic-close/).
+Change activo: [`ledgerlens-rag-pilot`](../openspec/changes/ledgerlens-rag-pilot/).
 
 ## Fuera
 

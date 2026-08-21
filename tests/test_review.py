@@ -81,5 +81,5 @@ def test_example_verdicts_are_all_accept() -> None:
     payload = json.loads(
         (root / "examples" / "review_verdicts.example.json").read_text(encoding="utf-8")
     )
-    assert len(payload["verdicts"]) == 22
+    assert len(payload["verdicts"]) == 24
     assert set(payload["verdicts"].values()) == {"accept"}

@@ -108,6 +108,24 @@ def test_eeff_metric_on_comunicado_still_abstains(claims) -> None:
     assert result.claims == ()
 
 
+def test_press_ltm_not_presentation_and_not_neto(claims) -> None:
+    result = lookup("¿Cuál es el margen EBITDA LTM del comunicado de prensa 1T26?", claims)
+    assert result.route == "identity"
+    row = result.claims[0]
+    assert row.metric == "press_ebitda_margin_ltm"
+    assert row.scope == "comunicado"
+    assert row.value == "76"
+    assert row.source_page == 2
+    assert row.value != "72128"
+    assert row.value != "21262335"
+
+
+def test_bare_ebitda_on_comunicado_abstains(claims) -> None:
+    result = lookup("¿Cuál es el EBITDA del comunicado de prensa 1T26?", claims)
+    assert result.route == "abstain"
+    assert result.claims == ()
+
+
 def test_understand_narrative_is_not_identity() -> None:
     intent = understand("Explicá el crecimiento de ingresos de BYMA")
     assert intent.route == "narrative"

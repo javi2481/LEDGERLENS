@@ -22,6 +22,7 @@ python scripts/informe.py
 3. Dataset `demo_4`, parser MinerU, knobs híbridos: Similarity threshold `0.3`, Vector similarity weight `0.3` (keyword 0.7). KG / RAPTOR / Auto-keyword off. Rerank `rerank-2.5-lite` opcional.
 4. `python scripts/push_claims.py` y **chat nuevo**.
 5. Cinco trampas a mano: neto 1T26 `21262335` (no controlante); controlante `21259769`; YPF empty; EBITDA deck `72128`; Show Quote al PDF del EEFF.
-6. Retrieval test: una pregunta de identidad (debe citar el claim inyectado) y una narrativa (keyword+vector, no cifra inventada).
+6. `python scripts/retrieval_bench.py` — tres brazos (weight 0 / 1 / 0.3), rerank off. Dump `outputs/retrieval_run.json`. Pegar Recall@5 / @10 / MRR en el README.
+7. `python scripts/rag_eval.py` — 10 preguntas de chat **después** de `push_claims`. Dump `outputs/rag_chat_run.json`.
 
-UVDoc fuera. Transcripción y memorias siguen sin extraer P&L.
+Rerank `rerank-2.5-lite` queda apagado durante el piloto de tres brazos. UVDoc fuera. Transcripción y memorias siguen sin extraer P&L.

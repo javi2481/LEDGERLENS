@@ -1,7 +1,7 @@
 {
   "version": "press_v1",
   "gold_ref": "recipes/press_release.json",
-  "notes": "Press-release date and period only. Not P&L. Do not merge with docs/hechos_eeff.json. identity_v1/v2 still abstain on EEFF metrics attributed to the comunicado.",
+  "notes": "Press-release date, period, and EBITDA LTM %. Not P&L. LTM must match presentation_v1 for the same period. identity_v1/v2 still abstain on EEFF metrics attributed to the comunicado.",
   "cases": [
     {
       "id": "pr-id-01",
@@ -65,6 +65,32 @@
       "expected_abstain": null
     },
     {
+      "id": "pr-id-06",
+      "partition": "identity",
+      "route": "identity",
+      "question": "¿Cuál es el margen EBITDA LTM del comunicado de prensa 1T26?",
+      "expected_identity": "BYMA|2026-03-31|comunicado|press_ebitda_margin_ltm",
+      "expected_value": "76",
+      "expected_period": "2026-03-31",
+      "expected_source_page": 2,
+      "expected_provenance": "LTM",
+      "reject_values": ["75", "72128", "21262335"],
+      "expected_abstain": null
+    },
+    {
+      "id": "pr-id-07",
+      "partition": "identity",
+      "route": "identity",
+      "question": "margen EBITDA de los últimos 12 meses del comunicado 2T26",
+      "expected_identity": "BYMA|2026-06-30|comunicado|press_ebitda_margin_ltm",
+      "expected_value": "75",
+      "expected_period": "2026-06-30",
+      "expected_source_page": 2,
+      "expected_provenance": "12 meses",
+      "reject_values": ["76", "71697"],
+      "expected_abstain": null
+    },
+    {
       "id": "pr-ab-01",
       "partition": "abstention",
       "route": "abstain",
@@ -80,6 +106,17 @@
       "partition": "abstention",
       "route": "abstain",
       "question": "¿Cuál es el impuesto a las ganancias del comunicado de prensa?",
+      "expected_identity": null,
+      "expected_value": null,
+      "expected_period": null,
+      "expected_source_page": null,
+      "expected_abstain": true
+    },
+    {
+      "id": "pr-ab-03",
+      "partition": "abstention",
+      "route": "abstain",
+      "question": "¿Cuál es el EBITDA del comunicado de prensa 1T26?",
       "expected_identity": null,
       "expected_value": null,
       "expected_period": null,

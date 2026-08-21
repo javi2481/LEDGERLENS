@@ -1,0 +1,101 @@
+{
+  "version": "rag_chat_v1",
+  "notes": "Ten chat-pilot cases after push_claims. Identity values are kernel gold. Narrative does not score a number. Abstention must not invent. Comparison is LTM 76 across press and deck.",
+  "assistant": "chat_demo_4",
+  "dataset": "demo_4",
+  "cases": [
+    {
+      "id": "ch-id-01",
+      "partition": "identity",
+      "question": "¿Cuál es el resultado neto del período 1T26?",
+      "expected_value": "21262335",
+      "expected_docs": ["BYMA_-_EEFF_31-03-2026_VF.pdf"],
+      "forbid_values": ["21259769", "22362983"],
+      "expected_abstain": false
+    },
+    {
+      "id": "ch-id-02",
+      "partition": "identity",
+      "question": "¿Resultado atribuible a la participación controlante 1T26?",
+      "expected_value": "21259769",
+      "expected_docs": ["BYMA_-_EEFF_31-03-2026_VF.pdf"],
+      "forbid_values": ["21262335"],
+      "expected_abstain": false
+    },
+    {
+      "id": "ch-id-03",
+      "partition": "identity",
+      "question": "¿Cuál es el margen EBITDA LTM del comunicado de prensa 1T26?",
+      "expected_value": "76",
+      "expected_docs": ["BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf"],
+      "forbid_values": ["72128", "75"],
+      "expected_abstain": false
+    },
+    {
+      "id": "ch-id-04",
+      "partition": "identity",
+      "question": "¿Cuál es el EBITDA de la presentación 1T26?",
+      "expected_value": "72128",
+      "expected_docs": ["Presentación_de_resultados_BYMA-1T26.pdf"],
+      "forbid_values": ["21262335", "76"],
+      "expected_abstain": false
+    },
+    {
+      "id": "ch-na-01",
+      "partition": "narrative",
+      "question": "Explicá el crecimiento de ingresos de BYMA en la presentación 1T26",
+      "expected_value": null,
+      "expected_docs": ["Presentación_de_resultados_BYMA-1T26.pdf"],
+      "forbid_values": [],
+      "expected_abstain": false
+    },
+    {
+      "id": "ch-na-02",
+      "partition": "narrative",
+      "question": "¿Qué highlights operativos menciona la presentación 2T26 además del EBITDA?",
+      "expected_value": null,
+      "expected_docs": ["Presentacion_de_resultados_BYMA-2T26.pdf"],
+      "forbid_values": [],
+      "expected_abstain": false
+    },
+    {
+      "id": "ch-na-03",
+      "partition": "narrative",
+      "question": "Resumí cómo describe el comunicado 1T26 el margen bruto y los gastos, sin dar el neto del EEFF",
+      "expected_value": null,
+      "expected_docs": ["BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf"],
+      "forbid_values": ["21262335"],
+      "expected_abstain": false
+    },
+    {
+      "id": "ch-ab-01",
+      "partition": "abstention",
+      "question": "¿Cuál fue el precio de cierre de YPF en BYMA el 3 de enero?",
+      "expected_value": null,
+      "expected_docs": [],
+      "forbid_values": [],
+      "expected_abstain": true
+    },
+    {
+      "id": "ch-ab-02",
+      "partition": "abstention",
+      "question": "¿Cuál es el resultado neto consolidado del comunicado de prensa?",
+      "expected_value": null,
+      "expected_docs": [],
+      "forbid_values": ["21262335", "67821"],
+      "expected_abstain": true
+    },
+    {
+      "id": "ch-co-01",
+      "partition": "comparison",
+      "question": "¿Coinciden el margen EBITDA LTM del comunicado 1T26 y el de la presentación 1T26?",
+      "expected_value": "76",
+      "expected_docs": [
+        "BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf",
+        "Presentación_de_resultados_BYMA-1T26.pdf"
+      ],
+      "forbid_values": ["72128"],
+      "expected_abstain": false
+    }
+  ]
+}

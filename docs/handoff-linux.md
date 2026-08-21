@@ -16,11 +16,17 @@ python scripts/idp_ask.py "¿Cuál es la fecha del comunicado de prensa 1T26?"
 # → 2026-05-08
 python scripts/idp_ask.py "¿Cuál es el EBITDA de la presentación 1T26?"
 # → 72128
+python scripts/idp_ask.py "¿Cuál es el margen EBITDA LTM del comunicado de prensa 1T26?"
+# → 76
+python scripts/review_pack.py   # outputs/review.html
+python scripts/informe.py       # outputs/dossier.html
+python scripts/retrieval_bench.py   # skip sin RAGFlow
+python scripts/rag_eval.py          # skip sin RAGFlow
 ```
 
-Siguiente: [plan-siguiente-idp.md](plan-siguiente-idp.md). Corpus = `docs/archivos_muestra/`. No otros dominios.
+Siguiente: [plan-siguiente-idp.md](plan-siguiente-idp.md). Corpus = `docs/archivos_muestra/`. No otros dominios. Cierre de planta: [cierre-academico.md](cierre-academico.md).
 
-OpenSpec activo: [`ledgerlens-results-presentation`](../openspec/changes/ledgerlens-results-presentation/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag. Pin UI/stack: [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/) — no inflar.
+OpenSpec activo: [`ledgerlens-rag-pilot`](../openspec/changes/ledgerlens-rag-pilot/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag, results-presentation, academic-close, press-ltm. Pin UI/stack: [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/) — no inflar.
 
 ## Máquina
 
@@ -33,7 +39,7 @@ No commitear `.env`. El inject **no** va en `up.sh`. Identidad = `fixtures/miner
 
 ## Hecho
 
-Kernel extract + lookup, P&L vecino, claim-store, comunicado (fecha/período), presentación (EBITDA + margen LTM), parse MinerU, inject de claims al chat.
+Kernel extract + lookup, P&L vecino, claim-store, comunicado (fecha/período + margen EBITDA LTM), presentación (EBITDA + margen LTM), parse MinerU, inject de claims al chat, HITL, dossier HTML, sonda de orientación opcional, piloto retrieval/chat (skip sin stack).
 
 Dominio: finanzas BYMA. `FinancialStatement` es el portero de los dos netos; las vecinas salen de `schemas/finance_lines.py`; el comunicado aporta fecha/período.
 
@@ -44,13 +50,14 @@ Dominio: finanzas BYMA. `FinancialStatement` es el portero de los dos netos; las
 | Contrato IDP | recipes + identity_v1/v2 + press_v1 + presentation_v1 |
 | Inject chat | claims del kernel vía `scripts/push_claims.py` (no un JSON gemelo) |
 
-1T26: neto `21262335`, controlante `21259769`, bruto `60144176`, operativo `70223471`, impuesto `-14950948`, no controlante `2566`. Página 4. Comunicado 1T26 fecha `2026-05-08`. Presentación 1T26 EBITDA `72128` / margen LTM `76`. 2T26 EEFF: primera columna (YTD). Comunicado 2T26 fecha `2026-08-07`. Presentación 2T26 EBITDA `71697` / margen LTM `75`.
+1T26: neto `21262335`, controlante `21259769`, bruto `60144176`, operativo `70223471`, impuesto `-14950948`, no controlante `2566`. Página 4. Comunicado 1T26 fecha `2026-05-08`, margen EBITDA LTM `76`. Presentación 1T26 EBITDA `72128` / margen LTM `76`. 2T26 EEFF: primera columna (YTD). Comunicado 2T26 fecha `2026-08-07`, LTM `75`. Presentación 2T26 EBITDA `71697` / margen LTM `75`.
 
 ## Qué falta
 
-Un change OpenSpec **nuevo** por slice. No inflar kernel ni el pin RAGFlow.
+MVP académico **cerrado** salvo bugs. Un change OpenSpec **nuevo** solo si hace falta. No inflar kernel ni el pin RAGFlow.
 
-1. **No** extraer P&L de memorias. Transcripción después.
+1. **No** extraer P&L de memorias. Transcripción después (fuera de este cierre).
+2. En ≥16 GB: `push_claims` + chat nuevo + trampas + `preprocess_probe.py` si hay Paddle + `retrieval_bench.py` + `rag_eval.py`. Pegar Recall/MRR en el README. Ver [cierre-academico.md](cierre-academico.md).
 
 ## Arranque
 

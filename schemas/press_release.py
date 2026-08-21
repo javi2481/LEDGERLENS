@@ -1,7 +1,8 @@
-"""Second domain plugin: press release announcement date + reporting period. Not P&L."""
+"""Second domain plugin: press release date, period, and EBITDA LTM %. Not P&L."""
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -9,6 +10,7 @@ from pydantic import BaseModel, Field
 from schemas.catalog import Recipe, load_recipes
 from schemas.claim import (
     METRIC_PRESS_AS_OF,
+    METRIC_PRESS_EBITDA_MARGIN_LTM,
     METRIC_PRESS_PERIOD,
     SCOPE_PRESS,
     Claim,
@@ -17,6 +19,11 @@ from schemas.claim import (
 from schemas.classify import UNKNOWN, classify_artifact
 from schemas.extract import DATE_RE, MONTHS, fold, select_page
 from schemas.parse_artifact import load_parse, page_text
+
+LTM_RE = re.compile(
+    r"EBITDA\s*\((?:LTM|[uú]ltimos 12 meses)\)[^\d]{0,60}(\d{2})\s*%",
+    re.IGNORECASE,
+)
 
 PERIOD_1T26 = "2026-03-31"
 PERIOD_2T26 = "2026-06-30"
@@ -29,6 +36,9 @@ class PressRelease(BaseModel):
     source_page: int | None = None
     source_text_as_of: str | None = None
     source_text_period: str | None = None
+    ebitda_margin_ltm: str | None = None
+    source_page_ltm: int | None = None
+    source_text_ltm: str | None = None
 
 
 def _iso_from_date_match(match: object) -> str:
@@ -52,7 +62,21 @@ def _period_from_text_and_name(text: str, filename: str) -> tuple[str, str] | No
     return None
 
 
-def fill_press_release(text: str, *, source_page: int, filename: str) -> PressRelease | None:
+def _ltm_from_pages(pages: tuple[tuple[int, str], ...]) -> tuple[str, int, str] | None:
+    for number, body in pages:
+        match = LTM_RE.search(body)
+        if match is not None:
+            return match.group(1), number, match.group(0)
+    return None
+
+
+def fill_press_release(
+    text: str,
+    *,
+    source_page: int,
+    filename: str,
+    pages: tuple[tuple[int, str], ...] | None = None,
+) -> PressRelease | None:
     match = DATE_RE.search(text)
     if match is None:
         return None
@@ -61,6 +85,8 @@ def fill_press_release(text: str, *, source_page: int, filename: str) -> PressRe
         return None
     period, period_label = period_row
     as_of = _iso_from_date_match(match)
+    scan = pages if pages is not None else ((source_page, text),)
+    ltm = _ltm_from_pages(scan)
     return PressRelease(
         issuer="BYMA",
         period=period,
@@ -68,6 +94,9 @@ def fill_press_release(text: str, *, source_page: int, filename: str) -> PressRe
         source_page=source_page,
         source_text_as_of=match.group(0),
         source_text_period=period_label,
+        ebitda_margin_ltm=ltm[0] if ltm else None,
+        source_page_ltm=ltm[1] if ltm else None,
+        source_text_ltm=ltm[2] if ltm else None,
     )
 
 
@@ -94,7 +123,21 @@ def claims_from_press_release(row: PressRelease) -> tuple[Claim, ...]:
         scope=SCOPE_PRESS,
         metric=METRIC_PRESS_PERIOD,
     )
-    return (as_of, period_claim)
+    if not row.ebitda_margin_ltm:
+        return (as_of, period_claim)
+    ltm = Claim(
+        identity_key=identity_key(
+            issuer, row.period, SCOPE_PRESS, METRIC_PRESS_EBITDA_MARGIN_LTM
+        ),
+        value=row.ebitda_margin_ltm,
+        period=row.period,
+        source_page=row.source_page_ltm,
+        source_text=row.source_text_ltm,
+        issuer=issuer,
+        scope=SCOPE_PRESS,
+        metric=METRIC_PRESS_EBITDA_MARGIN_LTM,
+    )
+    return (as_of, period_claim, ltm)
 
 
 def extract_press_release(pdf: Path, recipes: dict[str, Recipe] | None = None) -> PressRelease | None:
@@ -112,4 +155,9 @@ def extract_press_release(pdf: Path, recipes: dict[str, Recipe] | None = None) -
     if page is None:
         return None
     text = page_text(artifact, page)
-    return fill_press_release(text, source_page=page, filename=pdf.name)
+    return fill_press_release(
+        text,
+        source_page=page,
+        filename=pdf.name,
+        pages=artifact.pages,
+    )

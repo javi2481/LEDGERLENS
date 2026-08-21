@@ -8,17 +8,19 @@
     "anuncia resultados",
     "Bolsas y Mercados Argentinos"
   ],
-  "description": "Comunicado de prensa de resultados: fecha de anuncio y período cubierto. No extrae la tabla P&L (eso vive en el EEFF). Ejemplo BYMA: Comunicado de Prensa 1T26/2T26.",
+  "description": "Comunicado de prensa de resultados: fecha de anuncio, período cubierto y margen EBITDA LTM en prosa. No extrae la tabla P&L (eso vive en el EEFF).",
   "gold": {
     "BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf": {
       "period": "2026-03-31",
       "press_as_of_date": "2026-05-08",
-      "press_period": "2026-03-31"
+      "press_period": "2026-03-31",
+      "press_ebitda_margin_ltm": "76"
     },
     "BYMA-Comunicado_de_Prensa-2T26.pdf": {
       "period": "2026-06-30",
       "press_as_of_date": "2026-08-07",
-      "press_period": "2026-06-30"
+      "press_period": "2026-06-30",
+      "press_ebitda_margin_ltm": "75"
     }
   }
 }

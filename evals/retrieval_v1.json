@@ -1,0 +1,134 @@
+{
+  "version": "retrieval_v1",
+  "notes": "Page-level qrels for a retrieval pilot. Gold is PDF+page, not identity_key. n=20 is a pilot, not an IR paper. Distractors (press millions vs EEFF pesos) are implicit in the corpus.",
+  "dataset": "demo_4",
+  "arms": {
+    "keyword": {"vector_similarity_weight": 0.0, "rerank": false},
+    "vector": {"vector_similarity_weight": 1.0, "rerank": false},
+    "hybrid": {"vector_similarity_weight": 0.3, "rerank": false}
+  },
+  "similarity_threshold": 0.3,
+  "top_k": 10,
+  "cases": [
+    {
+      "id": "rt-01",
+      "partition": "eeff",
+      "question": "¿En qué página del EEFF está el RESULTADO NETO DEL PERÍODO consolidado 1T26?",
+      "relevant": [{"doc": "BYMA_-_EEFF_31-03-2026_VF.pdf", "page": 4}]
+    },
+    {
+      "id": "rt-02",
+      "partition": "eeff",
+      "question": "¿Dónde está el resultado neto consolidado del EEFF 2T26?",
+      "relevant": [{"doc": "BYMA - EEFF 30-06-2026.pdf", "page": 4}]
+    },
+    {
+      "id": "rt-03",
+      "partition": "eeff",
+      "question": "¿En qué página del EEFF 1T26 está el resultado atribuible a la participación controlante?",
+      "relevant": [{"doc": "BYMA_-_EEFF_31-03-2026_VF.pdf", "page": 4}]
+    },
+    {
+      "id": "rt-04",
+      "partition": "eeff",
+      "question": "¿Dónde figura el impuesto a las ganancias del EEFF al 31 de marzo de 2026?",
+      "relevant": [{"doc": "BYMA_-_EEFF_31-03-2026_VF.pdf", "page": 4}]
+    },
+    {
+      "id": "rt-05",
+      "partition": "eeff",
+      "question": "Portada o carátula de los estados financieros condensados 1T26 de BYMA",
+      "relevant": [{"doc": "BYMA_-_EEFF_31-03-2026_VF.pdf", "page": 1}]
+    },
+    {
+      "id": "rt-06",
+      "partition": "press",
+      "question": "¿En qué página el comunicado de prensa anuncia los resultados 1T26 y la fecha?",
+      "relevant": [{"doc": "BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf", "page": 1}]
+    },
+    {
+      "id": "rt-07",
+      "partition": "press",
+      "question": "Fecha del comunicado de prensa de resultados 2T26",
+      "relevant": [{"doc": "BYMA-Comunicado_de_Prensa-2T26.pdf", "page": 1}]
+    },
+    {
+      "id": "rt-08",
+      "partition": "press",
+      "question": "¿Dónde dice el comunicado 1T26 el margen EBITDA LTM o EBITDA (LTM)?",
+      "relevant": [{"doc": "BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf", "page": 2}]
+    },
+    {
+      "id": "rt-09",
+      "partition": "press",
+      "question": "EBITDA últimos 12 meses en el comunicado de prensa 2T26",
+      "relevant": [{"doc": "BYMA-Comunicado_de_Prensa-2T26.pdf", "page": 2}]
+    },
+    {
+      "id": "rt-10",
+      "partition": "deck",
+      "question": "¿En qué slide la presentación 1T26 dice Alcanzamos un EBITDA de ARS millones?",
+      "relevant": [{"doc": "Presentación_de_resultados_BYMA-1T26.pdf", "page": 12}]
+    },
+    {
+      "id": "rt-11",
+      "partition": "deck",
+      "question": "Highlights EBITDA de la presentación de resultados 2T26",
+      "relevant": [{"doc": "Presentacion_de_resultados_BYMA-2T26.pdf", "page": 12}]
+    },
+    {
+      "id": "rt-12",
+      "partition": "deck",
+      "question": "Tabla de resultado trimestral e ingresos de la presentación 1T26",
+      "relevant": [{"doc": "Presentación_de_resultados_BYMA-1T26.pdf", "page": 2}]
+    },
+    {
+      "id": "rt-13",
+      "partition": "deck",
+      "question": "Ingresos y resultado trimestral de la presentación 2T26",
+      "relevant": [{"doc": "Presentacion_de_resultados_BYMA-2T26.pdf", "page": 2}]
+    },
+    {
+      "id": "rt-14",
+      "partition": "deck",
+      "question": "Activos bajo custodia AuC de la presentación 1T26",
+      "relevant": [{"doc": "Presentación_de_resultados_BYMA-1T26.pdf", "page": 3}]
+    },
+    {
+      "id": "rt-15",
+      "partition": "deck",
+      "question": "Activos bajo custodia AuC de la presentación 2T26",
+      "relevant": [{"doc": "Presentacion_de_resultados_BYMA-2T26.pdf", "page": 3}]
+    },
+    {
+      "id": "rt-16",
+      "partition": "deck",
+      "question": "Portada Presentación de Resultados 1T26",
+      "relevant": [{"doc": "Presentación_de_resultados_BYMA-1T26.pdf", "page": 1}]
+    },
+    {
+      "id": "rt-17",
+      "partition": "narrative",
+      "question": "¿Dónde habla la presentación 1T26 del crecimiento de ingresos del trimestre?",
+      "relevant": [{"doc": "Presentación_de_resultados_BYMA-1T26.pdf", "page": 2}]
+    },
+    {
+      "id": "rt-18",
+      "partition": "cover",
+      "question": "Portada de la memoria y estados contables BYMA 2024",
+      "relevant": [{"doc": "BYMA-MEMORIA_2024_y_EEFF_31-12-2024.pdf", "page": 1}]
+    },
+    {
+      "id": "rt-19",
+      "partition": "cover",
+      "question": "Portada de la memoria BYMA 2025",
+      "relevant": [{"doc": "BYMA-MEMORIA_2025.pdf", "page": 1}]
+    },
+    {
+      "id": "rt-20",
+      "partition": "cover",
+      "question": "Portada de la transcripción de resultados 2T26",
+      "relevant": [{"doc": "BYMA_2T26_Transcripcion_Resultados_ES.pdf", "page": 1}]
+    }
+  ]
+}

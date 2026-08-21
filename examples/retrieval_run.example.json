@@ -1,0 +1,22 @@
+{
+  "notes": "Shape of outputs/retrieval_run.json after a desktop bench. Do not treat this example as measured Recall.",
+  "skipped": false,
+  "reason": null,
+  "dataset": "demo_4",
+  "top_k": 10,
+  "arms": {
+    "keyword": {"vector_similarity_weight": 0.0},
+    "vector": {"vector_similarity_weight": 1.0},
+    "hybrid": {"vector_similarity_weight": 0.3}
+  },
+  "cases": [
+    {
+      "id": "rt-01",
+      "rankings": {
+        "keyword": [{"doc": "BYMA_-_EEFF_31-03-2026_VF.pdf", "page": 4}],
+        "vector": [{"doc": "BYMA_-_EEFF_31-03-2026_VF.pdf", "page": 4}],
+        "hybrid": [{"doc": "BYMA_-_EEFF_31-03-2026_VF.pdf", "page": 4}]
+      }
+    }
+  ]
+}

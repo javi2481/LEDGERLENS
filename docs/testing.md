@@ -19,6 +19,8 @@ Ningún test de identidad llama a RAGFlow.
 | 1T26 bruto | ¿Cuál es el resultado bruto del 1T26? | **60144176** | operativo y neto |
 | 1T26 impuesto | ¿Impuesto a las ganancias 1T26? | **-14950948** | el neto |
 | 1T26 EBITDA deck | ¿Cuál es el EBITDA de la presentación 1T26? | **72128** | neto del EEFF |
+| 1T26 LTM comunicado | ¿Cuál es el margen EBITDA LTM del comunicado de prensa 1T26? | **76** | 72128 y 75 |
+| EBITDA sin LTM del comunicado | ¿Cuál es el EBITDA del comunicado 1T26? | abstain | 76 o 72128 |
 
 ## Qué corre en CI
 
@@ -27,3 +29,7 @@ Ningún test de identidad llama a RAGFlow.
 ## Chat (manual, ≥16 GB)
 
 `./scripts/up.sh`, dataset `demo_4`, `python scripts/push_claims.py`, chat **nuevo**: neto 1T26, controlante, empty YPF, Show Quote al PDF del EEFF.
+
+Retrieval: Infinity es **hybrid keyword + vector** (no Okapi BM25). Piloto: [`evals/retrieval_v1.json`](../evals/retrieval_v1.json) (20 qrels de PDF+página) y [`evals/rag_chat_v1.json`](../evals/rag_chat_v1.json) (10 preguntas). `python scripts/retrieval_bench.py` y `python scripts/rag_eval.py` hacen skip sin stack. Recall@k se pega en el README **después** del run en ≥16 GB; no inventar números. Detalle: [cierre-academico.md](cierre-academico.md).
+
+HITL: `python scripts/review_pack.py`. Dossier: `python scripts/informe.py`. Un `reject` no sale en hechos publicados.

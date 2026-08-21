@@ -1,10 +1,10 @@
 # Archivos de muestra (BYMA)
 
-PDFs reales de BYMA. Los usa **los dos rieles**: el kernel IDP (`pdftotext` / pytest) y el demo RAGFlow (dataset UI **`demo_4`**).
+PDFs reales de BYMA. **Un parse MinerU**, dos consumidores: el kernel IDP lee `fixtures/mineru/<stem>.md`; el demo RAGFlow usa el dataset UI **`demo_4`**.
 
-El parseo MinerU de abajo es solo del **demo**. El kernel no necesita Docker.
+El clone de git trae los artefactos. Un clone **no** trae volúmenes Docker.
 
-Orden demo: **configurar el dataset** (MinerU, español, KG/RAPTOR off) → **subir** → en cada file **Tamaño de la tarea por página = 128** → **Parse** de a uno.
+Orden demo: **configurar el dataset** (MinerU, español, KG/RAPTOR off) → **subir** → en cada file **Tamaño de la tarea por página = 128** → **Parse** de a uno → `python scripts/export_mineru.py` para pisar fixtures.
 
 No actives Knowledge graph ni RAPTOR: no son parsers y gastan tokens del chat.
 
@@ -18,5 +18,3 @@ Runbook completo: [docs/agenda/mineru-pipeline.md](../agenda/mineru-pipeline.md)
 4. Memorias (~190 páginas; al final).
 
 No reusar `demo_3` ni files ya parseados con DeepDoc/Naive: **dataset nuevo**, subir de nuevo después de poner MinerU en Configuración. Cambiar el dropdown del dataset no reescribe el parser de cada file ni los chunks.
-
-Un clone de GitHub no trae el índice. El parseo previo vive en volúmenes Docker de esta máquina.

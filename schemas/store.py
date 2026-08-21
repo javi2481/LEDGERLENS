@@ -9,15 +9,16 @@ from pathlib import Path
 
 from schemas.claim import Claim
 from schemas.corpus import SAMPLES, extract_claims_from_dir
+from schemas.parse_artifact import parse_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_STORE = ROOT / "outputs" / "claims.json"
-STORE_VERSION = 1
+STORE_VERSION = 2
 
 ExtractFn = Callable[[Path], tuple[Claim, ...]]
 
 
-def pdf_fingerprint(directory: Path) -> dict:
+def pdf_fingerprint(directory: Path, fixtures: Path | None = None) -> dict:
     folder = directory.resolve()
     sources = []
     for pdf in sorted(folder.glob("*.pdf")):
@@ -27,6 +28,7 @@ def pdf_fingerprint(directory: Path) -> dict:
                 "name": pdf.name,
                 "size": stat.st_size,
                 "mtime_ns": stat.st_mtime_ns,
+                "parse_sha256": parse_sha256(pdf, fixtures),
             }
         )
     return {"directory": str(folder), "sources": sources}
@@ -91,10 +93,11 @@ def load_claims(
     store_path: Path | None = None,
     force: bool = False,
     extract: ExtractFn = extract_claims_from_dir,
+    fixtures: Path | None = None,
 ) -> tuple[tuple[Claim, ...], bool]:
     folder = (directory or SAMPLES).resolve()
     path = store_path or DEFAULT_STORE
-    fingerprint = pdf_fingerprint(folder)
+    fingerprint = pdf_fingerprint(folder, fixtures)
     if not force:
         cached = _read_store(path, fingerprint)
         if cached is not None:

@@ -1,19 +1,26 @@
 # Plan siguiente (producto IDP)
 
-Comunicado es el change activo: [`openspec/changes/ledgerlens-press-release/`](../openspec/changes/ledgerlens-press-release/). Cache shipped: [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/). No inflar kernel, P&L, claim-store ni el pin `ledger-lens-ragflow`.
+**Un solo dominio: finanzas.** El corpus es [`docs/archivos_muestra/`](archivos_muestra/) (EEFF, comunicados, presentaciones, transcripción, memorias). No se agregan PDFs de otros dominios. `legal_contract` es stub de clasificador (`extract: false`), no una slice.
 
-Handoff operativo: [handoff-linux.md](handoff-linux.md).
+Handoff: [handoff-linux.md](handoff-linux.md). No inflar kernel, P&L, claim-store, press-release, mineru-parse ni el pin RAGFlow.
 
-## 1. Persistencia de claims (shipped)
+## Ya cubierto
 
-JSON en `outputs/claims.json`. CLI reusa el cache; `--refresh` reextrae. Evals extraen siempre.
+| Receta | PDFs | Qué extrae |
+|--------|------|------------|
+| `financial_statement` | EEFF 1T26 / 2T26 | P&L tipado |
+| `press_release` | comunicados 1T26 / 2T26 | fecha + período (sigue siendo finanzas, no otro dominio) |
 
-## 2. Comunicado (activa)
+## Qué queda en el mismo dominio
 
-Fecha de anuncio + período cubierto. No la tabla P&L del PDF. Gold: 1T26 `2026-05-08` / `2026-03-31`; 2T26 `2026-08-07` / `2026-06-30`. Neto o impuesto “del comunicado” sigue abstain.
+| Receta | PDFs | Nota |
+|--------|------|------|
+| `results_presentation` | presentaciones 1T26 / 2T26 | Siguiente slice natural |
+| `earnings_transcript` | transcripción 2T26 | Un solo PDF |
+| `annual_report` | memorias | **No** extraer P&L (trampa de evals) |
 
-## 3. Después: legal_contract
+Siguiente change OpenSpec **nuevo**, si se continúa: presentación de resultados, campos que no copien el EEFF.
 
-Hace falta un PDF de fixture (hoy no hay contratos en `docs/archivos_muestra/`). Change OpenSpec **nuevo**.
+## Fuera
 
-**Fuera.** Ontología universal. Salud/industria enteros. Más filas P&L. RAG. Graph. Compose. `app.py`.
+Otros dominios (legal, salud, industria), ontología universal, más filas P&L del EEFF, RAG, Graph, Compose en ~7 GB.

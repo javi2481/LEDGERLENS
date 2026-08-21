@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import re
-import unicodedata
 from pathlib import Path
 
 from schemas.catalog import Recipe, load_recipes
-from schemas.classify import UNKNOWN, classify_filename
+from schemas.classify import UNKNOWN, classify_artifact
 from schemas.financial_statement import FinancialStatement
 from schemas.money import digits_ars
-from schemas.page_text import PdfTextError, pdf_page_text
+from schemas.parse_artifact import ParseArtifact, fold, load_parse, page_text
 from schemas.validate import reject_financial_statement
 
 AMOUNT_RE = re.compile(r"\d{1,3}(?:\.\d{3})+")
@@ -36,18 +35,19 @@ MONTHS = {
 }
 
 
-def fold(text: str) -> str:
-    nfd = unicodedata.normalize("NFD", text)
-    return "".join(ch for ch in nfd if unicodedata.category(ch) != "Mn").casefold()
-
-
-def select_page(pdf: Path, keywords: tuple[str, ...], max_pages: int = 24) -> int | None:
-    empty_run = 0
+def select_page(
+    pdf: Path,
+    keywords: tuple[str, ...],
+    max_pages: int = 24,
+    artifact: ParseArtifact | None = None,
+) -> int | None:
+    parsed = artifact if artifact is not None else load_parse(pdf)
+    if parsed is None:
+        return None
     folded_keys = tuple(fold(k) for k in keywords if k.strip())
-    for page in range(1, max_pages + 1):
-        try:
-            text = pdf_page_text(pdf, page)
-        except PdfTextError:
+    empty_run = 0
+    for number, text in parsed.pages:
+        if number > max_pages:
             break
         if not text.strip():
             empty_run += 1
@@ -57,7 +57,7 @@ def select_page(pdf: Path, keywords: tuple[str, ...], max_pages: int = 24) -> in
         empty_run = 0
         blob = fold(text)
         if any(key in blob for key in folded_keys):
-            return page
+            return number
     return None
 
 
@@ -156,7 +156,10 @@ def fill_financial_statement(page_text: str, *, source_page: int, filename: str)
 
 def extract_financial_statement(pdf: Path, recipes: dict[str, Recipe] | None = None) -> FinancialStatement | None:
     catalog = recipes if recipes is not None else load_recipes()
-    recipe_id = classify_filename(pdf.name, tuple(catalog))
+    artifact = load_parse(pdf)
+    if artifact is None:
+        return None
+    recipe_id = classify_artifact(artifact, tuple(catalog))
     if recipe_id == UNKNOWN:
         return None
     recipe = catalog.get(recipe_id)
@@ -164,10 +167,10 @@ def extract_financial_statement(pdf: Path, recipes: dict[str, Recipe] | None = N
         return None
     if recipe.id != "financial_statement":
         return None
-    page = select_page(pdf, recipe.page_select_keywords)
+    page = select_page(pdf, recipe.page_select_keywords, artifact=artifact)
     if page is None:
         return None
-    text = pdf_page_text(pdf, page)
+    text = page_text(artifact, page)
     row = fill_financial_statement(text, source_page=page, filename=pdf.name)
     if row is None:
         return None

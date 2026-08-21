@@ -14,9 +14,9 @@ from schemas.claim import (
     Claim,
     identity_key,
 )
-from schemas.classify import UNKNOWN, classify_filename
+from schemas.classify import UNKNOWN, classify_artifact
 from schemas.extract import DATE_RE, MONTHS, fold, select_page
-from schemas.page_text import pdf_page_text
+from schemas.parse_artifact import load_parse, page_text
 
 PERIOD_1T26 = "2026-03-31"
 PERIOD_2T26 = "2026-06-30"
@@ -99,14 +99,17 @@ def claims_from_press_release(row: PressRelease) -> tuple[Claim, ...]:
 
 def extract_press_release(pdf: Path, recipes: dict[str, Recipe] | None = None) -> PressRelease | None:
     catalog = recipes if recipes is not None else load_recipes()
-    recipe_id = classify_filename(pdf.name, tuple(catalog))
+    artifact = load_parse(pdf)
+    if artifact is None:
+        return None
+    recipe_id = classify_artifact(artifact, tuple(catalog))
     if recipe_id == UNKNOWN:
         return None
     recipe = catalog.get(recipe_id)
     if recipe is None or not recipe.extract or recipe.id != "press_release":
         return None
-    page = select_page(pdf, recipe.page_select_keywords)
+    page = select_page(pdf, recipe.page_select_keywords, artifact=artifact)
     if page is None:
         return None
-    text = pdf_page_text(pdf, page)
+    text = page_text(artifact, page)
     return fill_press_release(text, source_page=page, filename=pdf.name)

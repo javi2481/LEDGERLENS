@@ -12,7 +12,9 @@ Captured 2026-08-13 with `parallel-cli search` / `extract`. JSON is the source o
 
 **Decisión (2026-08-20, higiene):** dos rieles. Producto = kernel IDP (`ledgerlens-idp-kernel`). Demo RAG = pin congelado (`ledger-lens-ragflow`). Oro IDP ≠ overlay `hechos_eeff.json`.
 
-**Decisión (2026-08-20):** Kernel IDP capa 1–2 (`schemas/` extract + lookup, `evals/identity_v1.json`). `pdftotext -layout`, sin embeddings. RAGFlow sigue siendo el demo, no la fuente de verdad de identidad.
+**Decisión (2026-08-20, dominio):** el producto es solo finanzas sobre `docs/archivos_muestra/`. Comunicado y EEFF son tipos de documento del mismo dominio, no un IDP multi-industria. No hay slice de contrato ni otros dominios.
+
+**Decisión (2026-08-20, parse):** un parse MinerU materializado en `fixtures/mineru/`. Clasificar después del texto. `pdftotext` no es parser de identidad. RAGFlow sigue siendo el demo, no la fuente de verdad de identidad.
 
 **Decisión (2026-08-19):** Identity-by-Schema. Catálogo `recipes/` + `schemas/FinancialStatement` (consolidado ≠ controlante). Splink/Zingg/GraphRAG no: fusionan. PixelRAG = RAG visual, no portero. El clasificador/inyección todavía no está.
 

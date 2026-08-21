@@ -1,15 +1,12 @@
-"""Press-release plugin: date + period. Not P&L. No RAGFlow."""
+"""Press-release plugin: date + period from MinerU artifact. Not P&L."""
 
 from __future__ import annotations
 
 import json
-import shutil
 from pathlib import Path
 
-import pytest
-
 from schemas.catalog import load_recipes
-from schemas.classify import classify_filename
+from schemas.classify import classify_pdf
 from schemas.corpus import SAMPLES, extract_claims_from_dir
 from schemas.extract import extract_financial_statement
 from schemas.press_release import extract_press_release
@@ -19,17 +16,11 @@ EVAL_PATH = ROOT / "evals" / "press_v1.json"
 PDF_1T26 = SAMPLES / "BYMA_Comunicado_de_Prensa-Resultados-1T26.pdf"
 PDF_2T26 = SAMPLES / "BYMA-Comunicado_de_Prensa-2T26.pdf"
 
-needs_pdftotext = pytest.mark.skipif(
-    shutil.which("pdftotext") is None,
-    reason="pdftotext not found (install poppler-utils)",
-)
-
 
 def _gold() -> dict[str, dict[str, str]]:
     return load_recipes()["press_release"].gold
 
 
-@needs_pdftotext
 def test_extract_comunicados_match_recipe_gold() -> None:
     gold = _gold()
     row_1 = extract_press_release(PDF_1T26)
@@ -47,11 +38,10 @@ def test_extract_comunicados_match_recipe_gold() -> None:
 
 
 def test_classify_comunicado_is_press_release() -> None:
-    assert classify_filename(PDF_1T26.name) == "press_release"
-    assert classify_filename(PDF_2T26.name) == "press_release"
+    assert classify_pdf(PDF_1T26) == "press_release"
+    assert classify_pdf(PDF_2T26) == "press_release"
 
 
-@needs_pdftotext
 def test_press_claims_are_not_pnl_metrics() -> None:
     claims = extract_claims_from_dir()
     press = [c for c in claims if c.scope == "comunicado"]

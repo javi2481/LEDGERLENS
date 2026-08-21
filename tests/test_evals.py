@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import shutil
 from pathlib import Path
 
 import pytest
@@ -11,13 +10,14 @@ import pytest
 from schemas.catalog import load_recipes
 from schemas.corpus import extract_claims_from_dir
 from schemas.lookup import lookup
+from schemas.parse_artifact import fixtures_ready
 
 ROOT = Path(__file__).resolve().parents[1]
 EVAL_PATH = ROOT / "evals" / "identity_v1.json"
 
-needs_pdftotext = pytest.mark.skipif(
-    shutil.which("pdftotext") is None,
-    reason="pdftotext not found (install poppler-utils)",
+needs_parse = pytest.mark.skipif(
+    not fixtures_ready(),
+    reason="missing MinerU fixtures (run scripts/export_mineru.py)",
 )
 
 
@@ -68,12 +68,12 @@ def test_eval_numeric_gold_matches_recipe() -> None:
 
 @pytest.fixture(scope="module")
 def claims():
-    if shutil.which("pdftotext") is None:
-        pytest.skip("pdftotext not found (install poppler-utils)")
+    if not fixtures_ready():
+        pytest.skip("missing MinerU fixtures (run scripts/export_mineru.py)")
     return extract_claims_from_dir()
 
 
-@needs_pdftotext
+@needs_parse
 def test_identity_value_evidence_period(claims) -> None:
     failures: list[str] = []
     for case in _load_cases():
@@ -103,7 +103,7 @@ def test_identity_value_evidence_period(claims) -> None:
     assert not failures, "\n".join(failures)
 
 
-@needs_pdftotext
+@needs_parse
 def test_comparison_integrity(claims) -> None:
     failures: list[str] = []
     for case in _load_cases():
@@ -130,7 +130,7 @@ def test_comparison_integrity(claims) -> None:
     assert not failures, "\n".join(failures)
 
 
-@needs_pdftotext
+@needs_parse
 def test_abstention(claims) -> None:
     failures: list[str] = []
     for case in _load_cases():

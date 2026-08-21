@@ -41,8 +41,12 @@ fi
 if grep -qE '^OPENROUTER_API_KEY=' .env.example; then
   fail ".env.example must not set OPENROUTER_API_KEY (OpenRouter is not the default chat)"
 fi
-[[ ! -e app.py ]] || fail "forbidden app.py"
-[[ ! -d ledger_lens ]] || fail "forbidden ledger_lens/"
+[[ ! -e app.py ]] || fail "forbidden leftover tree: app.py"
+[[ ! -d ledger_lens ]] || fail "forbidden leftover tree: ledger_lens/"
+[[ ! -d static ]] || fail "forbidden leftover tree: static/"
+if grep -qiE '^[[:space:]]*gradio([>=<[:space:]]|$)' requirements*.txt 2>/dev/null; then
+  fail "forbidden leftover dependency in requirements"
+fi
 git check-ignore -q .env || fail ".env must be gitignored"
 [[ -f recipes/financial_statement.json ]] || fail "missing recipes/financial_statement.json"
 [[ -f schemas/financial_statement.py ]] || fail "missing schemas/financial_statement.py"
@@ -58,27 +62,32 @@ git check-ignore -q .env || fail ".env must be gitignored"
 if [[ -e recipes/UNKNOWN.json ]] || [[ -e recipes/unknown.json ]]; then
   fail "UNKNOWN is a classifier class, not a recipe file"
 fi
+[[ -f fixtures/mineru/README.md ]] || fail "missing fixtures/mineru/README.md"
+[[ -f fixtures/mineru/BYMA_-_EEFF_31-03-2026_VF.md ]] || fail "missing MinerU fixture for EEFF 1T26"
+[[ -f schemas/parse_artifact.py ]] || fail "missing schemas/parse_artifact.py"
+[[ -f scripts/export_mineru.py ]] || fail "missing scripts/export_mineru.py"
 pass "file contracts"
 
-# --- sample PDFs (BYMA filings for the live demo) ---
-command -v pdftotext >/dev/null 2>&1 || fail "pdftotext required (poppler-utils) for fixture checks"
+# --- sample PDFs + MinerU parse artifacts ---
 mapfile -t pdfs < <(ls docs/archivos_muestra/*.pdf 2>/dev/null || true)
 [[ ${#pdfs[@]} -ge 6 ]] || fail "expected ≥6 PDFs in docs/archivos_muestra/, got ${#pdfs[@]}"
 
-expect_in() {
-  local file="$1" needle="$2"
-  pdftotext -layout "$file" - | grep -Fq "$needle" || fail "$file missing: $needle"
-}
-
-comunicado=""
+missing_parse=0
 for f in docs/archivos_muestra/*.pdf; do
+  stem="$(basename "$f" .pdf)"
+  [[ -f "fixtures/mineru/${stem}.md" ]] || missing_parse=$((missing_parse + 1))
+done
+[[ "$missing_parse" -eq 0 ]] || fail "every sample PDF needs fixtures/mineru/<stem>.md (run scripts/export_mineru.py)"
+
+comunicado_md=""
+for f in fixtures/mineru/*.md; do
   case "$f" in
-    *Comunicado*1T26*) comunicado="$f" ;;
+    *Comunicado*1T26*) comunicado_md="$f" ;;
   esac
 done
-[[ -n "$comunicado" ]] || fail "missing BYMA comunicado 1T26 in docs/archivos_muestra/"
-expect_in "$comunicado" "BYMA"
-pass "BYMA sample PDFs"
+[[ -n "$comunicado_md" ]] || fail "missing MinerU fixture for BYMA comunicado 1T26"
+grep -Fq "BYMA" "$comunicado_md" || fail "$comunicado_md missing: BYMA"
+pass "BYMA sample PDFs + MinerU artifacts"
 
 # --- host probe (informational; does not fail) ---
 arch="$(uname -m)"
@@ -125,7 +134,7 @@ fi
 
 pass "chat default is Groq llama-3.3-70b-versatile (no OpenRouter default)"
 
-# --- IDP kernel pytest (capa 1-2; no RAGFlow) ---
+# --- IDP kernel pytest (capa 1-2; MinerU fixtures, no RAGFlow) ---
 PY=python3
 if [[ -x "$ROOT/.venv/bin/python" ]]; then
   PY="$ROOT/.venv/bin/python"

@@ -2,24 +2,23 @@
 
 from __future__ import annotations
 
-import shutil
-
 import pytest
 
 from schemas.claim import SCOPE_CONSOLIDADO, SCOPE_CONTROLANTE
 from schemas.corpus import extract_claims_from_dir
 from schemas.lookup import lookup, understand
+from schemas.parse_artifact import fixtures_ready
 
-needs_pdftotext = pytest.mark.skipif(
-    shutil.which("pdftotext") is None,
-    reason="pdftotext not found (install poppler-utils)",
+needs_parse = pytest.mark.skipif(
+    not fixtures_ready(),
+    reason="missing MinerU fixtures (run scripts/export_mineru.py)",
 )
 
 
 @pytest.fixture(scope="module")
 def claims():
-    if shutil.which("pdftotext") is None:
-        pytest.skip("pdftotext not found (install poppler-utils)")
+    if not fixtures_ready():
+        pytest.skip("missing MinerU fixtures (run scripts/export_mineru.py)")
     return extract_claims_from_dir()
 
 

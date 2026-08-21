@@ -22,7 +22,7 @@ def main() -> int:
     parser.add_argument(
         "--refresh",
         action="store_true",
-        help="Reextraer PDFs y reescribir outputs/claims.json",
+        help="Reextraer desde fixtures/mineru y reescribir outputs/claims.json",
     )
     args = parser.parse_args()
     question = " ".join(args.question)

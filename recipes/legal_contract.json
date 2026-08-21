@@ -4,5 +4,5 @@
   "schema": null,
   "threshold": 0.85,
   "page_select_keywords": [],
-  "description": "Contrato o acuerdo legal: partes, cláusulas, vigencia, firmas. No hay PDFs de este tipo en docs/archivos_muestra; la receta existe para el clasificador. Extraer campos legales = agregar un schema y poner extract true."
+  "description": "Contrato o acuerdo legal. Receta de clasificador solamente (`extract: false`). El corpus de producto es docs/archivos_muestra/; no se agregan PDFs de contrato."
 }

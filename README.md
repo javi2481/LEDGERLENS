@@ -1,15 +1,15 @@
 # LedgerLens
 
-IDP **multi-dominio**: receta → extract → claims → lookup. Finanzas (EEFF BYMA) es el primer plugin. El chat RAGFlow es un **demo de portfolio**, no la fuente de verdad de identidad.
+IDP **financiero** sobre los PDF de [`docs/archivos_muestra/`](docs/archivos_muestra/): parse MinerU → clasificar portada → extract → claims → lookup. Un solo dominio (BYMA). El chat RAGFlow es un **demo de portfolio** que consume el **mismo** parse; no es la fuente de verdad de identidad.
 
-## Dos rieles
+## Un parse, dos consumidores
 
-| Riel | Qué es | Cómo se prueba |
-|------|--------|----------------|
-| **Kernel IDP** (producto) | `schemas/` + `evals/` + `scripts/idp_ask.py` | `./scripts/check.sh` (pytest; sin Docker) |
-| **Demo RAG** (portfolio) | Compose + MinerU + overlay Graph | PC ≥16 GB, `./scripts/up.sh`, UI `demo_4` |
+| Consumidor | Qué es | Cómo se prueba |
+|------------|--------|----------------|
+| **Kernel IDP** (producto) | `fixtures/mineru/*.md` → `schemas/` → `evals/` → `scripts/idp_ask.py` | `./scripts/check.sh` (pytest; sin Docker, sin `pdftotext`) |
+| **Demo RAG** (portfolio) | Compose + MinerU `demo_4` + overlay Graph | PC ≥16 GB, `./scripts/up.sh` |
 
-SDD del producto (activo): [`ledgerlens-press-release`](openspec/changes/ledgerlens-press-release/). Shipped: kernel, P&L, [`ledgerlens-claim-store`](openspec/changes/ledgerlens-claim-store/). El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
+SDD del producto (activo): [`ledgerlens-mineru-parse`](openspec/changes/ledgerlens-mineru-parse/). Shipped: kernel, P&L, claim-store, press-release. El change [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/) está **congelado** como pin del demo.
 
 ## Oro (no fusionar)
 
@@ -26,7 +26,7 @@ Corpus: `docs/archivos_muestra/` (comunicados, EEFF, presentaciones, memoria).
 
 1. `uv venv && uv pip install -r requirements-dev.txt`
 2. `./scripts/check.sh`
-3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335` (consolidado, página 4). La segunda pregunta reusa `outputs/claims.json` (`"store": "hit"`). `--refresh` vuelve a parsear.
+3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335` (consolidado, página 4). La segunda pregunta reusa `outputs/claims.json` (`"store": "hit"`). `--refresh` vuelve a extraer desde los artefactos MinerU.
 4. `python scripts/idp_ask.py "¿Cuál es la fecha del comunicado de prensa 1T26?"` → `2026-05-08` (no es el neto del EEFF).
 
 Trampas: sin decir controlante → consolidado neto (`21262335` / `81956525`). Controlante explícito → la otra cifra. Bruto ≠ operativo ≠ neto. Impuesto 1T26 → `-14950948`. No controlante → `2566`, no el controlante. Neto/impuesto **del comunicado** → abstain. Fecha del comunicado 1T26 → `2026-05-08`. YPF / memoria → abstain. Los 10 casos `route: narrative` se saltan (capa 3). Detalle: [docs/testing.md](docs/testing.md).
@@ -124,8 +124,11 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 | Path | Rol | Riel |
 |------|-----|------|
 | `schemas/` / `recipes/` / `evals/` | Kernel IDP | producto |
+| `fixtures/mineru/` | Parse durable (único texto de identidad) | producto |
+| `scripts/export_mineru.py` | Export `demo_4` → fixtures | demo host |
 | `scripts/idp_ask.py` | Lookup; cache en `outputs/claims.json` | producto |
-| `openspec/changes/ledgerlens-press-release/` | SDD activo (comunicado fecha/período) | producto |
+| `openspec/changes/ledgerlens-mineru-parse/` | SDD activo (un parse) | producto |
+| `openspec/changes/ledgerlens-press-release/` | SDD comunicado shipped | producto |
 | `openspec/changes/ledgerlens-claim-store/` | SDD cache shipped | producto |
 | `openspec/changes/ledgerlens-finance-pnl-claims/` | SDD P&L shipped | producto |
 | `openspec/changes/ledgerlens-idp-kernel/` | SDD kernel shipped | producto |
@@ -139,11 +142,9 @@ MinerU es el default para EEFF con tablas. Naive si el API no está. DeepDoc si 
 | `docs/agenda/` | Diferidos del **demo** (vLLM, branding, gancho Graph) | demo |
 | `research/` | Dumps Parallel | — |
 
-No hay `app.py`, `ledger_lens/`, Gradio, ni Space HF.
-
 ## Documentación coherente
 
-Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-press-release](openspec/changes/ledgerlens-press-release/)). Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
+Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-mineru-parse](openspec/changes/ledgerlens-mineru-parse/)). Demo: `docs/agenda/`, `research/README.md`, `.env.example` y el change congelado solo si cambia el pin.
 
 Ítems diferidos del demo: [docs/agenda/](docs/agenda/).
 

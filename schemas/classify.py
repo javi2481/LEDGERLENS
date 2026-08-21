@@ -1,45 +1,66 @@
-"""Filename → recipe. Domain plugins register via recipes/; this heuristic is generic."""
+"""Cover text → recipe. Filename is not the porter."""
 
 from __future__ import annotations
 
-SKIP_SUBSTR = (
-    "memoria",
-    "comunicado",
-    "presentacion",
-    "presentación",
-    "transcripcion",
-    "transcripción",
-)
+from pathlib import Path
+
+from schemas.parse_artifact import ParseArtifact, fold, load_parse
 
 UNKNOWN = "UNKNOWN"
 
+COVER_SKIP = (
+    "memoria",
+    "presentacion de resultados",
+    "presentación de resultados",
+    "transcripcion",
+    "transcripción",
+    "preguntas y respuestas",
+)
+
+
+def _recipe_ids(recipe_ids: tuple[str, ...] | None) -> tuple[str, ...]:
+    if recipe_ids is not None:
+        return recipe_ids
+    from schemas.catalog import load_recipes
+
+    return tuple(load_recipes())
+
+
+def classify_text(text: str, recipe_ids: tuple[str, ...] | None = None) -> str:
+    """Return a recipe id or UNKNOWN from parse cover text."""
+    ids = _recipe_ids(recipe_ids)
+    cover = fold(text)
+    if any(token in cover for token in COVER_SKIP):
+        return UNKNOWN
+    if "press_release" in ids and (
+        "comunicado de prensa" in cover or "anuncia resultados" in cover
+    ):
+        return "press_release"
+    if "financial_statement" in ids and "estados financieros" in cover:
+        return "financial_statement"
+    return UNKNOWN
+
+
+def classify_pdf(pdf: Path, recipe_ids: tuple[str, ...] | None = None) -> str:
+    artifact = load_parse(pdf)
+    if artifact is None:
+        return UNKNOWN
+    return classify_text(artifact.cover, recipe_ids)
+
+
+def classify_artifact(artifact: ParseArtifact, recipe_ids: tuple[str, ...] | None = None) -> str:
+    return classify_text(artifact.cover, recipe_ids)
+
+
+# Kept for tests that still name the old porter; delegates to content when a parse exists.
+def classify_filename(name: str, recipe_ids: tuple[str, ...] | None = None) -> str:
+    from schemas.corpus import SAMPLES
+
+    pdf = SAMPLES / name
+    if pdf.is_file() and load_parse(pdf) is not None:
+        return classify_pdf(pdf, recipe_ids)
+    return UNKNOWN
+
 
 def dedicated_financial_statement(name: str) -> bool:
-    """Dedicated EEFF filing, not a memoria/comunicado/deck/transcript."""
-    lower = name.lower()
-    if not lower.endswith(".pdf"):
-        return False
-    if "eeff" not in lower:
-        return False
-    return not any(token in lower for token in SKIP_SUBSTR)
-
-
-def dedicated_press_release(name: str) -> bool:
-    lower = name.lower()
-    if not lower.endswith(".pdf"):
-        return False
-    return "comunicado" in lower
-
-
-def classify_filename(name: str, recipe_ids: tuple[str, ...] | None = None) -> str:
-    """Return a recipe id or UNKNOWN. Finance is one plugin, not the kernel."""
-    ids = recipe_ids
-    if ids is None:
-        from schemas.catalog import load_recipes
-
-        ids = tuple(load_recipes())
-    if dedicated_financial_statement(name) and "financial_statement" in ids:
-        return "financial_statement"
-    if dedicated_press_release(name) and "press_release" in ids:
-        return "press_release"
-    return UNKNOWN
+    return classify_filename(name) == "financial_statement"

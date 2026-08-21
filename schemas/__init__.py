@@ -2,7 +2,7 @@
 
 from schemas.catalog import Recipe, classifier_labels, load_recipes
 from schemas.claim import Claim, Route, claims_from_financial_statement, identity_key
-from schemas.classify import UNKNOWN, classify_filename, dedicated_financial_statement
+from schemas.classify import UNKNOWN, classify_filename, classify_pdf, dedicated_financial_statement
 from schemas.financial_statement import FinancialStatement
 from schemas.validate import reject_financial_statement
 
@@ -15,6 +15,7 @@ __all__ = [
     "claims_from_financial_statement",
     "classifier_labels",
     "classify_filename",
+    "classify_pdf",
     "dedicated_financial_statement",
     "identity_key",
     "load_recipes",

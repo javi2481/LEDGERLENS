@@ -22,10 +22,11 @@ El compose solo deja el API. El parser se snapshottea en cada file al **subir**.
 5. **Después** subir `docs/archivos_muestra/*.pdf`.
 6. En **cada** file: clic **General** (columna Parse, no el play) → **Tamaño de la tarea por página = 128**. En v0.26.4 el cliente MinerU manda el PDF entero (`start_page_id=0`). 128 = 1–2 pasadas. Default 12 = muchas pasadas + chunks duplicados.
 7. Parse **de a uno**. Log bueno: `[MinerU] invoke api: http://mineru-api:8000/file_parse`. `OCR started` = DeepDoc.
+8. Exportar artefactos del kernel: `python scripts/export_mineru.py` (pisa `fixtures/mineru/`). No re-llamar `/file_parse` si el dataset ya está DONE.
 
 Orden de archivos: comunicados → transcripción → presentaciones → EEFF → Memorias.
 
-No hay script de reparse. Un clone de git no trae chunks.
+No hay script de reparse. Un clone de git trae `fixtures/mineru/`; **no** trae volúmenes Docker ni chunks de `demo_4`.
 
 ## Details
 

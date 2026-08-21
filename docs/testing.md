@@ -6,7 +6,7 @@ El contrato IDP es **capa 2** (extract + lookup, exact-match, sin embeddings). `
 
 | Riel | Archivo | Quién lo usa |
 |------|---------|--------------|
-| Contrato IDP | `recipes/financial_statement.json` + `recipes/press_release.json` + `evals/identity_v1.json` + `evals/identity_v2.json` + `evals/press_v1.json` | pytest extrae siempre. CLI: `idp_ask.py` usa `outputs/claims.json` |
+| Contrato IDP | `recipes/financial_statement.json` + `recipes/press_release.json` + `evals/identity_v1.json` + `evals/identity_v2.json` + `evals/press_v1.json` | pytest extrae siempre desde `fixtures/mineru/`. CLI: `idp_ask.py` usa `outputs/claims.json` |
 | Overlay demo | `docs/hechos_eeff.json` | `push_hechos.py` / chat |
 
 Las cifras 1T26/2T26 son las mismas. Los archivos no se mezclan.
@@ -94,7 +94,7 @@ flowchart LR
   Prompt --> Chat
   Chat --> Gold[set gold]
 
-  PDF -.-> T1[check.sh + pdftotext]
+  PDF -.-> T1[check.sh + fixtures/mineru]
   Ficha -.-> T2[pytest catalogo]
   Push -.-> T3[pytest mock API]
   MU -.-> T4[smoke / caos sidecar]
@@ -114,7 +114,7 @@ flowchart LR
 
 ### Capa 1 y 2 — contrato IDP (primero)
 
-pytest sobre `schemas/extract.py`, `schemas/lookup.py` y `evals/identity_v1.json`. Extrae página 4 con `pdftotext -layout`, proyecta dos claims, lookup léxico (default consolidado). Host sin poppler: skip explícito de extract, no fail silencioso. **Sin Docker, sin RAGFlow.**
+pytest sobre `schemas/extract.py`, `schemas/lookup.py` y `evals/identity_v1.json`. Extrae el bloque MinerU (página 4 del EEFF), proyecta dos claims, lookup léxico (default consolidado). Host sin artefactos: skip explícito de extract, no fallar en silencio. **Sin Docker, sin `pdftotext` de identidad.**
 
 ### Ola 2 — stack vivo
 
@@ -167,16 +167,16 @@ sequenceDiagram
 
 | Capa | Prueba | Qué rompe si falla | Harness | Costo | Ola | Estado |
 |------|--------|--------------------|---------|-------|-----|--------|
-| Contratos | Pin vendor, overlay MinerU, `.env.example`, sin `app.py` | Stack pinneado sin apps prohibidas | `scripts/check.sh` | CI, 0 Docker | 1 | Ya corre |
-| Contratos | PDFs BYMA ≥6 + comunicado 1T26 contiene BYMA | Fixtures de `docs/archivos_muestra/` | `check.sh` + `pdftotext` | CI, 0 Docker | 1 | Ya corre |
+| Contratos | Pin vendor, overlay MinerU, `.env.example` | Stack pinneado | `scripts/check.sh` | CI, 0 Docker | 1 | Ya corre |
+| Contratos | PDFs BYMA ≥6 + fixture comunicado 1T26 contiene BYMA | `fixtures/mineru/` | `check.sh` | CI, 0 Docker | 1 | Ya corre |
 | Contratos | `bash -n` de todos los scripts + overlay sin `:8080` PaddleOCR | `up.sh` no eval; PaddleOCR no publica host | `check.sh` ampliado | CI, 0 Docker | 1 | Manual / incompleto |
 | Contratos | Catálogo JSON + nombres de PDF coinciden con `archivos_muestra` | Fichas Graph apuntan a un filing que no existe | `pytest tests/test_catalog_files.py` | CI, 0 Docker | 1 | No existe |
-| Unitarios | IDP extract + identity lookup + `evals/identity_v1.json` | Fila vecina / período mezclado / YPF no abstiene | `pytest tests/` vía `check.sh` | CI + poppler | 1–2 | Ya corre |
+| Unitarios | IDP extract + identity lookup + `evals/identity_v1.json` | Fila vecina / período mezclado / YPF no abstiene | `pytest tests/` vía `check.sh` | CI + fixtures MinerU | 1–2 | Ya corre |
 | Unitarios | `needs_graph`: EEFF sí; memoria/comunicado/presentación no | Graph corre sobre Memorias (OOM) o sobre no-P&L | `pytest tests/test_graph_hechos.py` | CI, 0 Docker | 1 | No existe |
 | Unitarios | `Monto.strip_thousands` y `format_ars` (21.262.335 ↔ 21262335) | La plantilla redondea o pierde dígitos | `pytest tests/test_eeff_byma.py` | CI, 0 Docker | 1 | No existe |
 | Unitarios | `ficha_chunk` + `upsert_graph_prompt` (idempotente, no cita `.md`) | Show Quote cita markdown auxiliar; re-push duplica el bloque | `pytest tests/test_graph_hechos.py` | CI, 0 Docker | 1 | No existe |
 | Unitarios | `gold_report` con grafo fake: PASS dos nodos / FAIL mismo nodo | Criterio de merge 1T26/2T26 no es ejecutable sin Groq | `pytest tests/test_gold_report.py` | CI, 0 Docker | 1 | No existe |
-| Golden PDF | `pdftotext` del EEFF contiene consolidado y controlante del catálogo | El oro vive solo en `docs/hechos_eeff.json` | `pytest tests/test_eeff_gold_pdf.py` | CI + poppler | 1 | No existe |
+| Golden PDF | fixture MinerU del EEFF contiene consolidado y controlante del catálogo | El oro vive solo en `docs/hechos_eeff.json` | `pytest tests/test_eeff_gold_pdf.py` | CI + `fixtures/mineru/` | 1 | No existe |
 | Golden PDF | `no_usar` (22.362.983) no se elige como consolidado 1T26 | Columna del ejercicio anterior | pytest + `ficha_chunk` extra | CI, 0 Docker | 1 | No existe |
 | Smoke Compose | `up.sh`: UI `:80`, `mineru-api` healthy, `paddleocr` apagado | Arranque default del stack | `scripts/smoke_compose.sh` (marker ≥16 GB) | ≥16 GB + Docker | 2 | Manual / incompleto |
 | Smoke Compose | `max_map_count` bajo → fail fast, no dice demo ready | `up.sh` afirma listo con Infinity roto | test de `up.sh` con mock `/proc` o skip en CI | CI o VM | 2 | No existe |
@@ -212,7 +212,7 @@ Ya cubre pin v0.26.4, overlay MinerU, keys comentadas, PDFs de muestra y `bash -
 
 ### Golden del PDF vs catálogo
 
-`pdftotext -layout` sobre los dos EEFF debe encontrar los pares del JSON. Si alguien reemplaza un filing, el test falla antes del chat. También asertar que `22.362.983` aparece como `no_usar` y que Graph no lo elige como consolidado.
+Los `.md` de `fixtures/mineru/` de los dos EEFF deben contener los pares del JSON. Si alguien reemplaza un filing o el parse, el test falla antes del chat. También asertar que `22.362.983` aparece como `no_usar` y que Graph no lo elige como consolidado.
 
 ### Smoke Compose y parser
 

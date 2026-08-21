@@ -2,7 +2,7 @@
 
 Repo: `https://github.com/javi2481/LEDGERLENS` · rama **`main`**. Engram: proyecto **`ledgerlens`**.
 
-Abrí este archivo primero. Hay **dos rieles**. El clone **no** trae volúmenes Docker ni chunks de `demo_4`. Código de producto (kernel + P&L) **ya está en GitHub** (`f63d954`).
+Abrí este archivo primero. Hay **un parse MinerU** y dos consumidores (claims tipados vs chat RAG). El clone trae `fixtures/mineru/*.md`; **no** trae volúmenes Docker ni chunks de `demo_4`. Código de producto **ya está en GitHub**.
 
 ## Quick path
 
@@ -16,9 +16,9 @@ python scripts/idp_ask.py "¿Cuál es la fecha del comunicado de prensa 1T26?"
 # → 2026-05-08
 ```
 
-Siguiente producto: `legal_contract` cuando haya PDF. Ver [plan-siguiente-idp.md](plan-siguiente-idp.md).
+Siguiente producto: más identidad **financiera** sobre los mismos PDF (`docs/archivos_muestra/`), p. ej. presentación. Ver [plan-siguiente-idp.md](plan-siguiente-idp.md). No otros dominios.
 
-OpenSpec: activo [`ledgerlens-press-release`](../openspec/changes/ledgerlens-press-release/). Shipped: kernel, P&L, [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/). Pin demo congelado [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/).
+OpenSpec: activo [`ledgerlens-mineru-parse`](../openspec/changes/ledgerlens-mineru-parse/). Shipped: kernel, P&L, [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/), [`ledgerlens-press-release`](../openspec/changes/ledgerlens-press-release/). Pin demo congelado [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/).
 
 ## Máquina
 
@@ -27,7 +27,7 @@ OpenSpec: activo [`ledgerlens-press-release`](../openspec/changes/ledgerlens-pre
 | Linux ~7 GB | Kernel + docs. **No** Compose. |
 | Linux ≥16 GB + Docker | Kernel, y si hace falta el demo: `./scripts/up.sh` + MinerU + `push_hechos.py`. |
 
-No commitear `.env`. Overlay Graph **no** va en `up.sh`. No reparsear MinerU para “arreglar” identidad: el contrato IDP es `pdftotext` + pytest.
+No commitear `.env`. Overlay Graph **no** va en `up.sh`. No reparsear MinerU para “arreglar” identidad: el contrato IDP es `fixtures/mineru/` + pytest. En la PC del demo: `python scripts/export_mineru.py` pisa los artefactos con los chunks de `demo_4`.
 
 ## Hecho (no reabrir)
 
@@ -38,8 +38,9 @@ No commitear `.env`. Overlay Graph **no** va en `up.sh`. No reparsear MinerU par
 | P&L vecino extract | `26c67de` | bruto / operativo / EBT / impuesto / no controlante |
 | P&L vecino lookup + v2 | `f63d954` | `evals/identity_v2.json` |
 | Cache CLI de claims | `48e9091` | `outputs/claims.json`; evals siguen extrayendo |
+| Un parse MinerU | (este change) | `fixtures/mineru/`; clasificar portada; no `pdftotext` de identidad |
 
-SDD hybrid. Finanzas es el primer plugin. `FinancialStatement` sigue de portero de los dos netos; las vecinas salen de `schemas/finance_lines.py`.
+SDD hybrid. Dominio único: finanzas BYMA. `FinancialStatement` es el portero de los dos netos; las vecinas salen de `schemas/finance_lines.py`; el comunicado aporta fecha/período, no P&L.
 
 ## Oro (no fusionar)
 
@@ -55,10 +56,10 @@ SDD hybrid. Finanzas es el primer plugin. `FinancialStatement` sigue de portero 
 Orden fijo. Un change OpenSpec **nuevo** por slice. No inflar el kernel ni el pin RAGFlow.
 
 1. **Persistir claims** (shipped: [`ledgerlens-claim-store`](../openspec/changes/ledgerlens-claim-store/)).
-2. **Comunicado** (activo: [`ledgerlens-press-release`](../openspec/changes/ledgerlens-press-release/)): fecha + período, no P&L del comunicado.
-3. **Después:** `legal_contract` cuando haya PDF. No inflar press-release.
+2. **Comunicado** (shipped: [`ledgerlens-press-release`](../openspec/changes/ledgerlens-press-release/)): fecha + período, no P&L del comunicado.
+3. **Después (mismo dominio, mismo corpus):** presentación o transcripción. **No** otros dominios. **No** extraer P&L de memorias.
 
-No ahora: capa 3 RAG, MinerU en CI, ingresos/EPS, gancho Graph, Compose, `app.py` / `ledger_lens/`.
+No ahora: capa 3 RAG, ingresos/EPS, gancho Graph, Compose en ~7 GB. El parse MinerU ya es el camino de identidad vía fixtures.
 
 ## Qué no reabrir
 

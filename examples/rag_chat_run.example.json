@@ -1,0 +1,14 @@
+{
+  "notes": "Shape of outputs/rag_chat_run.json after a desktop chat eval. Example answers are placeholders, not a measured score.",
+  "skipped": false,
+  "reason": null,
+  "assistant": "chat_demo_4",
+  "cases": [
+    {
+      "id": "ch-id-01",
+      "answer": "21262335",
+      "cited_docs": ["BYMA_-_EEFF_31-03-2026_VF.pdf"],
+      "abstained": false
+    }
+  ]
+}

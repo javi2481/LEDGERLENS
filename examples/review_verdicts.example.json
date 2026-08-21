@@ -1,0 +1,29 @@
+{
+  "notes": "HITL asistido. Copiá a outputs/review_verdicts.json y cambiá reject/flag. Claves omitidas = accept.",
+  "verdicts": {
+    "BYMA|2026-03-31|consolidado|resultado_neto": "accept",
+    "BYMA|2026-03-31|controlante|resultado_atribuible_controladora": "accept",
+    "BYMA|2026-03-31|consolidado|resultado_bruto": "accept",
+    "BYMA|2026-03-31|consolidado|resultado_operativo": "accept",
+    "BYMA|2026-03-31|consolidado|resultado_antes_impuesto": "accept",
+    "BYMA|2026-03-31|consolidado|impuesto_ganancias": "accept",
+    "BYMA|2026-03-31|consolidado|resultado_no_controlante": "accept",
+    "BYMA|2026-06-30|consolidado|resultado_neto": "accept",
+    "BYMA|2026-06-30|controlante|resultado_atribuible_controladora": "accept",
+    "BYMA|2026-06-30|consolidado|resultado_bruto": "accept",
+    "BYMA|2026-06-30|consolidado|resultado_operativo": "accept",
+    "BYMA|2026-06-30|consolidado|resultado_antes_impuesto": "accept",
+    "BYMA|2026-06-30|consolidado|impuesto_ganancias": "accept",
+    "BYMA|2026-06-30|consolidado|resultado_no_controlante": "accept",
+    "BYMA|2026-03-31|comunicado|press_as_of_date": "accept",
+    "BYMA|2026-03-31|comunicado|press_period": "accept",
+    "BYMA|2026-03-31|comunicado|press_ebitda_margin_ltm": "accept",
+    "BYMA|2026-06-30|comunicado|press_as_of_date": "accept",
+    "BYMA|2026-06-30|comunicado|press_period": "accept",
+    "BYMA|2026-06-30|comunicado|press_ebitda_margin_ltm": "accept",
+    "BYMA|2026-03-31|presentacion|presentation_ebitda": "accept",
+    "BYMA|2026-03-31|presentacion|presentation_ebitda_margin_ltm": "accept",
+    "BYMA|2026-06-30|presentacion|presentation_ebitda": "accept",
+    "BYMA|2026-06-30|presentacion|presentation_ebitda_margin_ltm": "accept"
+  }
+}

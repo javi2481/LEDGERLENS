@@ -7,9 +7,9 @@ IDP **financiero** de punta a punta sobre [`docs/archivos_muestra/`](docs/archiv
 | Capa | Qué es | Cómo se prueba |
 |------|--------|----------------|
 | **IDP** | `fixtures/mineru/*.md` → classify → extract → claims → [`scripts/idp_ask.py`](scripts/idp_ask.py) | `./scripts/check.sh` (cualquier PC; sin Docker) |
-| **RAG** | RAGFlow v0.26.4 + Infinity + Voyage + Groq; dataset `demo_4` | PC ≥16 GB, `./scripts/up.sh`. Eval de chat: manual |
+| **RAG** | RAGFlow v0.26.4 + Infinity + Voyage + Groq; dataset `demo_4` | PC ≥16 GB. Piloto: `python scripts/retrieval_bench.py` y `python scripts/rag_eval.py` (skip sin stack) |
 
-SDD activo: [`ledgerlens-results-presentation`](openspec/changes/ledgerlens-results-presentation/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag. Pin de UI/stack (no inflar con trabajo IDP): [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/).
+SDD activo: [`ledgerlens-rag-pilot`](openspec/changes/ledgerlens-rag-pilot/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag, results-presentation, academic-close, press-ltm. Pin de UI/stack (no inflar con trabajo IDP): [`ledger-lens-ragflow`](openspec/changes/ledger-lens-ragflow/).
 
 Contrato de identidad: `recipes/financial_statement.json` + `recipes/press_release.json` + `recipes/results_presentation.json` + [`evals/identity_v1.json`](evals/identity_v1.json) + [`evals/identity_v2.json`](evals/identity_v2.json) + [`evals/press_v1.json`](evals/press_v1.json) + [`evals/presentation_v1.json`](evals/presentation_v1.json). El chat no define cifras: `python scripts/push_claims.py` inyecta los claims del kernel en RAGFlow. **Después de un merge, corré el push en el host de la UI y abrí un chat nuevo.**
 
@@ -20,8 +20,11 @@ Contrato de identidad: `recipes/financial_statement.json` + `recipes/press_relea
 3. `python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"` → `21262335`
 4. `python scripts/idp_ask.py "¿Cuál es la fecha del comunicado de prensa 1T26?"` → `2026-05-08`
 5. `python scripts/idp_ask.py "¿Cuál es el EBITDA de la presentación 1T26?"` → `72128`
+6. `python scripts/idp_ask.py "¿Cuál es el margen EBITDA LTM del comunicado de prensa 1T26?"` → `76`
+7. `python scripts/review_pack.py` → `outputs/review.html` (HITL; sin veredictos = todo accept)
+8. `python scripts/informe.py` → `outputs/dossier.html` (hechos + Q&A + abstenciones)
 
-Trampas: sin decir controlante → consolidado. Neto/impuesto **del comunicado** o **de la presentación** → abstain. EBITDA/margen LTM son de la presentación, no del EEFF. YPF / memoria → abstain. Detalle: [docs/testing.md](docs/testing.md).
+Trampas: sin decir controlante → consolidado. Neto/impuesto **del comunicado** o **de la presentación** → abstain. EBITDA en millones es de la **presentación**; margen LTM `76`/`75` está en **comunicado y presentación** (claims distintos). YPF / memoria → abstain. Detalle: [docs/testing.md](docs/testing.md). Cierre de planta: [docs/cierre-academico.md](docs/cierre-academico.md).
 
 ## UI y stack (PC ≥16 GB, x86_64)
 
@@ -86,6 +89,40 @@ docker compose --env-file .env \
 3. Knowledge base **`demo_4`**: Configuración primero (PDF parser = **MinerU**; español; Knowledge graph y RAPTOR off). Después subir `docs/archivos_muestra/*.pdf`. En cada file, **Tamaño de la tarea por página = 128**. Parse de a uno. Runbook: [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md).
 4. Asistente **`chat_demo_4`**, KB tildada, **Show Quote** on, umbral **0.3**, Empty response no vacío. Luego `python scripts/push_claims.py` y un chat nuevo.
 
+### Retrieval (arquitectura)
+
+Un parse MinerU, dos consumidores. Identity no usa embeddings.
+
+```text
+MinerU
+ ├── IDP   classify → extract → lookup léxico → pytest (evals/identity_*)
+ └── RAG   Infinity keyword|vector|hybrid → Groq + Show Quote
+             piloto: evals/retrieval_v1.json (20 qrels) + evals/rag_chat_v1.json (10)
+```
+
+Infinity (`DOC_ENGINE=infinity`) combina full-text y vectores densos. LedgerLens **usa esa capa a través de RAGFlow**; no hay índice Whoosh ni `rank_bm25`. En tesina: **hybrid keyword + vector**. No afirmes Okapi BM25 (el keyword de RAGFlow es TF-IDF propio) ni RRF salvo que cites el código de v0.26.4. Voyage `voyage-finance-2` embebe chunks de chat, no claims. Si el rerank `rerank-2.5-lite` está ON, el híbrido efectivo es keyword + rerank.
+
+First-run en el chat / KB (rerank **off** para el piloto de tres brazos):
+
+| Knob | Valor | Nota |
+|------|--------|------|
+| Similarity threshold | `0.3` | Umbral de evidencia |
+| Vector similarity weight | `0.3` | Keyword pesa `0.7` (brazo hybrid) |
+| Keyword arm | weight `0` | Solo full-text |
+| Vector arm | weight `1` | Solo dense |
+| Rerank | off en el piloto | Opcional después |
+| Knowledge graph / RAPTOR / Auto-keyword | off | No duplicar el kernel |
+
+Métricas del piloto (n=20). Vacío hasta correr `python scripts/retrieval_bench.py` en ≥16 GB. **No** inventar Recall.
+
+| Brazo | Recall@5 | Recall@10 | MRR |
+|-------|----------|-----------|-----|
+| keyword | — | — | — |
+| vector | — | — | — |
+| hybrid | — | — | — |
+
+Chat piloto (10 preguntas): `python scripts/rag_eval.py` después de `push_claims`. Scores (retrieval / answer / citation / abstention) también quedan en — hasta el run. Dump gitignored: `outputs/retrieval_run.json`, `outputs/rag_chat_run.json`.
+
 Ollama en el host, si lo usás:
 
 ```bash
@@ -103,7 +140,12 @@ PaddleOCR opcional: `COMPOSE_PROFILES=infinity,cpu,paddleocr`. Naive/DeepDoc sol
 | `fixtures/mineru/` | Parse durable (texto de identidad) |
 | `scripts/export_mineru.py` | Export `demo_4` → fixtures (host con stack) |
 | `scripts/idp_ask.py` | Lookup; cache en `outputs/claims.json` |
-| `openspec/changes/ledgerlens-product-shape/` | SDD activo |
+| `scripts/review_pack.py` | HTML HITL (`outputs/review.html`) |
+| `scripts/informe.py` | Dossier académico (`outputs/dossier.html`) |
+| `scripts/preprocess_probe.py` | Orientación Paddle (escritorio; skip sin Paddle) |
+| `scripts/retrieval_bench.py` | Piloto keyword/vector/hybrid (skip sin RAGFlow) |
+| `scripts/rag_eval.py` | Piloto de chat 10 preguntas (skip sin RAGFlow) |
+| `openspec/changes/ledgerlens-rag-pilot/` | SDD activo |
 | `vendor/ragflow-docker/` | Pin v0.26.4. No editar. [vendor/PIN.md](vendor/PIN.md) |
 | `docker-compose.overlay.yml` / `docker/mineru/` | Sidecar MinerU |
 | `scripts/up.sh` | Arranque Compose |
@@ -113,7 +155,7 @@ PaddleOCR opcional: `COMPOSE_PROFILES=infinity,cpu,paddleocr`. Naive/DeepDoc sol
 | `docs/archivos_muestra/` | PDFs BYMA |
 | `docs/agenda/mineru-pipeline.md` | Runbook de parse |
 
-Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-results-presentation](openspec/changes/ledgerlens-results-presentation/)). El pin y `.env.example` solo si cambia el stack.
+Producto: actualizar `README.md` y el change OpenSpec **abierto** en el mismo trabajo (hoy: [ledgerlens-rag-pilot](openspec/changes/ledgerlens-rag-pilot/)). El pin y `.env.example` solo si cambia el stack.
 
 ## Licencia del vendor
 

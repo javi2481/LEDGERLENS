@@ -55,7 +55,7 @@ def test_eeff_chunk_uses_idp_marker() -> None:
 
 
 def test_upsert_replaces_graph_block() -> None:
-    old = "--- Fichas Graph (LedgerLens) ---\nOLD\n--- Fin fichas Graph ---\n{knowledge}"
+    old = "--- Fichas Graph (claimprint) ---\nOLD\n--- Fin fichas Graph ---\n{knowledge}"
     text = upsert_idp_prompt(old, "NEW RULES")
     assert "OLD" not in text
     assert "Fichas IDP" in text

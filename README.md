@@ -132,5 +132,3 @@ docker compose --env-file .env \
 ## License
 
 Claimprint (this repository's own code) is **Apache-2.0**; see [`LICENSE`](LICENSE). Vendored RAGFlow `docker/` is redistributed unmodified under Apache-2.0. Cite as [`CITATION.cff`](CITATION.cff).
-
-Design-history paths under [`openspec/`](openspec/) still use the internal IDs `ledgerlens-*`. The product name is Claimprint.

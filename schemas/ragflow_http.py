@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SKIP_NO_RAGFLOW = "no_ragflow"
 DEFAULT_API = "http://127.0.0.1/api/v1"
-MYSQL_CONTAINER = "ledgerlens-mysql-1"
+MYSQL_CONTAINER = "claimprint-mysql-1"
 
 
 def token_from_mysql(container: str = MYSQL_CONTAINER) -> str:

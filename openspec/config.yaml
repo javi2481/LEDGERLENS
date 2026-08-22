@@ -1,14 +1,14 @@
 # openspec/config.yaml
 schema: spec-driven
-project: ledgerlens
+project: claimprint
 persistence: hybrid
 strict_tdd: false
 
 context: |
-  Product: Claimprint (formerly LedgerLens) is a claims intelligence kernel; the shipped plugin is finance IDP over docs/archivos_muestra/ (BYMA). MinerU parse feeds typed claims and RAGFlow chat. Active OpenSpec change: ledgerlens-rag-pilot. Identity contract is evals/identity_v1.json + identity_v2.json + press_v1.json + presentation_v1.json + recipes; exact-match, no embeddings. Retrieval pilot gold is evals/retrieval_v1.json (PDF+page qrels) and evals/rag_chat_v1.json; live bench skips without RAGFlow. Parse SoT is fixtures/mineru/*.md. Classify after parse (cover text). CLI caches claims in outputs/claims.json; evals extract from artifacts, not pdftotext. HITL verdicts default accept-all. Academic dossier is HTML under outputs/. Paddle orientation probe is optional and must skip without Paddle. Infinity hybrid retrieval is documented as keyword+vector, not Okapi BM25. Press LTM margin is a typed claim (comunicado), not Voyage retrieval.
-  UI/stack pin (do not inflate with IDP work): RAGFlow v0.26.4 + Infinity + MinerU pipeline sidecar + Groq llama-3.3-70b-versatile + Voyage (openspec change ledger-lens-ragflow). Chat inject is scripts/push_claims.py from kernel claims — not a second gold JSON.
+  Product: Claimprint is a claims intelligence kernel; the shipped plugin is finance IDP over docs/archivos_muestra/ (BYMA). MinerU parse feeds typed claims and RAGFlow chat. Active OpenSpec change: claimprint-rag-pilot. Identity contract is evals/identity_v1.json + identity_v2.json + press_v1.json + presentation_v1.json + recipes; exact-match, no embeddings. Retrieval pilot gold is evals/retrieval_v1.json (PDF+page qrels) and evals/rag_chat_v1.json; live bench skips without RAGFlow. Parse SoT is fixtures/mineru/*.md. Classify after parse (cover text). CLI caches claims in outputs/claims.json; evals extract from artifacts, not pdftotext. HITL verdicts default accept-all. Academic dossier is HTML under outputs/. Paddle orientation probe is optional and must skip without Paddle. Infinity hybrid retrieval is documented as keyword+vector, not Okapi BM25. Press LTM margin is a typed claim (comunicado), not Voyage retrieval.
+  UI/stack pin (do not inflate with IDP work): RAGFlow v0.26.4 + Infinity + MinerU pipeline sidecar + Groq llama-3.3-70b-versatile + Voyage (openspec change claimprint-ragflow). Chat inject is scripts/push_claims.py from kernel claims — not a second gold JSON.
   Runtime IDP: ./scripts/check.sh (pytest) on any host with MinerU fixtures. Runtime UI: Docker Compose, x86_64, ≥16 GB. Do not introduce a custom product UI; the UI is pinned RAGFlow.
-  Persistence: hybrid (openspec files + Engram observations, project ledgerlens).
+  Persistence: hybrid (openspec files + Engram observations, project claimprint).
   Docs: product changes update README.md + the open change in the same work unit. Pin / Compose / .env.example stay on the stack track.
   Testing: ./scripts/check.sh runs file contracts + pytest identity. RAG E2E is manual on ≥16 GB and is not the IDP DoD. strict_tdd stays false.
 

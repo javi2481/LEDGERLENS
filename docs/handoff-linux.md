@@ -1,6 +1,6 @@
 # Handoff — retomar en otra PC
 
-Producto: **Claimprint** (antes LedgerLens). Repo: `https://github.com/javi2481/claimprint` · rama **`main`**. Engram: proyecto **`ledgerlens`** (ID interno, no se renombra).
+Producto: **Claimprint**. Repo: `https://github.com/javi2481/claimprint` · rama **`main`**. Engram: proyecto **`claimprint`**.
 
 Abrí este archivo primero. Publicación: **IDP primero** (ver [README](../README.md)); el chat RAGFlow es opcional. Un parse MinerU, dos capas (claims tipados y chat). El clone trae `fixtures/mineru/*.md`; **no** trae volúmenes Docker ni chunks de `demo_4`.
 
@@ -26,7 +26,7 @@ python scripts/rag_eval.py          # skip sin RAGFlow
 
 Siguiente: [plan-siguiente-idp.md](plan-siguiente-idp.md). Corpus = `docs/archivos_muestra/`. No otros dominios. Cierre de planta: [cierre-academico.md](cierre-academico.md).
 
-OpenSpec activo: [`ledgerlens-rag-pilot`](../openspec/changes/ledgerlens-rag-pilot/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag, results-presentation, academic-close, press-ltm. Pin UI/stack: [`ledger-lens-ragflow`](../openspec/changes/ledger-lens-ragflow/) — no inflar.
+OpenSpec activo: [`claimprint-rag-pilot`](../openspec/changes/claimprint-rag-pilot/). Shipped: kernel, P&L, claim-store, press-release, mineru-parse, product-shape, claims-to-rag, results-presentation, academic-close, press-ltm. Pin UI/stack: [`claimprint-ragflow`](../openspec/changes/claimprint-ragflow/) — no inflar.
 
 ## Máquina
 
@@ -67,4 +67,4 @@ cd claimprint
 git pull origin main
 ```
 
-Engram `mem_context` con proyecto `ledgerlens`. OpenSpec: `openspec/README.md`.
+Engram `mem_context` con proyecto `claimprint`. OpenSpec: `openspec/README.md`.

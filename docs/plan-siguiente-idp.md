@@ -23,7 +23,7 @@ El MVP académico de código está cerrado. Piloto de escritorio **corrido**: m�
 | `earnings_transcript` | transcripción 2T26 | **No extract** en este cierre |
 | `annual_report` | memorias | **No** extraer P&L |
 
-Change activo: [`ledgerlens-rag-pilot`](../openspec/changes/ledgerlens-rag-pilot/).
+Change activo: [`claimprint-rag-pilot`](../openspec/changes/claimprint-rag-pilot/).
 
 ## Fuera
 

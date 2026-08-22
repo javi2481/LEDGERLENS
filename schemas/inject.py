@@ -17,11 +17,11 @@ from schemas.money import format_display_ars
 
 MARKER = "Ficha IDP"
 MARKER_GRAPH = "Ficha Graph EEFF"
-# Prompt chrome. Keep "LedgerLens" in markers so a live RAGFlow chat
+# Prompt chrome. Keep "claimprint" in markers so a live RAGFlow chat
 # from the old inject still matches on upsert.
-IDP_START = "--- Fichas IDP (LedgerLens) ---"
+IDP_START = "--- Fichas IDP (claimprint) ---"
 IDP_END = "--- Fin fichas IDP ---"
-GRAPH_START = "--- Fichas Graph (LedgerLens) ---"
+GRAPH_START = "--- Fichas Graph (claimprint) ---"
 GRAPH_END = "--- Fin fichas Graph ---"
 SIDECAR_NAMES = ("hechos_eeff.md",)
 

@@ -11,7 +11,7 @@ services:
     build:
       context: ../../docker/mineru
       dockerfile: Dockerfile
-    image: ledgerlens-mineru:cpu
+    image: claimprint-mineru:cpu
     restart: unless-stopped
     networks:
       - ragflow
@@ -48,7 +48,7 @@ services:
     build:
       context: ../../docker/paddleocr
       dockerfile: Dockerfile
-    image: ledgerlens-paddleocr:cpu
+    image: claimprint-paddleocr:cpu
     restart: unless-stopped
     networks:
       - ragflow

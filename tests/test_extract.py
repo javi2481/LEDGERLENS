@@ -82,6 +82,15 @@ def test_fill_rejects_invented_digits() -> None:
     assert fill_financial_statement(page_without, source_page=4, filename="x.pdf") is None
 
 
+def test_fill_rejects_unknown_issuer() -> None:
+    text = (
+        "RESULTADO NETO DEL PERÍODO  21.262.335\n"
+        "Resultado neto del período atribuible a la participación controlante  21.259.769\n"
+        "31 DE MARZO DE 2026\n"
+    )
+    assert fill_financial_statement(text, source_page=4, filename="ACME_EEFF_1T26.pdf") is None
+
+
 def test_corpus_projects_neto_and_neighbors() -> None:
     claims = extract_claims_from_dir()
     keys = {c.identity_key for c in claims}

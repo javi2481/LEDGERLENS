@@ -1,4 +1,4 @@
-"""Second domain plugin: press release date, period, and EBITDA LTM %. Not P&L."""
+"""Finance sub-plugin: press release date, period, and EBITDA LTM %. Not P&L."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from schemas.claim import (
     identity_key,
 )
 from schemas.classify import UNKNOWN, classify_artifact
-from schemas.extract import DATE_RE, MONTHS, fold, select_page
+from schemas.extract import DATE_RE, MONTHS, _issuer_from_text, fold, select_page
 from schemas.parse_artifact import load_parse, page_text
 
 LTM_RE = re.compile(
@@ -30,7 +30,7 @@ PERIOD_2T26 = "2026-06-30"
 
 
 class PressRelease(BaseModel):
-    issuer: str | None = Field(default="BYMA")
+    issuer: str | None = Field(default=None)
     period: str
     as_of_date: str
     source_page: int | None = None
@@ -87,8 +87,11 @@ def fill_press_release(
     as_of = _iso_from_date_match(match)
     scan = pages if pages is not None else ((source_page, text),)
     ltm = _ltm_from_pages(scan)
+    issuer = _issuer_from_text(text, filename)
+    if not issuer:
+        return None
     return PressRelease(
-        issuer="BYMA",
+        issuer=issuer,
         period=period,
         as_of_date=as_of,
         source_page=source_page,
@@ -101,7 +104,9 @@ def fill_press_release(
 
 
 def claims_from_press_release(row: PressRelease) -> tuple[Claim, ...]:
-    issuer = (row.issuer or "BYMA").strip() or "BYMA"
+    issuer = (row.issuer or "").strip()
+    if not issuer:
+        return ()
     page = row.source_page
     as_of = Claim(
         identity_key=identity_key(issuer, row.period, SCOPE_PRESS, METRIC_PRESS_AS_OF),

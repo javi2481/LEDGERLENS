@@ -16,7 +16,7 @@ from schemas.claim import (
     identity_key,
 )
 from schemas.classify import UNKNOWN, classify_artifact
-from schemas.extract import fold, select_page
+from schemas.extract import _issuer_from_text, fold, select_page
 from schemas.money import digits_ars
 from schemas.parse_artifact import load_parse, page_text
 
@@ -25,7 +25,7 @@ PERIOD_2T26 = "2026-06-30"
 
 
 class ResultsPresentation(BaseModel):
-    issuer: str | None = Field(default="BYMA")
+    issuer: str | None = Field(default=None)
     period: str
     ebitda: str
     ebitda_margin_ltm: str
@@ -71,8 +71,11 @@ def fill_results_presentation(text: str, *, source_page: int, filename: str) -> 
         digits = "".join(ch for ch in raw_ebitda.group(1) if ch.isdigit())
     if not digits:
         return None
+    issuer = _issuer_from_text(text, filename)
+    if not issuer:
+        return None
     return ResultsPresentation(
-        issuer="BYMA",
+        issuer=issuer,
         period=period,
         ebitda=digits,
         ebitda_margin_ltm=raw_margin.group(1),
@@ -83,7 +86,9 @@ def fill_results_presentation(text: str, *, source_page: int, filename: str) -> 
 
 
 def claims_from_results_presentation(row: ResultsPresentation) -> tuple[Claim, ...]:
-    issuer = (row.issuer or "BYMA").strip() or "BYMA"
+    issuer = (row.issuer or "").strip()
+    if not issuer:
+        return ()
     page = row.source_page
     ebitda = Claim(
         identity_key=identity_key(issuer, row.period, SCOPE_PRESENTATION, METRIC_PRESENTATION_EBITDA),

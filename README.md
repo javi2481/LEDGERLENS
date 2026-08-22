@@ -51,6 +51,46 @@ python scripts/informe.py       # outputs/dossier.html
 
 On Windows, run `./scripts/check.sh` from Git Bash or WSL.
 
+## Terminal flow
+
+Two paths through `idp_ask`: answer when a verified claim exists, abstain when the question is off-corpus or unsupported.
+
+**Answer path**
+
+```
+Question: ¿Cuál es el resultado neto del período 1T26?
+   ↓
+Identity intent (consolidado | resultado_neto | 2026-03-31)
+   ↓
+Candidate claims (from fixtures → extract → store)
+   ↓
+Verified claim  BYMA|2026-03-31|consolidado|resultado_neto = 21262335
+   ↓
+Answer          21262335  (page 4, RESULTADO NETO DEL PERÍODO)
+```
+
+```bash
+python scripts/idp_ask.py "¿Cuál es el resultado neto del período 1T26?"
+# route: identity · claims[0].value: 21262335
+```
+
+**Abstain path**
+
+```
+Question: ¿Cuál fue el precio de cierre de YPF en BYMA el 3 de enero?
+   ↓
+Ambiguous / unsupported (off_corpus — no YPF price in corpus)
+   ↓
+ABSTAIN         route: abstain · claims: []
+```
+
+```bash
+python scripts/idp_ask.py "¿Cuál fue el precio de cierre de YPF en BYMA el 3 de enero?"
+# route: abstain · abstain_reason: off_corpus
+```
+
+Extraction follows the same rule: if the issuer cannot be determined from text or filename, the document is skipped rather than defaulting to BYMA.
+
 ## Scope
 
 | Included | Excluded |

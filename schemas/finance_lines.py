@@ -63,7 +63,9 @@ def _line_matches(line: str, spec: LineSpec) -> bool:
 
 
 def claims_from_pnl_lines(page_text: str, row: FinancialStatement) -> tuple[Claim, ...]:
-    issuer = (row.issuer or "BYMA").strip() or "BYMA"
+    issuer = (row.issuer or "").strip()
+    if not issuer:
+        return ()
     period = row.period
     page = row.source_page
     page_digits = "".join(ch for ch in page_text if ch.isdigit())

@@ -108,11 +108,11 @@ def _period_from_text(text: str) -> str | None:
     return f"{year}-{month}-{day:02d}"
 
 
-def _issuer_from_text(text: str, filename: str) -> str:
+def _issuer_from_text(text: str, filename: str) -> str | None:
     blob = fold(text) + " " + fold(filename)
     if "bolsas y mercados argentinos" in blob or "byma" in blob:
         return "BYMA"
-    return "BYMA"
+    return None
 
 
 def fill_financial_statement(page_text: str, *, source_page: int, filename: str) -> FinancialStatement | None:
@@ -140,9 +140,12 @@ def fill_financial_statement(page_text: str, *, source_page: int, filename: str)
     period = _period_from_text(page_text)
     if not period:
         return None
+    issuer = _issuer_from_text(page_text, filename)
+    if not issuer:
+        return None
     prior = cons_amts[1] if len(cons_amts) > 1 else None
     return FinancialStatement(
-        issuer=_issuer_from_text(page_text, filename),
+        issuer=issuer,
         period=period,
         net_income_consolidated=consolidado,
         net_income_attributable_to_parent=controlante,

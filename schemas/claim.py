@@ -51,7 +51,9 @@ def claims_from_financial_statement(row: object) -> tuple[Claim, ...]:
 
     if not isinstance(row, FinancialStatement):
         raise TypeError("finance projector expects FinancialStatement")
-    issuer = (row.issuer or "BYMA").strip() or "BYMA"
+    issuer = (row.issuer or "").strip()
+    if not issuer:
+        return ()
     period = row.period
     page = row.source_page
     consolidado = Claim(

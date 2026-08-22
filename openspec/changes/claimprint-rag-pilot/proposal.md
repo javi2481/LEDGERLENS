@@ -46,4 +46,5 @@ Delete this change folder, new evals/examples/scripts/schema, restore README poi
 - [x] README does not publish invented Recall numbers
 - [x] Identity pytest still does not import RAGFlow
 
-Desktop run (measured, not invented): retrieval arms Recall@5/10 0.25 / MRR 0.125; chat scores 0.7 / 0.6 / 0.7 / 0.7.
+Desktop run (historical, first pilot): retrieval arms Recall@5/10 0.25 / MRR 0.125; chat scores 0.7 / 0.6 / 0.7 / 0.7.
+**Live SoT (v1.0.1+):** README — Recall@5 **0.35** / MRR **0.1792**; chat answer/citation/retrieval/abstention **1.0**; chat LLM **Mistral** `mistral-small-latest`.

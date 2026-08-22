@@ -24,7 +24,7 @@ from schemas.ragflow_http import (
 
 GOLD = ROOT / "evals" / "rag_chat_v1.json"
 OUT = ROOT / "outputs" / "rag_chat_run.json"
-# Groq free TPM (~8k) needs spacing between long RAG prompts.
+# Provider rate limits need spacing between long RAG prompts.
 PAUSE_SEC = 35.0
 
 

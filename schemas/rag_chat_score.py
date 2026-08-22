@@ -1,4 +1,4 @@
-"""Score rag_chat_v1 dumps. Identity exact-match; abstain; citation docs. No RAGFlow."""
+"""Score rag_chat_v1 dumps. Value containment; abstain; citation docs. No RAGFlow."""
 
 from __future__ import annotations
 
@@ -30,12 +30,16 @@ def looks_abstained(answer: str, flagged: bool) -> bool:
 
 
 def score_chat_case(case: dict, run: dict) -> dict:
-    """Per-case scores.
+    """Per-case scores for the small chat pilot.
 
-    - ``abstention``: 1 if the model did the right thing on abstain vs answer
-      (abstain when ``expected_abstain``, otherwise must not abstain).
-    - ``retrieval`` / ``citation``: scored only when the case expects docs to
-      cite; abstain-only cases return ``None`` so they do not inflate averages.
+    - ``answer``: **exact-value containment** (not semantic accuracy). For
+      identity/comparison, pass if ``expected_value`` appears in the answer
+      digits/compact text, no ``forbid_values`` leak, and the model did not
+      abstain. Narrative has no gold number (retrieval + no abstain + no leak).
+    - ``abstention``: 1 iff the model did what gold requires on abstain vs
+      answer (abstain when ``expected_abstain``, otherwise must not abstain).
+    - ``retrieval`` / ``citation``: scored only when the case expects docs;
+      abstain-only cases return ``None`` so they do not inflate averages.
     """
     partition = str(case.get("partition") or "")
     answer = str(run.get("answer") or "")
@@ -76,6 +80,7 @@ def score_chat_case(case: dict, run: dict) -> dict:
             "abstention": abstention,
         }
 
+    # Exact-value containment (pilot-sized; not full-answer accuracy).
     value_ok = expected_value is None or str(expected_value) in compact or str(expected_value) in digit_blob
     ok = value_ok and not leaked and not abstained
     return {

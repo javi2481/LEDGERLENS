@@ -69,19 +69,60 @@ def test_abstain_chat_score() -> None:
     }
     ok = score_chat_case(
         case,
-        {"answer": "No hay evidencia suficiente en los documentos indexados para responder. No invento datos.", "cited_docs": [], "abstained": False},
+        {
+            "answer": "No hay evidencia suficiente en los documentos indexados para responder. No invento datos.",
+            "cited_docs": [],
+            "abstained": False,
+        },
     )
     assert ok["abstention"] == 1.0
+    assert ok["answer"] == 1.0
+    assert ok["retrieval"] is None
+    assert ok["citation"] is None
     leak = score_chat_case(case, {"answer": "21262335", "cited_docs": []})
     assert leak["abstention"] == 0.0
+    assert leak["answer"] == 0.0
 
 
-def test_summarize_chat() -> None:
+def test_false_abstain_fails_identity_and_narrative() -> None:
+    identity = {
+        "partition": "identity",
+        "expected_value": "21262335",
+        "expected_docs": [EEFF],
+        "forbid_values": [],
+        "expected_abstain": False,
+    }
+    scored = score_chat_case(
+        identity,
+        {"answer": "No hay evidencia en el corpus para responder.", "cited_docs": [EEFF]},
+    )
+    assert scored["abstention"] == 0.0
+    assert scored["answer"] == 0.0
+
+    narrative = {
+        "partition": "narrative",
+        "expected_value": None,
+        "expected_docs": [EEFF],
+        "forbid_values": [],
+        "expected_abstain": False,
+    }
+    scored_n = score_chat_case(
+        narrative,
+        {"answer": "No hay evidencia en el corpus para responder.", "cited_docs": [EEFF]},
+    )
+    assert scored_n["abstention"] == 0.0
+    assert scored_n["answer"] == 0.0
+
+
+def test_summarize_chat_skips_na_retrieval() -> None:
     scores = [
         {"retrieval": 1.0, "answer": 1.0, "citation": 1.0, "abstention": 1.0},
-        {"retrieval": 0.0, "answer": 0.0, "citation": 0.0, "abstention": 1.0},
+        {"retrieval": None, "answer": 1.0, "citation": None, "abstention": 1.0},
+        {"retrieval": 0.0, "answer": 0.0, "citation": 0.0, "abstention": 0.0},
     ]
     out = summarize_chat(scores)
-    assert out["n"] == 2
+    assert out["n"] == 3
     assert out["retrieval"] == 0.5
-    assert out["abstention"] == 1.0
+    assert out["citation"] == 0.5
+    assert out["abstention"] == round(2 / 3, 4)
+    assert out["answer"] == round(2 / 3, 4)

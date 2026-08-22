@@ -34,7 +34,7 @@ The pilot compares retrieval-only search (PDF+page, **no claim inject**) against
 
 Retrieval (n=20): keyword, vector, and hybrid **tie** at Recall@5 **0.35** and MRR **0.1792**. The pilot does **not** show hybrid winning. The underlying issue is the **identity trap**: retrieval can return evidence for a correct number attached to the wrong figure—consolidado vs controlante in the table above.
 
-Claims-first chat (n=10, post-`push_claims`): answer / citation / retrieval / abstention **1.0**. Task-specific scores on a small corpus (`demo_4` 10/10); knobs: Mistral `mistral-small-latest`, Voyage, similarity threshold **0.2**, rerank on, IDP inject. Not a general IR paper.
+Claims-first chat (n=10, post-`push_claims`): answer / citation / retrieval / abstention **1.0**. Here **abstention** means correct behavior (abstain when gold says so; do not abstain when an answer is required)—not “said something.” Retrieval/citation averages skip abstain-only cases so empty cites do not inflate those scores. Task-specific scores on a small corpus (`demo_4` 10/10); knobs: Mistral `mistral-small-latest`, Voyage, similarity threshold **0.2**, rerank on, IDP inject. Not a general IR paper.
 
 ![Retrieval-only vs claims-first — identity trap](docs/assets/claimprint-retrieval-vs-chat.svg)
 
@@ -168,7 +168,7 @@ The three arms tie: this pilot does **not** show hybrid winning. That tie is evi
 | Layer | What it measures | Score |
 |-------|------------------|-------|
 | Retrieval only | PDF+page, no claim inject | Recall@5 **0.35** (n=20) |
-| Chat after `push_claims` | Answer grounded on injected IDP claims | answer / citation / retrieval / abstention **1.0** (n=10) |
+| Chat after `push_claims` | Answer grounded on injected IDP claims; abstention = correct abstain / no false abstain | answer / citation / retrieval / abstention **1.0** (n=10) |
 
 The gap between retrieval-only and claims-first chat is the argument, not a number to hide. Small-n pilot — honest, not a paper IR claim. Dumps live in `outputs/` (gitignored).
 

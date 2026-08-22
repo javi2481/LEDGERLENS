@@ -30,6 +30,13 @@ def looks_abstained(answer: str, flagged: bool) -> bool:
 
 
 def score_chat_case(case: dict, run: dict) -> dict:
+    """Per-case scores.
+
+    - ``abstention``: 1 if the model did the right thing on abstain vs answer
+      (abstain when ``expected_abstain``, otherwise must not abstain).
+    - ``retrieval`` / ``citation``: scored only when the case expects docs to
+      cite; abstain-only cases return ``None`` so they do not inflate averages.
+    """
     partition = str(case.get("partition") or "")
     answer = str(run.get("answer") or "")
     cited = [str(x) for x in (run.get("cited_docs") or [])]
@@ -40,18 +47,25 @@ def score_chat_case(case: dict, run: dict) -> dict:
     want_abstain = bool(case.get("expected_abstain"))
     compact = answer.replace(".", "").replace(",", "").replace(" ", "")
     digit_blob = _digits(answer)
-
-    retrieval = cited_ok(cited, expected_docs)
-    citation = retrieval and not any("hechos_eeff" in name.casefold() for name in cited)
     leaked = any(val and (val in compact or val in digit_blob) for val in forbid)
 
     if want_abstain:
+        ok = abstained and not leaked
         return {
-            "retrieval": 1.0,
-            "answer": 1.0 if abstained and not leaked else 0.0,
-            "citation": 1.0,
-            "abstention": 1.0 if abstained and not leaked else 0.0,
+            "retrieval": None,
+            "answer": 1.0 if ok else 0.0,
+            "citation": None,
+            "abstention": 1.0 if ok else 0.0,
         }
+
+    retrieval = cited_ok(cited, expected_docs)
+    citation = retrieval and not any("hechos_eeff" in name.casefold() for name in cited)
+    if partition == "comparison":
+        retrieval = all(cited_ok(cited, [doc]) for doc in expected_docs) if expected_docs else True
+        citation = retrieval
+
+    # False abstain fails abstention; answering when required passes it.
+    abstention = 0.0 if abstained else 1.0
 
     if partition == "narrative":
         ok = (not abstained) and not leaked and retrieval
@@ -59,30 +73,33 @@ def score_chat_case(case: dict, run: dict) -> dict:
             "retrieval": 1.0 if retrieval else 0.0,
             "answer": 1.0 if ok else 0.0,
             "citation": 1.0 if citation else 0.0,
-            "abstention": 1.0,
+            "abstention": abstention,
         }
 
     value_ok = expected_value is None or str(expected_value) in compact or str(expected_value) in digit_blob
     ok = value_ok and not leaked and not abstained
-    if partition == "comparison":
-        retrieval = all(cited_ok(cited, [doc]) for doc in expected_docs) if expected_docs else True
-        citation = retrieval
     return {
         "retrieval": 1.0 if retrieval else 0.0,
         "answer": 1.0 if ok else 0.0,
         "citation": 1.0 if citation else 0.0,
-        "abstention": 1.0 if not abstained else 0.0,
+        "abstention": abstention,
     }
+
+
+def _mean(values: Sequence[float | None]) -> float:
+    present = [v for v in values if v is not None]
+    if not present:
+        return 0.0
+    return round(sum(present) / len(present), 4)
 
 
 def summarize_chat(scores: Sequence[dict]) -> dict:
     if not scores:
         return {"retrieval": 0.0, "answer": 0.0, "citation": 0.0, "abstention": 0.0, "n": 0}
-    n = len(scores)
     return {
-        "retrieval": round(sum(s["retrieval"] for s in scores) / n, 4),
-        "answer": round(sum(s["answer"] for s in scores) / n, 4),
-        "citation": round(sum(s["citation"] for s in scores) / n, 4),
-        "abstention": round(sum(s["abstention"] for s in scores) / n, 4),
-        "n": n,
+        "retrieval": _mean([s.get("retrieval") for s in scores]),
+        "answer": _mean([s.get("answer") for s in scores]),
+        "citation": _mean([s.get("citation") for s in scores]),
+        "abstention": _mean([s.get("abstention") for s in scores]),
+        "n": len(scores),
     }

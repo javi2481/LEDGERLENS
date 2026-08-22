@@ -25,4 +25,4 @@ Claimprint usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 
 ## Next step
 
-Handoff: [`docs/handoff-linux.md`](../docs/handoff-linux.md).
+Quick start: [`README.md`](../README.md) en la raíz del repo.

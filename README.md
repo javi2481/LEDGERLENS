@@ -115,13 +115,13 @@ Extraction follows the same rule: if the issuer cannot be determined from text o
 | Layer | Role | Verification |
 |------|--------|----------------|
 | **IDP** | fixtures → classify → extract → claims → `idp_ask` | `./scripts/check.sh` |
-| **RAG** | RAGFlow + Infinity + Voyage + Groq (`demo_4`) | Optional, ≥16 GB ([docs/cierre-academico.md](docs/cierre-academico.md)) |
+| **RAG** | RAGFlow + Infinity + Voyage + Groq (`demo_4`) | Optional, ≥16 GB Docker stack |
 
 Contracts: `recipes/financial_statement.json`, `press_release.json`, `results_presentation.json`, plus [`evals/identity_v1.json`](evals/identity_v1.json), [`identity_v2.json`](evals/identity_v2.json), [`press_v1.json`](evals/press_v1.json), and [`presentation_v1.json`](evals/presentation_v1.json).
 
 Identity traps: an unspecified controlling interest defaults to consolidated. Net income or tax **from the press release** or **from the presentation** abstains. EBITDA in millions comes from the **presentation**; LTM margin `76`/`75` appears in **press release and presentation**. YPF / annual report abstains.
 
-Evaluation catalog: four layers (files → identity → inject mock → live RAG). See [docs/testing.md](docs/testing.md) and [docs/cierre-academico.md](docs/cierre-academico.md).
+Evaluation catalog: four layers (files → identity → inject mock → live RAG). Contracts live in [`evals/`](evals/); pilot numbers are in **The problem** above and **Optional RAGFlow UI** below.
 
 ## Layout
 
@@ -133,7 +133,6 @@ Evaluation catalog: four layers (files → identity → inject mock → live RAG
 | `scripts/check.sh` | Contracts + pytest |
 | `scripts/review_pack.py` / `informe.py` | HITL and academic dossier |
 | `docs/archivos_muestra/` | BYMA PDFs |
-| [`docs/handoff-linux.md`](docs/handoff-linux.md) | Resume the project on another machine |
 | `scripts/up.sh` / `push_claims.py` | Optional RAG stack |
 | `vendor/ragflow-docker/` | RAGFlow v0.26.4 pin (do not edit) |
 | `docs/assets/` | README / LinkedIn diagrams |
@@ -150,7 +149,7 @@ cp .env.example .env   # add keys; .env is not in git
 ./scripts/up.sh        # UI: http://localhost
 ```
 
-Stack: RAGFlow v0.26.4 + Infinity + MinerU `pipeline` + Groq `llama-3.3-70b-versatile` + Voyage. First-run knobs, `vm.max_map_count`, and provider fallbacks: [docs/cierre-academico.md](docs/cierre-academico.md) and [docs/agenda/mineru-pipeline.md](docs/agenda/mineru-pipeline.md). Then `python scripts/push_claims.py` and a **new** chat.
+Stack: RAGFlow v0.26.4 + Infinity + MinerU `pipeline` + Groq `llama-3.3-70b-versatile` + Voyage. On Linux set `vm.max_map_count` ≥ 262144; add Groq and Voyage keys in RAGFlow Model providers. Then `python scripts/push_claims.py` and a **new** chat.
 
 Infinity scores full-text with **BM25**. The `keyword` / `vector` / `hybrid` arms are RAGFlow knobs (`vector_similarity_weight` 0 / 1 / 0.3), not a custom Okapi library.
 

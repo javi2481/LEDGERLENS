@@ -8,7 +8,7 @@ Orden demo: **configurar el dataset** (MinerU, español, KG/RAPTOR off) → **su
 
 No actives Knowledge graph ni RAPTOR: no son parsers y gastan tokens del chat.
 
-Runbook completo: [docs/agenda/mineru-pipeline.md](../agenda/mineru-pipeline.md).
+Detalle del stack opcional: sección **Optional RAGFlow UI** del README raíz.
 
 ## Orden de parseo
 

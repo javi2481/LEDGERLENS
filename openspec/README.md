@@ -13,7 +13,7 @@ Claimprint usa SDD **hybrid**: archivos en `openspec/` + observaciones Engram (`
 | Tema | Valor |
 |------|--------|
 | Producto | Claimprint — claims intelligence; instancia BYMA (`docs/archivos_muestra/`) |
-| UI | RAGFlow v0.26.4 + Infinity + MinerU + Voyage + Mistral (SoT vivo = README / v1.0.1) |
+| UI | RAGFlow v0.26.4 + Infinity + MinerU + Voyage + Mistral (SoT vivo = README / v1.0.0) |
 | Tests | `./scripts/check.sh` (pytest identidad). Chat live no es el DoD del IDP |
 | Persistencia | `openspec/config.yaml` → `persistence: hybrid` |
 

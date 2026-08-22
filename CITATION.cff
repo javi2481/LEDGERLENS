@@ -10,10 +10,10 @@ authors:
 repository-code: https://github.com/javi2481/claimprint
 url: https://github.com/javi2481/claimprint
 abstract: >-
-  Claimprint explores a verification-first approach to document AI:
-  structured claims are extracted and evaluated before retrieval-augmented
-  generation is allowed to answer. This instance ships a finance plugin
-  over BYMA financial statements.
+  Claimprint is a claims intelligence kernel: typed claims (identity, value,
+  provenance) are extracted and verified before an answer is emitted. RAG chat
+  is optional and consumes injected IDP claims; it is not the source of truth.
+  This repository ships the first instance — finance over BYMA statements.
 keywords:
   - document-ai
   - claims

@@ -59,27 +59,31 @@ IDP_RULES = (
     "período, si la pregunta NO nombra presentación, comunicado ni memoria, usá "
     "siempre las cifras EEFF (scope consolidado|… o controlante|…) de la ficha — "
     "nunca los millones de una tabla de slides (Utilidad Bruta / Resultado "
-    "Operativo del deck). Distinguí tres filas distintas del EEFF: (a) RESULTADO "
-    "NETO DEL PERÍODO consolidado; (b) atribuible a la participación "
-    "controlante / propietarios; (c) atribuible a la participación NO "
-    "controlante (cifra chica, p.ej. 2.566 en 1T26) — no son la misma. Si pide "
-    "resultado neto / el período / un trimestre y no dice controlante ni "
-    "atribuible, usá el consolidado. Si pide controlante / propietarios / "
-    "atribuible a la participación controlante (sin «no controlante»), usá la "
-    "fila controlante. Si pide no controlante / participación no controlante, "
-    "usá consolidado|resultado_no_controlante de la ficha EEFF (NUNCA abstengas "
-    "ni uses el neto). Si hay dos filas vecinas, no elijas la de al lado. "
-    "Ignorá la columna del ejercicio anterior. Justificá con una cita del PDF "
-    "del estado financiero (Show Quote). No cites un markdown auxiliar ni "
-    "hechos_eeff.md. "
+    "Operativo del deck). "
+    "Filas EEFF distintas (no intercambiables): "
+    "(1) participación NO controlante → consolidado|resultado_no_controlante "
+    "de la ficha (cifra chica). La pregunta «Resultado atribuible a la "
+    "participación no controlante …» DEBE usar esa fila de la ficha — no "
+    "abstengas y no uses el neto ni el controlante. "
+    "(2) RESULTADO NETO DEL PERÍODO consolidado, si pide neto / el período / un "
+    "trimestre sin decir controlante ni atribuible. "
+    "(3) atribuible a la participación controlante / propietarios (sin «no "
+    "controlante») → fila controlante. "
+    "Si hay dos filas vecinas, no elijas la de al lado. Ignorá la columna del "
+    "ejercicio anterior. Justificá con una cita del PDF del estado financiero "
+    "(Show Quote). No cites un markdown auxiliar ni hechos_eeff.md. "
     "ABSTENER (única respuesta: «No hay evidencia en el corpus para responder.») "
-    "sin inventar cifras del EEFF ni del deck: (1) resultado neto / bruto / "
-    "operativo / impuesto / controlante «del comunicado»; (2) resultado neto / "
-    "bruto / operativo / impuesto / consolidado «de la presentación» o «del "
-    "deck»; (3) resultado neto / P&L «de la memoria». "
-    "EBITDA en millones (ej. 72.128) y margen EBITDA LTM de presentación vienen "
-    "solo del deck; margen EBITDA LTM del comunicado es métrica del comunicado — "
-    "no confundas esas dos. Si preguntan si coinciden los márgenes LTM 1T26 de "
+    "sin inventar cifras del EEFF ni del deck — SOLO si la pregunta nombra "
+    "explícitamente la fuente equivocada: "
+    "(a) P&L / neto / bruto / operativo / impuesto «del comunicado»; "
+    "(b) P&L / neto / bruto / operativo / impuesto / consolidado «de la "
+    "presentación» o «del deck»; "
+    "(c) resultado neto / P&L «de la memoria». "
+    "No abstengas por la sola palabra «atribuible» ni por «no controlante» cuando "
+    "la pregunta pide el EEFF. "
+    "EBITDA en millones y margen EBITDA LTM de presentación vienen solo del "
+    "deck; margen EBITDA LTM del comunicado es métrica del comunicado — no "
+    "confundas esas dos. Si preguntan si coinciden los márgenes LTM de "
     "comunicado y presentación, buscá evidencia en ambos PDFs y respondé con la "
     "cifra común cuando ambos digan lo mismo."
 )
@@ -142,10 +146,19 @@ def eeff_chunk(claims: tuple[Claim, ...] | list[Claim], period: str) -> tuple[st
         nci_shown = display_value(nci)
         nci_bit = (
             f" Participación NO controlante = {nci_shown} "
-            f"(no confundir con controlante {ctrl} ni con neto {cons})."
+            f"(no confundir con controlante {ctrl} ni con neto {cons}). "
+            f"Pregunta tipo «Resultado atribuible a la participación no "
+            f"controlante» al {period} → {nci_shown}."
         )
         questions.append(
             f"Resultado atribuible a la participación no controlante al {period}"
+        )
+        keywords.extend(
+            [
+                "atribuible a la participación no controlante",
+                "participación no controlante",
+                nci_shown,
+            ]
         )
     lines.append(f"RESULTADO NETO DEL PERÍODO (estado consolidado): {cons}.")
     lines.append(f"Resultado atribuible a la participación controlante: {ctrl}.")

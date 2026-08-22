@@ -60,7 +60,7 @@ Chain strategy: size-exception
 ## Phase 7: Groq chat default (2026-08-16) — historical
 
 - [x] 7.1 Align README, `.env.example`, `scripts/check.sh` / `up.sh`, agenda, research index, and OpenSpec local-stack/portfolio-local to Groq `llama-3.3-70b-versatile` (instance `demo_4`). Do not document Gemini flash-lite or OpenRouter Nano `:free` as the running default.
-  - **Superseded by Phase 8:** live default is Mistral (README / v1.0.1+).
+  - **Superseded by Phase 8:** live default is Mistral (README / v1.0.0).
 
 ## Phase 8: Mistral live default (2026-08-22)
 

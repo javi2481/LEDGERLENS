@@ -47,4 +47,4 @@ Delete this change folder, new evals/examples/scripts/schema, restore README poi
 - [x] Identity pytest still does not import RAGFlow
 
 Desktop run (historical, first pilot): retrieval arms Recall@5/10 0.25 / MRR 0.125; chat scores 0.7 / 0.6 / 0.7 / 0.7.
-**Live SoT (v1.0.1+):** README — Recall@5 **0.35** / MRR **0.1792**; chat answer/citation/retrieval/abstention **1.0**; chat LLM **Mistral** `mistral-small-latest`.
+**Live SoT (v1.0.0):** README — Recall@5 **0.35** / MRR **0.1792**; chat answer/citation/retrieval/abstention **1.0**; chat LLM **Mistral** `mistral-small-latest`.

@@ -1,7 +1,7 @@
 # Handoff Gentle AI — 2026-08-17
 
 > **Congelado (pin del demo).** Change `claimprint-ragflow`: no archivar (el pin tiene que seguir en el repo), no inflar. Producto: `openspec/changes/claimprint-idp-kernel/`. Siguiente paso de producto ≠ gancho Graph nativo.
-> **Live SoT (2026-08-22+):** chat **Mistral** `mistral-small-latest`, thr **0.2** — ver README / v1.0.1+.
+> **Live SoT (2026-08-22+):** chat **Mistral** `mistral-small-latest`, thr **0.2** — ver README / v1.0.0.
 
 Change original del demo RAGFlow. Tasks del pin siguen checked. Overlay Graph es del **demo**, no del kernel IDP.
 

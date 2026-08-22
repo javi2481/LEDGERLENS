@@ -147,12 +147,12 @@ else
 fi
 
 if command -v ollama >/dev/null 2>&1; then
-  info "ollama on PATH (optional last fallback; default chat is Groq llama-3.3-70b-versatile)"
+  info "ollama on PATH (optional fallback; demo chat is Mistral via RAGFlow Model providers)"
 else
-  skip "ollama not on PATH (ok — default chat is Groq)"
+  skip "ollama not on PATH (ok — demo chat is Mistral in UI providers)"
 fi
 
-pass "chat default is Groq llama-3.3-70b-versatile (no OpenRouter default)"
+pass "chat demo is Mistral via Model providers (no OpenRouter default)"
 
 # --- IDP kernel pytest (capa 1-2; MinerU fixtures, no RAGFlow) ---
 PY=python3

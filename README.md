@@ -32,9 +32,9 @@ Claimprint is a **claims intelligence kernel**, not a RAG wrapper. A document en
 
 The pilot compares retrieval-only search (PDF+page, **no claim inject**) against **claims-first** grounded chat (**after** `push_claims` injects IDP figures).
 
-Retrieval (n=20, rerank off): keyword, vector, and hybrid **tie** at Recall@5 **0.25** and MRR **0.125**. The pilot does **not** show hybrid winning. The underlying issue is the **identity trap**: retrieval can return evidence for a correct number attached to the wrong figure—consolidado vs controlante in the table above.
+Retrieval (n=20): keyword, vector, and hybrid **tie** at Recall@5 **0.35** and MRR **0.1792**. The pilot does **not** show hybrid winning. The underlying issue is the **identity trap**: retrieval can return evidence for a correct number attached to the wrong figure—consolidado vs controlante in the table above.
 
-Claims-first chat (n=10): answer **0.60**, citation **0.70**. Those scores are task-specific and measured post-inject; they reflect verified claims entering the chat, not a retrieval improvement.
+Claims-first chat (n=10, post-`push_claims`): answer / citation / retrieval / abstention **1.0**. Task-specific scores on a small corpus (`demo_4` 10/10); knobs: Mistral `mistral-small-latest`, Voyage, similarity threshold **0.2**, rerank on, IDP inject. Not a general IR paper.
 
 ![Retrieval-only vs claims-first — identity trap](docs/assets/claimprint-retrieval-vs-chat.svg)
 
@@ -107,7 +107,7 @@ Extraction follows the same rule: if the issuer cannot be determined from text o
 |------|---------|
 | First instance: BYMA PDFs in `docs/archivos_muestra/` | Docker volumes |
 | Parsed text in `fixtures/mineru/` | Indexed `demo_4` dataset |
-| Recipes, `evals/`, pytest | API keys (Groq, Voyage, …) |
+| Recipes, `evals/`, pytest | API keys (Mistral, Voyage, …) |
 | `scripts/idp_ask.py`, HITL, dossier | Pre-built RAG chunks or chat |
 
 ## Architecture
@@ -115,7 +115,7 @@ Extraction follows the same rule: if the issuer cannot be determined from text o
 | Layer | Role | Verification |
 |------|--------|----------------|
 | **IDP** | fixtures → classify → extract → claims → `idp_ask` | `./scripts/check.sh` |
-| **RAG** | RAGFlow + Infinity + Voyage + Groq (`demo_4`) | Optional, ≥16 GB Docker stack |
+| **RAG** | RAGFlow + Infinity + Voyage + Mistral (`demo_4`) | Optional, ≥16 GB Docker stack |
 
 Contracts: `recipes/financial_statement.json`, `press_release.json`, `results_presentation.json`, plus [`evals/identity_v1.json`](evals/identity_v1.json), [`identity_v2.json`](evals/identity_v2.json), [`press_v1.json`](evals/press_v1.json), and [`presentation_v1.json`](evals/presentation_v1.json).
 
@@ -143,7 +143,7 @@ Evaluation catalog: four layers (files → identity → inject mock → live RAG
 
 ## Optional RAGFlow UI
 
-This stack is not required for identity lookup. It is a grounded-chat demo over the same corpus. It needs Docker Compose, **x86_64**, **≥16 GB RAM**, and local API keys (Groq + Voyage). The clone does not include an indexed `demo_4`.
+This stack is not required for identity lookup. It is a grounded-chat demo over the same corpus. It needs Docker Compose, **x86_64**, **≥16 GB RAM**, and local API keys (Mistral + Voyage). The clone does not include an indexed `demo_4`.
 
 ```bash
 cp .env.example .env   # add keys; .env is not in git
@@ -151,26 +151,26 @@ cp .env.example .env   # add keys; .env is not in git
 ./scripts/up.sh        # UI: http://localhost
 ```
 
-Stack: RAGFlow v0.26.4 + Infinity + MinerU `pipeline` + Groq `llama-3.3-70b-versatile` + Voyage. On Linux set `vm.max_map_count` ≥ 262144; add Groq and Voyage keys in RAGFlow Model providers. Then `python scripts/push_claims.py` and a **new** chat.
+Stack: RAGFlow v0.26.4 + Infinity + MinerU `pipeline` + Mistral `mistral-small-latest` + Voyage. On Linux set `vm.max_map_count` ≥ 262144; add Mistral and Voyage under RAGFlow Model providers (chat is not auto-read from `.env`). Enable Show Quote, empty response when no evidence, chat similarity threshold **0.2**, then `python scripts/push_claims.py` and a **new** chat.
 
 Infinity scores full-text with **BM25**. The `keyword` / `vector` / `hybrid` arms are RAGFlow knobs (`vector_similarity_weight` 0 / 1 / 0.3), not a custom Okapi library.
 
-Pilot evaluation (n=20 retrieval; n=10 chat):
+Pilot evaluation (n=20 retrieval; n=10 chat; corpus `demo_4` 10/10):
 
 | Arm | Recall@5 | Recall@10 | MRR |
 |-------|----------|-----------|-----|
-| keyword | 0.25 | 0.25 | 0.125 |
-| vector | 0.25 | 0.25 | 0.125 |
-| hybrid | 0.25 | 0.25 | 0.125 |
+| keyword | 0.35 | 0.35 | 0.1792 |
+| vector | 0.35 | 0.35 | 0.1792 |
+| hybrid | 0.35 | 0.35 | 0.1792 |
 
 The three arms tie: this pilot does **not** show hybrid winning. That tie is evidence for claims-first: page-level retrieval alone does not clear the consolidado / controlante trap.
 
 | Layer | What it measures | Score |
 |-------|------------------|-------|
-| Retrieval only | PDF+page, no claim inject | Recall@5 0.25 (n=20) |
-| Chat after `push_claims` | Answer grounded on injected IDP claims | answer 0.6 (n=10) |
+| Retrieval only | PDF+page, no claim inject | Recall@5 **0.35** (n=20) |
+| Chat after `push_claims` | Answer grounded on injected IDP claims | answer / citation / retrieval / abstention **1.0** (n=10) |
 
-The jump from 0.25 to 0.6 is the claims-first argument, not a number to hide. Chat also scores retrieval **0.7** / citation **0.7** / abstention **0.7** on the same post-inject run. Dumps live in `outputs/` (gitignored).
+The gap between retrieval-only and claims-first chat is the argument, not a number to hide. Small-n pilot — honest, not a paper IR claim. Dumps live in `outputs/` (gitignored).
 
 ```bash
 docker compose --env-file .env \

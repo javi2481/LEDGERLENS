@@ -8,7 +8,7 @@ Orden demo: **configurar el dataset** (MinerU, español, KG/RAPTOR off) → **su
 
 No actives Knowledge graph ni RAPTOR: no son parsers y gastan tokens del chat.
 
-Detalle del stack opcional: sección **Optional RAGFlow UI** del README raíz.
+Detalle del stack opcional: sección **Optional RAGFlow UI** del README raíz (chat demo: Mistral + Voyage, threshold 0.2, luego `push_claims`).
 
 ## Orden de parseo
 

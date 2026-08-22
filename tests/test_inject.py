@@ -76,3 +76,11 @@ def test_prompt_lists_all_scopes() -> None:
     blob = prompt_lines(claims)
     assert "comunicado|press_as_of_date" in blob
     assert "2026-05-08" in blob
+
+
+def test_idp_rules_cover_press_deck_and_ltm() -> None:
+    blob = prompt_lines(())
+    assert "comunicado" in blob.casefold()
+    assert "presentación" in blob.casefold() or "presentacion" in blob.casefold()
+    assert "margen" in blob.casefold() or "ltm" in blob.casefold()
+    assert "no hay evidencia" in blob.casefold()

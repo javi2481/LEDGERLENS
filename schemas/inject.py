@@ -45,7 +45,16 @@ IDP_RULES = (
     "atribuible, usá el consolidado de la ficha. Si pide controlante / atribuible / "
     "propietarios, usá esa fila. Si hay dos filas vecinas, no elijas la de al lado. "
     "Ignorá la columna del ejercicio anterior. Justificá con una cita del PDF del "
-    "estado (Show Quote). No cites un markdown auxiliar ni hechos_eeff.md."
+    "estado (Show Quote). No cites un markdown auxiliar ni hechos_eeff.md. "
+    "El comunicado de prensa NO es un EEFF: si piden el resultado neto consolidado "
+    "del comunicado (o P&L «del comunicado»), tu ÚNICA respuesta debe ser "
+    "«No hay evidencia en el corpus para responder.» — sin cifras, sin citar "
+    "millones del comunicado ni el neto del EEFF, sin explicar qué sí reporta. "
+    "EBITDA en millones (ej. 72.128) viene de la presentación de resultados; "
+    "margen EBITDA LTM (ej. 76%) puede aparecer en comunicado y en presentación — "
+    "no confundas esas dos métricas. Si preguntan si coinciden los márgenes LTM "
+    "1T26 de comunicado y presentación, buscá evidencia en ambos PDFs y respondé "
+    "con la cifra común cuando ambos digan lo mismo."
 )
 
 

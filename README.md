@@ -135,7 +135,9 @@ Evaluation catalog: four layers (files → identity → inject mock → live RAG
 | `docs/archivos_muestra/` | BYMA PDFs |
 | `scripts/up.sh` / `push_claims.py` | Optional RAG stack |
 | `vendor/ragflow-docker/` | RAGFlow v0.26.4 pin (do not edit) |
-| `docs/assets/` | README / LinkedIn diagrams |
+| `docs/assets/claimprint-architecture.svg` | README architecture diagram |
+| `docs/assets/claimprint-retrieval-vs-chat.svg` | README retrieval vs claims-first |
+| `docs/assets/claimprint-linkedin.svg` | LinkedIn post card (export to PNG) |
 
 ---
 

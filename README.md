@@ -20,15 +20,13 @@ Unspecified “net income 1T26” has two neighboring P&L rows. Retrieval can re
 | Wrong neighbor (controlante) | 21259769 |
 | Claimprint (consolidado) | **21262335** |
 
-![Trampa consolidado vs controlante 1T26](docs/assets/identity-trap.svg)
-
 Identity lookup: no Docker, no API keys.
 
 ### How Claimprint works
 
 Claimprint is a **claims intelligence kernel**, not a RAG wrapper. A document enters Document Intelligence (parse, classify, extract) and becomes a **typed claim**: a structured figure with **identity** (which line item it is), **value**, and **provenance** (page, row, filing). Identity is resolved and verified before any answer is emitted. The primary path is **exact lookup** → verified answer. RAG chat is an **optional** layer that consumes verified claims; it is not the source of truth. If no claim passes verification, the kernel **abstains**—no claim, no answer.
 
-![Claimprint architecture — document to verified claim](docs/assets/architecture.svg)
+![Claimprint architecture — document to verified claim](docs/assets/claimprint-architecture.svg)
 
 ### Why retrieval alone is not enough
 
@@ -38,7 +36,7 @@ Retrieval (n=20, rerank off): keyword, vector, and hybrid **tie** at Recall@5 **
 
 Claims-first chat (n=10): answer **0.60**, citation **0.70**. Those scores are task-specific and measured post-inject; they reflect verified claims entering the chat, not a retrieval improvement.
 
-![Retrieval-only vs claims-first — identity trap](docs/assets/retrieval-vs-chat.svg)
+![Retrieval-only vs claims-first — identity trap](docs/assets/claimprint-retrieval-vs-chat.svg)
 
 Parsed BYMA text lives in [`fixtures/mineru/`](fixtures/mineru/). [`scripts/idp_ask.py`](scripts/idp_ask.py) answers that question from those fixtures. The RAGFlow UI is optional (≥16 GB RAM and local API keys). `.env` is gitignored.
 

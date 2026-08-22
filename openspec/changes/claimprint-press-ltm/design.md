@@ -2,7 +2,7 @@
 
 ## Technical Approach
 
-Keep date/period on the cover page. After that, walk MinerU pages for a single LTM percentage. Identity lookup stays lexical. RAGFlow (Voyage, Infinity, Groq) is still chat-only.
+Keep date/period on the cover page. After that, walk MinerU pages for a single LTM percentage. Identity lookup stays lexical. RAGFlow (Voyage, Infinity, Mistral) is still chat-only.
 
 ## Architecture Decisions
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove inject wiring without Docker or Groq.
+Prove inject wiring without Docker or chat LLM.
 
 ## ADDED Requirements
 

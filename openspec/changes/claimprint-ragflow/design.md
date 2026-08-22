@@ -1,10 +1,10 @@
 # Design: Claimprint RAGFlow local stack
 
-Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **MinerU** `pipeline` (sidecar CPU `mineru-api:8000`). Naive/DeepDoc fallback. Optional PaddleOCR overlay (Compose profile `paddleocr`). Default chat: **Groq** `llama-3.3-70b-versatile`. Embed: **Voyage**. Host Ollama is last fallback. Infinity for lower RAM. No `app.py`, `ledger_lens/`, Gradio, HF Space.
+Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **MinerU** `pipeline` (sidecar CPU `mineru-api:8000`). Naive/DeepDoc fallback. Optional PaddleOCR overlay (Compose profile `paddleocr`). Default chat: **Mistral** `mistral-small-latest`. Embed: **Voyage**. Host Ollama is last fallback. Infinity for lower RAM. No `app.py`, `ledger_lens/`, Gradio, HF Space.
 
 ## Technical Approach
 
-`scripts/up.sh` starts official compose (overlay file loaded; `paddleocr` service idle unless profile enabled). RAGFlow UI **:80** is the product. First-run KB/chat (Spanish, Empty response, Show Quote, Groq `llama-3.3-70b-versatile`) lives in README, not code. Deferred items live in `docs/agenda/`. Host-level checks: `scripts/check.sh`.
+`scripts/up.sh` starts official compose (overlay file loaded; `paddleocr` service idle unless profile enabled). RAGFlow UI **:80** is the product. First-run KB/chat (Spanish, Empty response, Show Quote, Mistral `mistral-small-latest`, similarity threshold **0.2**) lives in README, not code. Deferred items live in `docs/agenda/`. Host-level checks: `scripts/check.sh`.
 
 ## Architecture Decisions
 
@@ -15,9 +15,9 @@ Vendor official RAGFlow `docker/` **v0.26.4**. Default parser **MinerU** `pipeli
 | PDF parser | **MinerU** `pipeline` sidecar (`MINERU_APISERVER=http://mineru-api:8000`) | Naive as default; PaddleOCR as default; MinerU hybrid | EEFF BYMA need layout + tables ([Select PDF parser](https://ragflow.io/docs/dev/select_pdf_parser)). Hybrid needs NVIDIA. Naive/DeepDoc remain fallback |
 | Optional OCR | Profile `paddleocr` + commented env | Always-on PaddleOCR | Keep PaddleOCR as an alternate parser without paying RAM at boot |
 | OCR URL (when enabled) | `http://paddleocr:8080/layout-parsing` | FAQ `localhost:8080` | `localhost` inside RAGFlow is the container |
-| LLM | Groq default (`llama-3.3-70b-versatile`); Ollama last fallback | OpenRouter Nano `:free` as default; Gemini flash-lite as default; Compose `ollama`; vLLM now | Live `chat_demo_4` uses Groq. Nano `:free` hit daily quota. Gemini was documented but not the running assistant. Voyage stays native. |
+| LLM | Mistral default (`mistral-small-latest`); Ollama last fallback | OpenRouter Nano `:free` as default; Gemini flash-lite as default; Groq as default; Compose `ollama`; vLLM now | Live `chat_demo_4` uses Mistral. Nano `:free` hit daily quota. Groq was an earlier default (Phase 7). Voyage stays native. |
 | Embed | Voyage native in RAGFlow (`voyage-finance-2`) | OpenRouter embed; TEI; Ollama `bge-m3` | v0.22+ image has no built-in embeddings; `demo_4` already indexed with native Voyage |
-| Chat model | `llama-3.3-70b-versatile` | OpenRouter Nano `:free`; Gemini `gemini-3.1-flash-lite`; 7B+ in-compose | Groq factory in Model providers; Ollama `qwen2.5:1.5b` is last fallback |
+| Chat model | `mistral-small-latest` | OpenRouter Nano `:free`; Gemini `gemini-3.1-flash-lite`; Groq `llama-3.3-70b-versatile`; 7B+ in-compose | Mistral in Model providers; Ollama `qwen2.5:1.5b` is last fallback |
 
 ## Data Flow
 
@@ -45,16 +45,16 @@ sequenceDiagram
   participant UI as RAGFlow :80
   participant RF as ragflow-cpu
   participant Inf as infinity
-  participant Gq as Groq
+  participant Ms as Mistral
   participant Ol as host Ollama :11434
   User->>UI: Spanish question
   UI->>RF: chat
   RF->>Inf: retrieve
   alt hits
     Inf-->>RF: chunks
-    alt Groq default
-      RF->>Gq: llama-3.3-70b-versatile
-      Gq-->>RF: answer
+    alt Mistral default
+      RF->>Ms: mistral-small-latest
+      Ms-->>RF: answer
     else Ollama last fallback
       RF->>Ol: qwen2.5:1.5b
       Ol-->>RF: answer
@@ -98,7 +98,7 @@ Vendor relative paths stay valid. Overlay `build: ./docker/paddleocr` is repo-ro
 |----------|--------|
 | UI | `http://localhost` (`SVR_WEB_HTTP_PORT=80`) |
 | OCR | MinerU `pipeline` default (sidecar :8000 `POST /file_parse`); Naive/DeepDoc fallback; optional DNS `paddleocr` + `POST /layout-parsing` |
-| LLM | Groq `llama-3.3-70b-versatile`; Ollama last fallback; Voyage embed stays native in RAGFlow |
+| LLM | Mistral `mistral-small-latest`; Ollama last fallback; Voyage embed stays native in RAGFlow |
 | Empty response | Non-blank Spanish no-evidence line (copy owned by spec) |
 
 ## Testing Strategy
@@ -108,7 +108,7 @@ No runner (`strict_tdd: false`). Smoke only on ≥16 GB x86 + Docker 24+ Compose
 | Layer | What | Approach |
 |-------|------|----------|
 | Unit | N/A | No app package |
-| Integration | UI :80; Groq in UI; Ollama last fallback tag | `scripts/check.sh`; `curl` / `compose ps` on ≥16 GB |
+| Integration | UI :80; Mistral in UI; Ollama last fallback tag | `scripts/check.sh`; `curl` / `compose ps` on ≥16 GB |
 | E2E | Parse PDFs; cite; no-evidence | Manual per README |
 
 ## Threat Matrix

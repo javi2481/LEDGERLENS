@@ -51,12 +51,18 @@ Chain strategy: size-exception
 - [x] 5.4 Verify: compose healthy (UI `:80`) on ≥16 GB. Manual E2E per README. Host <16 GB: `scripts/check.sh` only. Skip full smoke if no Docker Compose.
 - [x] 5.5 Add `scripts/check.sh` (contracts, `pdftotext` fixtures, host probe) and `docs/agenda/` for deferred Parallel items.
 
-## Phase 6: extra chat proxy (rolled back 2026-08-16)
+## Phase 6: extra chat proxy (rolled back 2026-08-16) — historical
 
-- [x] 6.1 Tried a Compose chat proxy hop; not useful for this demo (RAGFlow already talks to Groq / Ollama / Voyage in Model providers).
+- [x] 6.1 Tried a Compose chat proxy hop; not useful for this demo (RAGFlow already talks to chat LLM / Ollama / Voyage in Model providers).
 - [x] 6.2 Rolled back the overlay and agenda note the same day.
-- [x] 6.3 Chat went Gemini factory then **Groq** `llama-3.3-70b-versatile` (live `chat_demo_4`). OpenRouter Nano `:free` is not the default. Voyage stays native.
+- [x] 6.3 Chat went Gemini factory then **Groq** `llama-3.3-70b-versatile` (historical `chat_demo_4`). OpenRouter Nano `:free` is not the default. Voyage stays native.
 
-## Phase 7: Groq chat default (2026-08-16)
+## Phase 7: Groq chat default (2026-08-16) — historical
 
 - [x] 7.1 Align README, `.env.example`, `scripts/check.sh` / `up.sh`, agenda, research index, and OpenSpec local-stack/portfolio-local to Groq `llama-3.3-70b-versatile` (instance `demo_4`). Do not document Gemini flash-lite or OpenRouter Nano `:free` as the running default.
+  - **Superseded by Phase 8:** live default is Mistral (README / v1.0.1+).
+
+## Phase 8: Mistral live default (2026-08-22)
+
+- [x] 8.1 Align README, `.env.example`, `scripts/check.sh` / `up.sh`, `vendor/PIN.md`, and OpenSpec local-stack/portfolio-local to Mistral `mistral-small-latest` (instance `demo_4`, chat thr **0.2**). Do not document Groq, Gemini flash-lite, or OpenRouter Nano `:free` as the running default.
+- [x] 8.2 Confirm live SoT metrics stay in README: retrieval Recall@5 **0.35** / MRR **0.1792**; claims-first chat **1.0** (n=20 / n=10).

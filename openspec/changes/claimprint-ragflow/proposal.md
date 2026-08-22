@@ -4,11 +4,11 @@
 
 ## Intent
 
-Local portfolio demo: Spanish Q&A over BYMA financial PDFs with citations. Official RAGFlow is UI+RAG; MinerU `pipeline` parses filings (CPU sidecar); Groq `llama-3.3-70b-versatile` is default chat; Voyage is native embed. No evidence → Spanish empty reply, not invention.
+Local portfolio demo: Spanish Q&A over BYMA financial PDFs with citations. Official RAGFlow is UI+RAG; MinerU `pipeline` parses filings (CPU sidecar); Mistral `mistral-small-latest` is default chat; Voyage is native embed. No evidence → Spanish empty reply, not invention.
 
 ## Locked assumptions
 
-User-approved reboot; no question round. Spanish UI; citations; BYMA samples in `docs/archivos_muestra/`. Official `infiniflow/ragflow` **v0.26.4** + Compose overlay (not submodule/from-scratch). Infinity (`DOC_ENGINE=infinity`), not Elasticsearch. Default PDF parser **MinerU** `pipeline` (sidecar `mineru-api:8000`; Naive/DeepDoc fallback). PaddleOCR optional (Compose profile `paddleocr`; `PADDLEOCR_API_URL` commented unless enabled). Default chat: Groq `llama-3.3-70b-versatile` in RAGFlow Model providers. Embed: Voyage native in RAGFlow. Last fallback chat: host Ollama `http://host.docker.internal:11434` (never `127.0.0.1`), `qwen2.5:1.5b`. Forbidden: `app.py`, `ledger_lens/`, Gradio, HF Space, `cloud.ragflow.io`, OpenRouter Nano `:free` as default. Host: x86_64, ≥16 GB RAM, Docker ≥24, Compose ≥v2.26.1, `vm.max_map_count` ≥ 262144. Deferred work: `docs/agenda/`.
+User-approved reboot; no question round. Spanish UI; citations; BYMA samples in `docs/archivos_muestra/`. Official `infiniflow/ragflow` **v0.26.4** + Compose overlay (not submodule/from-scratch). Infinity (`DOC_ENGINE=infinity`), not Elasticsearch. Default PDF parser **MinerU** `pipeline` (sidecar `mineru-api:8000`; Naive/DeepDoc fallback). PaddleOCR optional (Compose profile `paddleocr`; `PADDLEOCR_API_URL` commented unless enabled). Default chat: Mistral `mistral-small-latest` in RAGFlow Model providers (similarity threshold **0.2**). Embed: Voyage native in RAGFlow. Last fallback chat: host Ollama `http://host.docker.internal:11434` (never `127.0.0.1`), `qwen2.5:1.5b`. Forbidden: `app.py`, `ledger_lens/`, Gradio, HF Space, `cloud.ragflow.io`, OpenRouter Nano `:free` as default. Host: x86_64, ≥16 GB RAM, Docker ≥24, Compose ≥v2.26.1, `vm.max_map_count` ≥ 262144. Deferred work: `docs/agenda/`.
 
 ## Scope
 
@@ -32,7 +32,7 @@ PP-ChatOCRv4 as product; Excel/CSV; English UI; Gradio/HF/ZeroGPU/custom Python 
 
 - `document-parse`: Ingest BYMA PDFs via RAGFlow **MinerU** `pipeline` by default; Naive/DeepDoc fallback; PaddleOCR optional (PP-StructureV3 CPU; `/layout-parsing`).
 - `knowledge-qa`: Spanish answers with citations; Empty response required; no-evidence reply instead of inventing.
-- `local-stack`: Official pin; Infinity; Groq chat; host Ollama last fallback via `host.docker.internal`; optional PaddleOCR Compose profile.
+- `local-stack`: Official pin; Infinity; Mistral chat; host Ollama last fallback via `host.docker.internal`; optional PaddleOCR Compose profile.
 - `portfolio-local`: BYMA samples in `docs/archivos_muestra/`; Spanish UI; README for ≥16 GB x86.
 
 ### Modified Capabilities

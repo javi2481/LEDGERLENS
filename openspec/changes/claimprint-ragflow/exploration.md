@@ -1,6 +1,6 @@
 ## Exploration: claimprint-ragflow
 
-> Histórico del bootstrap (árbol vacío + fixtures sintéticos). El change **aplicado** es MinerU `pipeline` + corpus BYMA en `docs/archivos_muestra/` + chat Groq `llama-3.3-70b-versatile`. No usar este archivo como fuente de verdad del demo.
+> Histórico del bootstrap (árbol vacío + fixtures sintéticos). El change **aplicado** documentó MinerU `pipeline` + corpus BYMA en `docs/archivos_muestra/` + chat (histórico: Groq; **live SoT = README / Mistral** `mistral-small-latest`). No usar este archivo como fuente de verdad del demo.
 
 Local Docker Compose stack for Claimprint: Spanish Q&A over synthetic financial PDFs with citations, using official self-hosted RAGFlow + self-hosted PaddleOCR serving + Ollama. Empty/no-evidence reply instead of inventing. No Gradio, no Hugging Face Space, no custom Python RAG package.
 

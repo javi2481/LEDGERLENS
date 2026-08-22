@@ -102,10 +102,34 @@ def test_eeff_metric_on_presentation_abstains(claims) -> None:
     assert result.claims == ()
 
 
+def test_neto_de_la_memoria_abstains(claims) -> None:
+    result = lookup("¿Cuál es el resultado neto de la memoria?", claims)
+    assert result.route == "abstain"
+    assert result.claims == ()
+
+
 def test_eeff_metric_on_comunicado_still_abstains(claims) -> None:
     result = lookup("¿Cuál es el resultado neto consolidado del comunicado de prensa?", claims)
     assert result.route == "abstain"
     assert result.claims == ()
+
+
+def test_lote2_identity_values(claims) -> None:
+    """Manual chat lote-2 gold (distinct from rag_chat_v1)."""
+    cases = [
+        ("¿Cuál es el resultado bruto del 1T26?", "60144176"),
+        ("¿Cuál es el resultado operativo del 1T26?", "70223471"),
+        ("¿Cuál es el impuesto a las ganancias del 1T26?", "-14950948"),
+        ("Resultado atribuible a la participación no controlante 1T26", "2566"),
+        ("Resultado bruto 2T26", "122610546"),
+        ("¿Cuál es la fecha del comunicado de prensa 2T26?", "2026-08-07"),
+        ("margen EBITDA de los últimos 12 meses del comunicado 2T26", "75"),
+        ("¿Cuál es el EBITDA de la presentación 2T26?", "71697"),
+    ]
+    for question, expected in cases:
+        result = lookup(question, claims)
+        assert result.route == "identity", question
+        assert result.claims[0].value == expected, question
 
 
 def test_press_ltm_not_presentation_and_not_neto(claims) -> None:

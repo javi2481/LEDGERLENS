@@ -1,43 +1,115 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="t d">
-  <title id="t">Retrieval empatado vs chat anclado</title>
-  <desc id="d">Keyword, vector e hybrid: Recall@5 0.25. Chat answer 0.6 porque los claims se inyectan.</desc>
-  <rect width="1200" height="630" fill="#f4f1ea"/>
-  <text x="60" y="58" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">El retrieval no discrimina. El claim s&#237;.</text>
-  <text x="60" y="92" font-family="Segoe UI, Helvetica, sans-serif" font-size="16" fill="#5c574e">Piloto n=20 p&#225;ginas &#183; n=10 chat &#183; rerank off</text>
+  <title id="t">Retrieval vs Claims-first — identity trap</title>
+  <desc id="d">Retrieval Recall@5 0.25 tied. Claims-first grounded chat: answer 0.60 citation 0.70 after push_claims.</desc>
 
-  <text x="60" y="150" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#5c574e">RETRIEVAL &#183; Recall@5</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0A0F1A"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <marker id="fork" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <circle cx="4" cy="4" r="3" fill="#FB923C"/>
+    </marker>
+    <marker id="arrD" markerWidth="10" markerHeight="10" refX="5" refY="9" orient="auto">
+      <path d="M0,0 L5,10 L10,0 Z" fill="#475569"/>
+    </marker>
+  </defs>
 
-  <text x="60" y="200" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">keyword</text>
-  <rect x="200" y="180" width="200" height="28" fill="#1a1a1a"/>
-  <text x="416" y="200" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">0.25</text>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity="0.05" stroke="#6366F1" stroke-width="1">
+    <line x1="0" y1="126" x2="1200" y2="126"/>
+    <line x1="0" y1="252" x2="1200" y2="252"/>
+    <line x1="0" y1="378" x2="1200" y2="378"/>
+    <line x1="0" y1="504" x2="1200" y2="504"/>
+  </g>
 
-  <text x="60" y="250" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">vector</text>
-  <rect x="200" y="230" width="200" height="28" fill="#1a1a1a"/>
-  <text x="416" y="250" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">0.25</text>
+  <!-- Header -->
+  <text x="60" y="44" font-family="Inter, system-ui, Segoe UI, sans-serif" font-size="13" font-weight="700" fill="#475569" letter-spacing="2">CLAIMPRINT</text>
+  <text x="60" y="76" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="800" fill="#F8FAFC" letter-spacing="-0.5">Retrieval finds evidence.</text>
+  <text x="60" y="104" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="800" fill="#818CF8" letter-spacing="-0.5">Claims resolve identity.</text>
+  <text x="60" y="128" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#475569">Experimental pilot on BYMA financial statements · task-specific metrics</text>
 
-  <text x="60" y="300" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">hybrid</text>
-  <rect x="200" y="280" width="200" height="28" fill="#1a1a1a"/>
-  <text x="416" y="300" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">0.25</text>
+  <!-- Divider -->
+  <line x1="600" y1="142" x2="600" y2="548" stroke="#1E293B" stroke-width="2"/>
 
-  <text x="60" y="370" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#5c574e">CHAT &#183; answer (despu&#233;s de push_claims)</text>
-  <text x="60" y="420" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">answer</text>
-  <rect x="200" y="400" width="480" height="28" fill="#1a1a1a"/>
-  <text x="696" y="420" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">0.60</text>
+  <!-- ═══ LEFT PANEL ═══ -->
+  <g transform="translate(48, 148)">
+    <rect x="0" y="0" width="520" height="396" rx="16" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
+    <rect x="0" y="0" width="520" height="3" rx="16" fill="#F97316"/>
 
-  <text x="60" y="470" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">citation</text>
-  <rect x="200" y="450" width="560" height="28" fill="#5c574e"/>
-  <text x="776" y="470" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" fill="#1a1a1a">0.70</text>
+    <text x="32" y="32" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#64748B" letter-spacing="1.5">RETRIEVAL ONLY</text>
+    <text x="32" y="52" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#475569">BM25 · dense vector · hybrid · PDF+page · no claim inject</text>
 
-  <rect x="860" y="170" width="280" height="320" rx="6" fill="#fff" stroke="#2c2c2c" stroke-width="1.5"/>
-  <text x="1000" y="220" text-anchor="middle" font-family="Segoe UI, Helvetica, sans-serif" font-size="14" font-weight="600" fill="#1a1a1a">C&#243;mo leerlo</text>
-  <text x="890" y="268" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">Tres brazos, mismas cifras.</text>
-  <text x="890" y="292" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">El piloto no prueba que</text>
-  <text x="890" y="316" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">hybrid gane.</text>
-  <text x="890" y="360" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#1a1a1a">El chat mejora porque</text>
-  <text x="890" y="384" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#1a1a1a">el IDP inyecta el claim.</text>
-  <text x="890" y="428" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">Infinity: BM25 + dense.</text>
-  <text x="890" y="452" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">Los brazos son knobs</text>
-  <text x="890" y="476" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#5c574e">de RAGFlow, no Okapi propio.</text>
+    <!-- Metric zone -->
+    <text x="260" y="82" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#475569">keyword = vector = hybrid</text>
+    <text x="260" y="138" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="64" font-weight="800" fill="#64748B" letter-spacing="-2">0.25</text>
+    <text x="260" y="162" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#334155">Recall@5 · MRR 0.125 · all three tied</text>
+    <text x="260" y="180" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#475569">pilot does not show hybrid wins</text>
 
-  <text x="60" y="580" font-family="Segoe UI, Helvetica, sans-serif" font-size="13" fill="#8a857c">MRR retrieval 0.125 en los tres brazos &#183; Claimprint piloto RAG</text>
+    <line x1="260" y1="192" x2="260" y2="210" stroke="#475569" stroke-width="2" marker-end="url(#arrD)"/>
+
+    <!-- Identity trap -->
+    <g transform="translate(32, 220)">
+      <rect x="0" y="0" width="456" height="160" rx="12" fill="#1C1410" stroke="#FB923C" stroke-width="1.5"/>
+      <text x="228" y="28" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="800" fill="#FB923C">IDENTITY TRAP</text>
+      <text x="228" y="48" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#A8A29E">finds a correct number — not which claim it belongs to</text>
+
+      <rect x="158" y="58" width="140" height="28" rx="14" fill="#131B2E" stroke="#44403C" stroke-width="1"/>
+      <text x="228" y="78" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" fill="#A8A29E">net income 1T26?</text>
+
+      <path d="M228 86 L228 98" stroke="#FB923C" stroke-width="1.5"/>
+      <path d="M228 98 L100 110" stroke="#FB923C" stroke-width="1.5" marker-end="url(#fork)"/>
+      <path d="M228 98 L356 110" stroke="#FB923C" stroke-width="1.5" marker-end="url(#fork)"/>
+
+      <text x="100" y="134" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="14" font-weight="700" fill="#F8FAFC">21.262.335</text>
+      <text x="100" y="150" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#FB923C">consolidated</text>
+
+      <text x="356" y="134" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="14" font-weight="700" fill="#F8FAFC">21.259.769</text>
+      <text x="356" y="150" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#FB923C">controlling interest</text>
+    </g>
+  </g>
+
+  <!-- ═══ RIGHT PANEL ═══ -->
+  <g transform="translate(632, 148)">
+    <rect x="0" y="0" width="520" height="396" rx="16" fill="#131B2E" stroke="#1E293B" stroke-width="1.5"/>
+    <rect x="0" y="0" width="520" height="3" rx="16" fill="#6366F1"/>
+
+    <text x="32" y="32" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#818CF8" letter-spacing="1.5">CLAIMS-FIRST</text>
+    <text x="32" y="52" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#475569">IDP injects verified figures before grounded chat</text>
+
+    <!-- Flow zone -->
+    <rect x="32" y="66" width="456" height="30" rx="15" fill="#4F46E5"/>
+    <text x="260" y="86" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">typed claim → verified identity</text>
+
+    <line x1="260" y1="102" x2="260" y2="116" stroke="#6366F1" stroke-width="2"/>
+    <polygon points="260,116 254,108 266,108" fill="#6366F1"/>
+
+    <rect x="32" y="120" width="456" height="30" rx="15" fill="none" stroke="#6366F1" stroke-width="1.5"/>
+    <text x="260" y="140" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700" fill="#818CF8">grounded answer · push_claims</text>
+
+    <!-- Metrics zone -->
+    <text x="32" y="178" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748B">answer · n=10</text>
+    <text x="32" y="244" font-family="Inter, system-ui, sans-serif" font-size="64" font-weight="800" fill="#818CF8" letter-spacing="-2">0.60</text>
+
+    <text x="32" y="288" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748B">citation · n=10</text>
+    <text x="32" y="340" font-family="Inter, system-ui, sans-serif" font-size="44" font-weight="800" fill="#2DD4BF" letter-spacing="-1">0.70</text>
+
+    <text x="32" y="372" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#475569">Chat score after push_claims — not general RAG accuracy</text>
+    <text x="32" y="390" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" fill="#6366F1">Improvement comes from verified claims, not better retrieval</text>
+  </g>
+
+  <!-- Conclusion strip -->
+  <g transform="translate(48, 556)">
+    <rect x="0" y="0" width="1104" height="36" rx="10" fill="#131B2E" stroke="#1E293B" stroke-width="1"/>
+    <text x="552" y="24" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748B">
+      <tspan fill="#64748B">Retrieval finds evidence</tspan>
+      <tspan fill="#334155">  ·  </tspan>
+      <tspan fill="#818CF8" font-weight="600">Claims resolve identity</tspan>
+      <tspan fill="#334155">  ·  </tspan>
+      <tspan fill="#64748B">RAG consumes verified claims</tspan>
+    </text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="612" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#334155">Pilot: n=20 retrieval · n=10 chat · rerank off · Finance / BYMA · academic portfolio project</text>
 </svg>

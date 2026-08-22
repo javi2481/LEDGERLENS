@@ -22,11 +22,23 @@ Unspecified “net income 1T26” has two neighboring P&L rows. Retrieval can re
 
 ![Trampa consolidado vs controlante 1T26](docs/assets/identity-trap.svg)
 
-Identity lookup: no Docker, no API keys. Pilot retrieval alone (PDF+page, no claim inject) scores Recall@5 **0.25** (n=20): the three arms tie and do **not** show that retrieval resolves the identity trap. Grounded chat answer **0.6** (n=10) is measured **after** `push_claims` injects IDP figures—not a retrieval win.
+Identity lookup: no Docker, no API keys.
 
-![De PDF a claim verificado](docs/assets/architecture.svg)
+### How Claimprint works
 
-![Retrieval empatado vs chat anclado](docs/assets/retrieval-vs-chat.svg)
+Claimprint is a **claims intelligence kernel**, not a RAG wrapper. A document enters Document Intelligence (parse, classify, extract) and becomes a **typed claim**: a structured figure with **identity** (which line item it is), **value**, and **provenance** (page, row, filing). Identity is resolved and verified before any answer is emitted. The primary path is **exact lookup** → verified answer. RAG chat is an **optional** layer that consumes verified claims; it is not the source of truth. If no claim passes verification, the kernel **abstains**—no claim, no answer.
+
+![Claimprint architecture — document to verified claim](docs/assets/architecture.svg)
+
+### Why retrieval alone is not enough
+
+The pilot compares retrieval-only search (PDF+page, **no claim inject**) against **claims-first** grounded chat (**after** `push_claims` injects IDP figures).
+
+Retrieval (n=20, rerank off): keyword, vector, and hybrid **tie** at Recall@5 **0.25** and MRR **0.125**. The pilot does **not** show hybrid winning. The underlying issue is the **identity trap**: retrieval can return evidence for a correct number attached to the wrong figure—consolidado vs controlante in the table above.
+
+Claims-first chat (n=10): answer **0.60**, citation **0.70**. Those scores are task-specific and measured post-inject; they reflect verified claims entering the chat, not a retrieval improvement.
+
+![Retrieval-only vs claims-first — identity trap](docs/assets/retrieval-vs-chat.svg)
 
 Parsed BYMA text lives in [`fixtures/mineru/`](fixtures/mineru/). [`scripts/idp_ask.py`](scripts/idp_ask.py) answers that question from those fixtures. The RAGFlow UI is optional (≥16 GB RAM and local API keys). `.env` is gitignored.
 
